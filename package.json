@@ -1,0 +1,30 @@
+{
+  "name": "@elastic.io/component-commons-library",
+  "version": "0.0.1",
+  "description": "Library for most common component development cases",
+  "author": {
+    "name": "elastic.io GmbH",
+    "email": "info@elastic.io",
+    "url": "http://elastic.io"
+  },
+  "files": [
+    "lib"
+  ],
+  "main": "lib/index.js",
+  "keywords": [
+    "elasticio",
+    "ipaas",
+    "elasticio-component"
+  ],
+  "scripts": {
+  },
+  "engines": {
+    "node": "8.16.0"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+  },
+  "repository": "elasticio/component-commons-library",
+  "license": "Apache-2.0"
+}
