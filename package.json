@@ -17,13 +17,17 @@
     "elasticio-component"
   ],
   "scripts": {
+    "pretest": "eslint lib --fix"
   },
   "engines": {
     "node": "8.16.0"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
+    "eslint": "5.16.0",
+    "eslint-config-airbnb": "17.1.0",
+    "eslint-config-airbnb-base": "13.1.0",
+    "eslint-plugin-import": "^2.17.2"
   },
   "repository": "elasticio/component-commons-library",
   "license": "Apache-2.0"
