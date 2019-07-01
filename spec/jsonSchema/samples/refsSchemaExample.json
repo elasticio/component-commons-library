@@ -1,0 +1,40 @@
+{
+  "properties": {
+    "developerMetadata": {
+      "description": "The developer metadata associated with a spreadsheet.",
+      "type": "array",
+      "items": {
+        "$ref": "DeveloperMetadata"
+      }
+    },
+    "sheets": {
+      "description": "The sheets that are part of a spreadsheet.",
+      "type": "array",
+      "items": {
+        "$ref": "Sheet"
+      }
+    },
+    "spreadsheetUrl": {
+      "type": "string",
+      "description": "The url of the spreadsheet.\nThis field is read-only."
+    },
+    "properties": {
+      "$ref": "SpreadsheetProperties",
+      "description": "Overall properties of a spreadsheet."
+    },
+    "spreadsheetId": {
+      "description": "The ID of the spreadsheet.\nThis field is read-only.",
+      "type": "string"
+    },
+    "namedRanges": {
+      "description": "The named ranges defined in a spreadsheet.",
+      "type": "array",
+      "items": {
+        "$ref": "NamedRange"
+      }
+    }
+  },
+  "id": "Spreadsheet",
+  "description": "Resource that represents a spreadsheet.",
+  "type": "object"
+}
