@@ -13,7 +13,7 @@
     "name": {
       "description": "Name of the product",
       "type": "string",
-      "required": true,
+      "required": false,
       "title": "name (Name of the product)"
     },
     "price": {

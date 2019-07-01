@@ -21,7 +21,6 @@
     },
     "required": [
       "id",
-      "name",
       "price"
     ]
   }
