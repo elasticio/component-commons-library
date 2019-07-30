@@ -1,6 +1,6 @@
 {
   "name": "@elastic.io/component-commons-library",
-  "version": "0.0.1",
+  "version": "0.0.1-dev.1",
   "description": "Library for most common component development cases",
   "author": {
     "name": "elastic.io GmbH",
@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "bunyan": "1.8.12",
-    "bunyan-format": "^0.2.1",
+    "bunyan-format": "0.2.1",
     "bunyan-serializers": "0.0.2"
   },
   "devDependencies": {
@@ -30,7 +30,7 @@
     "eslint": "5.16.0",
     "eslint-config-airbnb": "17.1.0",
     "eslint-config-airbnb-base": "13.1.0",
-    "eslint-plugin-import": "^2.17.2",
+    "eslint-plugin-import": "2.18.0",
     "mocha": "5.2.0",
     "sinon": "5.1.1"
   },
