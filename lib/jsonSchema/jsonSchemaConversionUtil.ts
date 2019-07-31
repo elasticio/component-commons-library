@@ -1,7 +1,4 @@
-/* eslint-disable no-param-reassign */
-
-// eslint-disable-next-line max-len
-module.exports.convertJsonSchemaToEioSchema = function convertJsonSchemaToEioSchema(keyToReturn, completeSchemaOriginal) {
+export function convertJsonSchemaToEioSchema(keyToReturn, completeSchemaOriginal) {
   const completeSchema = JSON.parse(JSON.stringify(completeSchemaOriginal));
 
   Object.keys(completeSchema).forEach((key) => {
@@ -39,9 +36,9 @@ module.exports.convertJsonSchemaToEioSchema = function convertJsonSchemaToEioSch
   });
 
   return completeSchema[keyToReturn];
-};
+}
 
-module.exports.makeSchemaInline = function makeSchemaInline(json, availableSchemas) {
+export function makeSchemaInline(json, availableSchemas) {
   if (Object.keys(json).indexOf('$ref') > -1) {
     const resolvation = availableSchemas[json.$ref];
 
@@ -65,16 +62,16 @@ module.exports.makeSchemaInline = function makeSchemaInline(json, availableSchem
   if (json.type === 'object') {
     if (json.properties) {
       Object.keys(json.properties).forEach((k) => {
-        makeSchemaInline(json.properties[k], availableSchemas);
+        this.makeSchemaInline(json.properties[k], availableSchemas);
       });
     }
     if (json.additionalProperties) {
-      makeSchemaInline(json.additionalProperties, availableSchemas);
+      this.makeSchemaInline(json.additionalProperties, availableSchemas);
     }
   }
   if (json.type === 'array') {
-    makeSchemaInline(json.items, availableSchemas);
+    this.makeSchemaInline(json.items, availableSchemas);
   }
 
   return json;
-};
+}

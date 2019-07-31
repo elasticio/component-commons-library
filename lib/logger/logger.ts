@@ -1,11 +1,9 @@
-/* eslint-disable no-multi-spaces */
+import bunyan from 'bunyan';
+import bunyanFormat from 'bunyan-format';
 
-const bunyan = require('bunyan');
-const bformat = require('bunyan-format');
+const outputMode = process.env['LOG_OUTPUT_MODE'] || 'bunyan';
 
-const outputMode = process.env.LOG_OUTPUT_MODE || 'bunyan';
-
-const formatOut = bformat({
+const formatOut = bunyanFormat({
   outputMode,
   levelInString: true,
   colorFromLevel: {
@@ -27,10 +25,10 @@ const lvlMap = {
   TRACE: bunyan.TRACE,
 };
 
-const appName = process.env.APP_NAME || 'app';
+const appName = process.env['APP_NAME'] || 'app';
 
 const defaultLevel = 'INFO';
-const level = process.env.LOG_LEVEL || defaultLevel;
+const level = process.env['LOG_LEVEL'] || defaultLevel;
 
 function errSerializerWithErrors(err) {
   const output = bunyan.stdSerializers.err(err);
@@ -58,20 +56,18 @@ const serializers = Object.create(bunyan.stdSerializers);
 serializers.err = errSerializerWithErrors;
 serializers.req = requestSerializer;
 
-function getLogger() {
+export function getLogger() {
   const loggers = {};
   return function createLogger(loggerName = 'defaultLogger') {
     if (!loggers[loggerName]) {
       loggers[loggerName] = bunyan.createLogger({
+        serializers,
         level: lvlMap[level.toUpperCase()],
         name: appName,
         src: true,
-        serializers,
         stream: formatOut,
       });
     }
     return loggers[loggerName];
   };
 }
-
-module.exports = getLogger();
