@@ -1,10 +1,9 @@
-import bunyan from 'bunyan';
 import chai from 'chai';
 import nock from 'nock';
 import sinon from 'sinon';
 
 const { expect } = chai;
-import { OAuth2RestClient } from '../../lib';
+import { Logger, OAuth2RestClient } from '../../lib';
 
 let options;
 let emitter;
@@ -41,7 +40,7 @@ describe('OAuth2AuthorizationCodeRestClient', () => {
     };
     emitter = {
       emit: sinon.spy(),
-      logger: bunyan.createLogger({ name: 'OAuth2 Client Test Logger' }),
+      logger: Logger.getLogger(),
     };
   });
 

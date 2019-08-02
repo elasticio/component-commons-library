@@ -1,10 +1,10 @@
-import bunyan from 'bunyan';
+// import bunyan from 'bunyan';
 import chai from 'chai';
 import nock from 'nock';
 import sinon from 'sinon';
 
 const { expect } = chai;
-import { ApiKeyRestClient } from '../../lib';
+import { ApiKeyRestClient, Logger } from '../../lib';
 
 let options;
 let emitter;
@@ -30,7 +30,7 @@ describe('ApiKeyRestClient', () => {
     };
     emitter = {
       emit: sinon.spy(),
-      logger: bunyan.createLogger({ name: 'Api Key Client Test Logger' }),
+      logger: Logger.getLogger(),
     };
 
     cfg = {

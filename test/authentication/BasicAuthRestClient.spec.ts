@@ -1,10 +1,9 @@
-import bunyan from 'bunyan';
 import chai from 'chai';
 import nock from 'nock';
 import sinon from 'sinon';
 
 const { expect } = chai;
-import { BasicAuthRestClient } from '../../lib';
+import { BasicAuthRestClient, Logger } from '../../lib';
 
 let options;
 let emitter;
@@ -32,7 +31,7 @@ describe('BasicAuthRestClient', () => {
     };
     emitter = {
       emit: sinon.spy(),
-      logger: bunyan.createLogger({ name: 'Basic Auth Client Test Logger' }),
+      logger: Logger.getLogger(),
     };
 
     cfg = {

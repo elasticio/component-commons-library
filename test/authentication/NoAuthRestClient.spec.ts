@@ -1,10 +1,9 @@
-import bunyan from 'bunyan';
 import chai from 'chai';
 import nock from 'nock';
 import sinon from 'sinon';
 
 const { expect } = chai;
-import { NoAuthRestClient } from '../../lib';
+import { Logger, NoAuthRestClient } from '../../lib';
 
 const url = 'https://example.com';
 const resourceServerUrl = 'https://resourceServerUrl.com';
@@ -28,7 +27,7 @@ describe('NoAuthRestClient', () => {
     };
     emitter = {
       emit: sinon.spy(),
-      logger: bunyan.createLogger({ name: 'No Auth Client Test Logger' }),
+      logger: Logger.getLogger(),
     };
   });
 

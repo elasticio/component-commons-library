@@ -56,18 +56,17 @@ const serializers = Object.create(bunyan.stdSerializers);
 serializers.err = errSerializerWithErrors;
 serializers.req = requestSerializer;
 
-export function getLogger() {
-  const loggers = {};
-  return function createLogger(loggerName = 'defaultLogger') {
-    if (!loggers[loggerName]) {
-      loggers[loggerName] = bunyan.createLogger({
-        serializers,
-        level: lvlMap[level.toUpperCase()],
-        name: appName,
-        src: true,
-        stream: formatOut,
-      });
-    }
-    return loggers[loggerName];
-  };
+const loggers = {};
+
+export function getLogger(loggerName = 'defaultLogger') {
+  if (!loggers[loggerName]) {
+    loggers[loggerName] = bunyan.createLogger({
+      serializers,
+      level: lvlMap[level.toUpperCase()],
+      name: appName,
+      src: true,
+      stream: formatOut,
+    });
+  }
+  return loggers[loggerName];
 }

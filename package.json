@@ -20,7 +20,7 @@
     "tsc": "rm -fr out && tsc",
     "pretest": "tslint -c tslint.json --project tsconfig.json  lib/**/*.ts spec/**/*.ts --fix",
     "preparepublish": "npm run tsc",
-    "test": "mocha --require ts-node/register test/**/*.ts --timeout 50000",
+    "test": "LOG_LEVEL=trace LOG_OUTPUT_MODE=long mocha --require ts-node/register test/**/*.ts --timeout 50000",
     "posttest": "npm run tsc"
   },
   "engines": {
