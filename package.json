@@ -27,7 +27,7 @@
     "node": "8.16.0"
   },
   "dependencies": {
-    "@types/node": "^8.0.4",
+    "@types/node": "8.10.51",
     "bunyan": "1.8.12",
     "bunyan-format": "0.2.1",
     "bunyan-serializers": "0.0.2",
@@ -37,7 +37,7 @@
     "typescript": "3.4.4"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.16",
+    "@types/jest": "24.0.16",
     "chai": "4.2.0",
     "mocha": "5.2.0",
     "nock": "9.6.1",
