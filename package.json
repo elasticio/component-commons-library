@@ -1,6 +1,6 @@
 {
   "name": "@elastic.io/component-commons-library",
-  "version": "0.0.2",
+  "version": "0.0.3-dev.1",
   "description": "Library for most common component development cases",
   "author": {
     "name": "elastic.io GmbH",
@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@types/node": "8.10.51",
+    "axios": "0.18.1",
     "bunyan": "1.8.12",
     "bunyan-format": "0.2.1",
     "bunyan-serializers": "0.0.2",
