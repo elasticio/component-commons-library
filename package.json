@@ -1,38 +1,50 @@
 {
   "name": "@elastic.io/component-commons-library",
-  "version": "0.0.1-dev.1",
+  "version": "0.0.2",
   "description": "Library for most common component development cases",
   "author": {
     "name": "elastic.io GmbH",
     "email": "info@elastic.io",
     "url": "http://elastic.io"
   },
-  "main": "lib/index.js",
+  "main": "lib/index.ts",
+  "files": [
+    "lib"
+  ],
   "keywords": [
     "elasticio",
     "ipaas",
     "elasticio-component"
   ],
   "scripts": {
-    "pretest": "eslint lib spec --fix",
-    "test": "mocha spec/** --timeout 50000"
+    "tsc": "rm -fr out && tsc",
+    "pretest": "tslint -c tslint.json --project tsconfig.json  lib/**/*.ts spec/**/*.ts --fix",
+    "preparepublish": "npm run tsc",
+    "test": "LOG_LEVEL=trace LOG_OUTPUT_MODE=long mocha --require ts-node/register test/**/*.ts --timeout 50000",
+    "posttest": "npm run tsc"
   },
   "engines": {
     "node": "8.16.0"
   },
   "dependencies": {
+    "@types/node": "8.10.51",
     "bunyan": "1.8.12",
     "bunyan-format": "0.2.1",
-    "bunyan-serializers": "0.0.2"
+    "bunyan-serializers": "0.0.2",
+    "request": "2.88.0",
+    "remove-leading-slash": "1.0.1",
+    "remove-trailing-slash": "0.1.0",
+    "typescript": "3.4.4"
   },
   "devDependencies": {
+    "@types/jest": "24.0.16",
     "chai": "4.2.0",
-    "eslint": "5.16.0",
-    "eslint-config-airbnb": "17.1.0",
-    "eslint-config-airbnb-base": "13.1.0",
-    "eslint-plugin-import": "2.18.0",
     "mocha": "5.2.0",
-    "sinon": "5.1.1"
+    "nock": "9.6.1",
+    "sinon": "5.1.1",
+    "ts-node": "8.1.0",
+    "tslint": "5.16.0",
+    "tslint-config-airbnb": "5.11.1"
   },
   "repository": "elasticio/component-commons-library",
   "license": "Apache-2.0"

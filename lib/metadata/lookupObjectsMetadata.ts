@@ -41,8 +41,7 @@ function verifiedInputParameters(fieldNames, conditions, criteriaLinks) {
   }
 }
 
-// eslint-disable-next-line max-len
-exports.readMetaFilter = async function readMetaFilter(condNumber, fieldNames, conditions, criteriaLinks) {
+export async function readMetaFilter(condNumber: number, fieldNames, conditions, criteriaLinks) {
   try {
     verifiedInputParameters(fieldNames, conditions, criteriaLinks);
   } catch (e) {
@@ -66,25 +65,25 @@ exports.readMetaFilter = async function readMetaFilter(condNumber, fieldNames, c
       type: 'object',
       properties: {
         fieldName:
-              {
-                title: 'Field Name',
-                type: 'string',
-                required: true,
-                enum: fieldNames,
-              },
+        {
+          title: 'Field Name',
+          type: 'string',
+          required: true,
+          enum: fieldNames,
+        },
         condition:
-              {
-                title: 'Condition',
-                type: 'string',
-                required: true,
-                enum: conditionEnum,
-              },
+        {
+          title: 'Condition',
+          type: 'string',
+          required: true,
+          enum: conditionEnum,
+        },
         fieldValue:
-              {
-                title: 'Field Value',
-                type: 'string',
-                required: true,
-              },
+        {
+          title: 'Field Value',
+          type: 'string',
+          required: true,
+        },
       },
     };
     if (conditionNumber !== i) {
@@ -98,4 +97,4 @@ exports.readMetaFilter = async function readMetaFilter(condNumber, fieldNames, c
   }
   metaDataTemplate.properties = properties;
   return metaDataTemplate;
-};
+}

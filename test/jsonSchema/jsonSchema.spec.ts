@@ -1,36 +1,35 @@
-/* eslint-disable no-return-assign */
-const fs = require('fs');
-const chai = require('chai');
+import fs from 'fs';
+import chai from 'chai';
 
 const { expect } = chai;
-const { JsonSchema } = require('../../lib/index.js');
+import { JsonSchema } from '../../lib';
 
 describe('Metadata converting ', () => {
   it('JSON schema to EIO metadata', async () => {
-    const inputMetadata = JSON.parse(fs.readFileSync('spec/jsonSchema/samples/inputSchema.json')
+    const inputMetadata = JSON.parse(fs.readFileSync('test/jsonSchema/samples/inputSchema.json')
       .toString());
 
     const result = JsonSchema.convertJsonSchemaToEioSchema('Product', inputMetadata);
     expect(result).to.deep.eql(JSON.parse(fs.readFileSync(
-      'spec/jsonSchema/samples/outputSchema.json',
-    )));
+      'test/jsonSchema/samples/outputSchema.json',
+    ).toString()));
   });
 
   describe('Remove refs ', () => {
     it('for FULL Json', async () => {
       const inputMetadata = JSON.parse(fs.readFileSync(
-        'spec/jsonSchema/samples/refsSchemaExample.json',
+        'test/jsonSchema/samples/refsSchemaExample.json',
       )
         .toString());
       const listToResolve = JSON.parse(fs.readFileSync(
-        'spec/jsonSchema/samples/schemasListToResolveExample.json',
+        'test/jsonSchema/samples/schemasListToResolveExample.json',
       )
         .toString());
 
       JsonSchema.makeSchemaInline(inputMetadata, listToResolve);
       expect(inputMetadata).to.deep.eql(JSON.parse(fs.readFileSync(
-        'spec/jsonSchema/samples/removingRefsResult.json',
-      )));
+        'test/jsonSchema/samples/removingRefsResult.json',
+      ).toString()));
     });
 
     it('for level one object', async () => {
