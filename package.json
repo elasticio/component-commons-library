@@ -1,14 +1,14 @@
 {
   "name": "@elastic.io/component-commons-library",
-  "version": "0.0.3-dev.5",
+  "version": "0.0.3-dev.7",
   "description": "Library for most common component development cases",
   "author": {
     "name": "elastic.io GmbH",
     "email": "info@elastic.io",
     "url": "http://elastic.io"
   },
-  "main": "out/index.js",
-  "types": "out/index.d.ts",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "files": [
     "lib"
   ],
@@ -21,6 +21,7 @@
     "tsc": "rm -fr out && tsc",
     "pretest": "tslint -c tslint.json --project tsconfig.json  lib/**/*.ts spec/**/*.ts --fix",
     "preparepublish": "npm run tsc",
+    "prepublishOnly": "tsc -p ./ --outDir lib/",
     "test": "LOG_LEVEL=trace LOG_OUTPUT_MODE=long mocha --require ts-node/register test/**/*.ts --timeout 50000",
     "posttest": "npm run tsc"
   },
