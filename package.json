@@ -1,13 +1,14 @@
 {
   "name": "@elastic.io/component-commons-library",
-  "version": "0.0.3-dev.2",
+  "version": "0.0.3-dev.5",
   "description": "Library for most common component development cases",
   "author": {
     "name": "elastic.io GmbH",
     "email": "info@elastic.io",
     "url": "http://elastic.io"
   },
-  "main": "lib/index.ts",
+  "main": "out/index.js",
+  "types": "out/index.d.ts",
   "files": [
     "lib"
   ],
@@ -35,6 +36,7 @@
     "elasticio-rest-node": "1.2.3",
     "remove-leading-slash": "1.0.1",
     "remove-trailing-slash": "0.1.0",
+    "request": "2.88.0",
     "typescript": "3.4.4"
   },
   "devDependencies": {
