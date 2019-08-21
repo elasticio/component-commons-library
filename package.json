@@ -1,13 +1,14 @@
 {
   "name": "@elastic.io/component-commons-library",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Library for most common component development cases",
   "author": {
     "name": "elastic.io GmbH",
     "email": "info@elastic.io",
     "url": "http://elastic.io"
   },
-  "main": "lib/index.ts",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "files": [
     "lib"
   ],
@@ -20,6 +21,7 @@
     "tsc": "rm -fr out && tsc",
     "pretest": "tslint -c tslint.json --project tsconfig.json  lib/**/*.ts spec/**/*.ts --fix",
     "preparepublish": "npm run tsc",
+    "prepublishOnly": "tsc -p ./ --outDir lib/",
     "test": "LOG_LEVEL=trace LOG_OUTPUT_MODE=long mocha --require ts-node/register test/**/*.ts --timeout 50000",
     "posttest": "npm run tsc"
   },
@@ -28,12 +30,14 @@
   },
   "dependencies": {
     "@types/node": "8.10.51",
+    "axios": "0.18.1",
     "bunyan": "1.8.12",
     "bunyan-format": "0.2.1",
     "bunyan-serializers": "0.0.2",
-    "request": "2.88.0",
+    "elasticio-rest-node": "1.2.3",
     "remove-leading-slash": "1.0.1",
     "remove-trailing-slash": "0.1.0",
+    "request": "2.88.0",
     "typescript": "3.4.4"
   },
   "devDependencies": {
