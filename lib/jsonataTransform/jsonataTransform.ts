@@ -18,10 +18,6 @@ export function jsonataTransform(msg, cfg) {
   if (result === undefined || result === null || Object.keys(result).length === 0) {
     return Promise.resolve();
   }
-  if (typeof result[Symbol.iterator] === 'function') {
-    // We have an iterator as result
-    return Promise.resolve();
-  }
   return Promise.resolve(eioUtils.newMessageWithBody(result));
 }
 
