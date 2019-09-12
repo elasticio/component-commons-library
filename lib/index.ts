@@ -1,4 +1,5 @@
 import { convertJsonSchemaToEioSchema, makeSchemaInline } from './jsonSchema/jsonSchemaConversionUtil';
+import { jsonataTransform } from './jsonataTransform/jsonataTransform';
 import { getLogger } from './logger/logger';
 
 export { AttachmentProcessor } from './attachment/AttachmentProcessor';
@@ -10,6 +11,10 @@ export { OAuth2RestClient } from './authentication/OAuth2AuthorizationCodeRestCl
 export class JsonSchema {
   static convertJsonSchemaToEioSchema = convertJsonSchemaToEioSchema;
   static makeSchemaInline = makeSchemaInline;
+}
+
+export class JsonataTransform {
+  static jsonataTransform = jsonataTransform;
 }
 
 export class Logger {

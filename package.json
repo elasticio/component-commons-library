@@ -35,6 +35,7 @@
     "bunyan": "1.8.12",
     "bunyan-format": "0.2.1",
     "bunyan-serializers": "0.0.2",
+    "elasticio-node": "0.0.9",
     "elasticio-rest-node": "1.2.3",
     "remove-leading-slash": "1.0.1",
     "remove-trailing-slash": "0.1.0",
