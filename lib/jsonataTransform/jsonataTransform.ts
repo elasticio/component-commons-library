@@ -1,4 +1,3 @@
-const eioUtils = require('elasticio-node').messages;
 const jsonata = require('@elastic.io/jsonata-moment');
 
 const PASSTHROUGH_BODY_PROPERTY = 'elasticio';
@@ -13,12 +12,7 @@ export function jsonataTransform(msg, cfg) {
   const expression = cfg.expression;
   const compiledExpression = jsonata(expression);
   handlePassthrough(msg);
-  const result = compiledExpression.evaluate(msg.body);
-  console.log('result', result);
-  if (result === undefined || result === null || Object.keys(result).length === 0) {
-    return Promise.resolve();
-  }
-  return Promise.resolve(eioUtils.newMessageWithBody(result));
+  return compiledExpression.evaluate(msg.body);
 }
 
 function handlePassthrough(message) {
