@@ -24,7 +24,7 @@ export class AttachmentProcessor {
     return ax(axConfig);
   }
 
-  async uploadAttachment(body) {
+  async uploadAttachment(body, dataType) {
     const putUrl = await AttachmentProcessor.preparePutUrl();
     const ax = axios.create();
     AttachmentProcessor.addRetryCountInterceptorToAxios(ax);
@@ -38,6 +38,10 @@ export class AttachmentProcessor {
       delay: REQUEST_RETRY_DELAY,
       maxContentLength: REQUEST_MAX_CONTENT_LENGTH,
     } as AxiosRequestConfig;
+
+    if (dataType != null) {
+      axConfig.headers = { 'content-type': dataType };
+    }
 
     return ax(axConfig);
   }
