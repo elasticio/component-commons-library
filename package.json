@@ -1,6 +1,6 @@
 {
   "name": "@elastic.io/component-commons-library",
-  "version": "0.0.5-dev.2",
+  "version": "0.0.5",
   "description": "Library for most common component development cases",
   "author": {
     "name": "elastic.io GmbH",
