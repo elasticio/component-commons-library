@@ -30,7 +30,7 @@ export class AttachmentProcessor {
     AttachmentProcessor.addRetryCountInterceptorToAxios(ax);
 
     const axConfig = {
-      putUrl,
+      url: putUrl,
       data: body,
       method: 'put',
       timeout: REQUEST_TIMEOUT,
