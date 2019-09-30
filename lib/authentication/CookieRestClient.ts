@@ -15,16 +15,18 @@ export class CookieRestClient extends NoAuthRestClient {
     this.loggedIn = false;
   }
 
-  protected handleLoginResponse(response) {
+  private basicResponseCheck(response) {
     if (response.statusCode >= 400) {
       throw new Error(`Error in authentication.  Status code: ${response.statusCode}, Body: ${JSON.stringify(response.body)}`);
     }
   }
 
+  protected handleLoginResponse(response) {
+    this.basicResponseCheck(response);
+  }
+
   protected handleLogoutResponse(response) {
-    if (response.statusCode >= 400) {
-      throw new Error(`Error in authentication.  Status code: ${response.statusCode}, Body: ${JSON.stringify(response.body)}`);
-    }
+    this.basicResponseCheck(response);
   }
 
   async login() {
