@@ -125,4 +125,8 @@ describe('Metadata converting ', () => {
       });
     });
   });
+
+  it('dotNetTypeToJsonSchema', () => {
+    expect(JsonSchema.convertDotNetTypeToJsonSchemaType('System.Int16')).to.equal('number');
+  });
 });

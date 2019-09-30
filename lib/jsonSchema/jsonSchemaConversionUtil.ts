@@ -75,3 +75,22 @@ export function makeSchemaInline(json, availableSchemas) {
 
   return json;
 }
+
+export function convertDotNetTypeToJsonSchemaType(dotNetType: string) : string {
+  switch (dotNetType) {
+    case 'System.String':
+    case 'System.DateTime':
+    case 'System.Guid':
+      return 'string';
+    case 'System.Int64':
+    case 'System.Int32':
+    case 'System.Int16':
+    case 'System.Decimal':
+    case 'System.Double':
+      return 'number';
+    case 'System.Boolean':
+      return 'boolean';
+    default:
+      throw new Error(`Unrecognized Type: ${dotNetType}`);
+  }
+}
