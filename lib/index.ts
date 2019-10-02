@@ -7,6 +7,7 @@ export { ApiKeyRestClient } from './authentication/ApiKeyRestClient';
 export { BasicAuthRestClient } from './authentication/BasicAuthRestClient';
 export { NoAuthRestClient } from './authentication/NoAuthRestClient';
 export { OAuth2RestClient } from './authentication/OAuth2AuthorizationCodeRestClient';
+export { CookieRestClient } from './authentication/CookieRestClient';
 
 export class JsonSchema {
   static convertJsonSchemaToEioSchema = convertJsonSchemaToEioSchema;

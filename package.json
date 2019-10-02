@@ -1,6 +1,6 @@
 {
   "name": "@elastic.io/component-commons-library",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Library for most common component development cases",
   "author": {
     "name": "elastic.io GmbH",
@@ -45,6 +45,7 @@
   "devDependencies": {
     "@types/jest": "24.0.16",
     "chai": "4.2.0",
+    "chai-as-promised": "7.1.1",
     "mocha": "5.2.0",
     "nock": "9.6.1",
     "sinon": "5.1.1",
