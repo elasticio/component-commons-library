@@ -125,4 +125,20 @@ describe('Metadata converting ', () => {
       });
     });
   });
+
+  it('dotNetTypeToJsonSchema', () => {
+    expect(JsonSchema.convertDotNetTypeToJsonSchemaType('System.String')).to.equal('string');
+    expect(JsonSchema.convertDotNetTypeToJsonSchemaType('System.DateTime')).to.equal('string');
+    expect(JsonSchema.convertDotNetTypeToJsonSchemaType('System.Guid')).to.equal('string');
+
+    expect(JsonSchema.convertDotNetTypeToJsonSchemaType('System.Int64')).to.equal('number');
+    expect(JsonSchema.convertDotNetTypeToJsonSchemaType('System.Int32')).to.equal('number');
+    expect(JsonSchema.convertDotNetTypeToJsonSchemaType('System.Int16')).to.equal('number');
+    expect(JsonSchema.convertDotNetTypeToJsonSchemaType('System.Decimal')).to.equal('number');
+    expect(JsonSchema.convertDotNetTypeToJsonSchemaType('System.Double')).to.equal('number');
+
+    expect(JsonSchema.convertDotNetTypeToJsonSchemaType('System.Boolean')).to.equal('boolean');
+
+    expect(() => { JsonSchema.convertDotNetTypeToJsonSchemaType('Integer'); }).to.throw('Unrecognized Type: Integer');
+  });
 });
