@@ -58,7 +58,7 @@ describe('OAuth2AuthorizationCodeRestClient', () => {
       .reply(successStatusCode, successBody);
     const result = await client.makeRequest(options);
     expect(result).to.be.deep.equal(successBody);
-    expect(emitter.emit.withArgs('updateKeys').callCount).to.be.equal(1);
+    expect(emitter.emit.withArgs('updateKeys').callCount).to.be.equal(0);
   });
 
   it('Should succeed, urlIsSegment: false', async () => {
