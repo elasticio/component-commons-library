@@ -22,7 +22,8 @@ export class NoAuthRestClient {
       throw new Error(`Error in making request to ${response.request.uri.href} Status code: ${response.statusCode}, Body: ${JSON.stringify(response.body)}`);
     }
 
-    this.emitter.logger.trace(`Response statusCode: ${response.statusCode}, body: %j`, response.body);
+    // this.emitter.logger.trace(`Response statusCode: ${response.statusCode}, body: %j`, response.body);
+    console.log(response.body);
     return response.body;
   }
 
@@ -33,9 +34,12 @@ export class NoAuthRestClient {
   //    headers: Any HTTP headers to add to the request. Defaults to {}
   //    urlIsSegment: Whether to append to the base server url or
   //    if the provided URL is an absolute path. Defaults to true
+  //    responseHandler: function to modify given response, takes response and
+  //      default handleResponseRequest as parameters. If not defined, standard
+  //      handleRestResponse is used
   async makeRequest(options) {
     const {
-      url, method, body, headers = {}, urlIsSegment = true, isJson = true,
+      url, method, body, headers = {}, urlIsSegment = true, isJson = true, responseHandler = null,
     } = options;
     const urlToCall = urlIsSegment
       ? `${removeTrailingSlash(this.cfg.resourceServerUrl.trim())}/${removeLeadingSlash(url.trim())}` // Trim trailing or leading '/'
@@ -55,6 +59,10 @@ export class NoAuthRestClient {
     await this.addAuthenticationToRequestOptions(requestOptions);
 
     const response = await request(requestOptions);
+
+    if (responseHandler) {
+      return responseHandler(response, this.handleRestResponse);
+    }
 
     return this.handleRestResponse(response);
   }

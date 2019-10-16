@@ -68,4 +68,19 @@ describe('NoAuthRestClient', () => {
         expect(e.message).to.be.equal(errNotFound);
       });
   });
+
+  it('Should apply custom response function', async () => {
+    const client = new NoAuthRestClient(emitter, cfg);
+
+    options.responseHandler = (response, handleRestResponse) => {
+      if (response.statusCode === 404) return 'Failure';
+      return handleRestResponse(response);
+    }
+    options.urlIsSegment = false;
+    nock(url)
+      .get('/')
+      .reply(notFoundStatusCode, notFoundBody);
+    const response = await client.makeRequest(options);
+    expect(response).to.be.equal('Failure');
+  });
 });
