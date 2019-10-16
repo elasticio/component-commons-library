@@ -22,8 +22,8 @@ export class NoAuthRestClient {
       throw new Error(`Error in making request to ${response.request.uri.href} Status code: ${response.statusCode}, Body: ${JSON.stringify(response.body)}`);
     }
 
-    // this.emitter.logger.trace(`Response statusCode: ${response.statusCode}, body: %j`, response.body);
-    console.log(response.body);
+    this.emitter.logger.trace(`Response statusCode: ${response.statusCode}, body: %j`, response.body);
+
     return response.body;
   }
 
@@ -39,7 +39,7 @@ export class NoAuthRestClient {
   //      handleRestResponse is used
   async makeRequest(options) {
     const {
-      url, method, body, headers = {}, urlIsSegment = true, isJson = true, responseHandler = null,
+      url, method, body, headers = {}, urlIsSegment = true, isJson = true, responseHandler,
     } = options;
     const urlToCall = urlIsSegment
       ? `${removeTrailingSlash(this.cfg.resourceServerUrl.trim())}/${removeLeadingSlash(url.trim())}` // Trim trailing or leading '/'
