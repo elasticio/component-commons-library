@@ -23,7 +23,7 @@ const cfg = {
     ],
     expires_in: 3599,
     access_token: 'some_token',
-    tokenExpiryTime: (new Date(new Date().getTime() + 1000)).toISOString(),
+    tokenExpiryTime: (new Date(new Date().getTime() + 10000)).toISOString(),
   },
   authorizationServerTokenEndpointUrl: 'https://some.url',
   oauth2_field_client_id: 'some_key',
@@ -50,6 +50,9 @@ describe('OAuth2AuthorizationCodeRestClient', () => {
 
   it('Should succeed, urlIsSegment: true', async () => {
     const client = new OAuth2RestClient(emitter, cfg);
+    nock(cfg.authorizationServerTokenEndpointUrl)
+      .post('/')
+      .reply(200, cfg.oauth2)
     nock(resourceServerUrl)
       .get(`/${url}`)
       .reply(successStatusCode, successBody);
