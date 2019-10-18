@@ -51,14 +51,14 @@ describe('OAuth2AuthorizationCodeRestClient', () => {
   it('Should succeed, urlIsSegment: true', async () => {
     const client = new OAuth2RestClient(emitter, cfg);
     nock(cfg.authorizationServerTokenEndpointUrl)
-      .post('/')
+      .post(`/`)
       .reply(200, cfg.oauth2)
     nock(resourceServerUrl)
       .get(`/${url}`)
       .reply(successStatusCode, successBody);
     const result = await client.makeRequest(options);
     expect(result).to.be.deep.equal(successBody);
-    expect(emitter.emit.withArgs('updateKeys').callCount).to.be.equal(0);
+    expect(emitter.emit.withArgs('updateKeys').callCount).to.be.equal(1);
   });
 
   it('Should succeed, urlIsSegment: false', async () => {

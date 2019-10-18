@@ -23,7 +23,6 @@ export class NoAuthRestClient {
     }
 
     this.emitter.logger.trace(`Response statusCode: ${response.statusCode}, body: %j`, response.body);
-
     return response.body;
   }
 
