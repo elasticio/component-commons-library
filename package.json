@@ -40,7 +40,8 @@
     "remove-leading-slash": "1.0.1",
     "remove-trailing-slash": "0.1.0",
     "request": "2.88.0",
-    "typescript": "3.4.4"
+    "typescript": "3.4.4",
+    "uuid": "3.3.2"
   },
   "devDependencies": {
     "@types/jest": "24.0.16",
