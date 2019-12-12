@@ -69,7 +69,7 @@ export class NoAuthRestClient {
     this.emitter.logger.trace('HTTP Response body: %o', response.body.toString('utf8'));
 
     if (response.body && response.body.byteLength === 0) {
-      return buildResponseStructure({});
+      return this.buildResponseStructure(response, {});
     }
 
     const contType = response.headers['content-type'];
@@ -77,7 +77,7 @@ export class NoAuthRestClient {
     this.emitter.logger.info('Content type: %o', contType);
     if (contType) {
       if (contType.includes('json')) {
-        return buildResponseStructure(JSON.parse(response.body));
+        return this.buildResponseStructure(response, JSON.parse(response.body));
       }
       if (contType.includes('xml')) {
         this.emitter.logger.info('trying to parse as XML');
@@ -92,7 +92,7 @@ export class NoAuthRestClient {
           ],
         };
         const jsonXml = await xml2js(response.body, parseOptions);
-        const responseStructure = buildResponseStructure(jsonXml);
+        const responseStructure = this.buildResponseStructure(response, jsonXml);
         this.emitter.logger.info('successfully parsed');
         return responseStructure;
       }
@@ -113,21 +113,22 @@ export class NoAuthRestClient {
         );
         return {};
       }
-      return buildResponseStructure(response.body.toString('utf8'));
+      return this.buildResponseStructure(response, response.body.toString('utf8'));
     }
 
     this.emitter.logger.info('Unknown content-type received. trying to parse as JSON');
     try {
-      return buildResponseStructure(JSON.parse(response.body));
+      return this.buildResponseStructure(response, JSON.parse(response.body));
     } catch (e) {
       this.emitter.logger.error(
         'Parsing to JSON object is failed. Error: %o. Returning response as is',
         e,
       );
-      return buildResponseStructure(response.body.toString('utf8'));
+      return this.buildResponseStructure(response, response.body.toString('utf8'));
     }
+  }
 
-    /*
+  /*
     * return new output structure only if dontThrowErrorFlg is true
     *
     * New structure requirements:
@@ -139,17 +140,16 @@ export class NoAuthRestClient {
     *
     * else return body of response
     */
-    function buildResponseStructure(body) {
-      if (this.cfg.dontThrowErrorFlg) {
-        return {
-          body,
-          headers: response.headers,
-          statusCode: response.statusCode,
-          statusMessage: response.statusMessage,
-        };
-      }
-      return body;
+  buildResponseStructure(response, body) {
+    if (this.cfg.dontThrowErrorFlg) {
+      return {
+        body,
+        headers: response.headers,
+        statusCode: response.statusCode,
+        statusMessage: response.statusMessage,
+      };
     }
+    return body;
   }
 
   async buildResultMessage(result, msg) {
@@ -178,7 +178,7 @@ export class NoAuthRestClient {
   /*
   * https://user-images.githubusercontent.com/13310949/41960520-9bd468ca-79f8-11e8-83f4-d9b2096deb6d.png
   * */
-  checkErrors(response) {
+  async checkErrors(response) {
     const { statusCode } = response;
     this.emitter.logger.info('Response statusCode %d', statusCode);
     if (statusCode >= 200 && statusCode < 300) {
@@ -228,7 +228,7 @@ export class NoAuthRestClient {
     }
   }
 
-  buildErrorStructure(e) {
+  async buildErrorStructure(e) {
     if (this.cfg.enableRebound && (HTTP_ERROR_CODE_REBOUND.has(e.code)
       || e.message.includes('DNS lookup timeout'))) {
       this.emitter.logger.info('Component error: %o', e);

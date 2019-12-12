@@ -62,3 +62,7 @@ typings/
 
 # next.js build output
 .next
+*.js
+*.js.map
+*.map
+*.d.ts
