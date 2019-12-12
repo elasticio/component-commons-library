@@ -203,8 +203,8 @@ export class NoAuthRestClient {
             response.body,
           )}. Error Message: ${REDIRECTION_ERROR}`,
         );
-        err.code = statusCode;
-        err.name = 'HTTP error';
+        err['code'] = statusCode;
+        err['name'] = 'HTTP error';
         throw err;
       }
       return response;
@@ -221,9 +221,9 @@ export class NoAuthRestClient {
         `Code: ${statusCode} Message: ${response.statusMessage
         || 'HTTP error'}`,
       );
-      err.code = statusCode;
-      err.name = 'HTTP error';
-      err.body = response.body.toString('utf8');
+      err['code'] = statusCode;
+      err['name'] = 'HTTP error';
+      err['body'] = response.body.toString('utf8');
       throw err;
     }
   }

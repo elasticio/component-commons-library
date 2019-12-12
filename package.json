@@ -1,6 +1,6 @@
 {
   "name": "@elastic.io/component-commons-library",
-  "version": "0.0.7",
+  "version": "0.0.8-dev.1",
   "description": "Library for most common component development cases",
   "author": {
     "name": "elastic.io GmbH",
@@ -41,7 +41,8 @@
     "remove-trailing-slash": "0.1.0",
     "request": "2.88.0",
     "typescript": "3.4.4",
-    "uuid": "3.3.2"
+    "uuid": "3.3.2",
+    "xml2js-es6-promise": "^1.1.1"
   },
   "devDependencies": {
     "@types/jest": "24.0.16",
