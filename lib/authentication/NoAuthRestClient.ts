@@ -23,15 +23,6 @@ export class NoAuthRestClient {
   protected addAuthenticationToRequestOptions(requestOptions) {
   }
 
-  protected handleRestResponse(response) {
-    if (response.statusCode >= 400) {
-      throw new Error(`Error in making request to ${response.request.uri.href} Status code: ${response.statusCode}, Body: ${JSON.stringify(response.body)}`);
-    }
-
-    this.emitter.logger.trace(`Response statusCode: ${response.statusCode}, body: %j`, response.body);
-    return response.body;
-  }
-
   // options expects the following sub-variables:
   //    url: Url to call
   //    method: HTTP verb to use
@@ -59,9 +50,7 @@ export class NoAuthRestClient {
 
     await this.addAuthenticationToRequestOptions(requestOptions);
 
-    const response = await request(requestOptions);
-
-    return this.handleRestResponse(response);
+    return request(requestOptions);
   }
 
   protected async processResponse(response, msg) {
