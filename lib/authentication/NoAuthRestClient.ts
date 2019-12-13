@@ -50,7 +50,12 @@ export class NoAuthRestClient {
 
     await this.addAuthenticationToRequestOptions(requestOptions);
 
-    return request(requestOptions);
+    const response = await request(requestOptions);
+    response.body = response.body === Object(response.body)
+      ? JSON.stringify(response.body)
+      : response.body;
+
+    return response;
   }
 
   protected async processResponse(response, msg) {
@@ -177,7 +182,7 @@ export class NoAuthRestClient {
       if (this.cfg.followRedirect) {
         const REDIRECTION_ERROR = `${response.statusMessage
         || 'Redirection error.'} Please check "Follow redirect mode" if You want to use redirection in your request.`;
-        if (this.emitter.cfg.dontThrowErrorFlg) {
+        if (this.cfg.dontThrowErrorFlg) {
           return {
             statusCode,
             statusMessage: REDIRECTION_ERROR,
@@ -198,7 +203,7 @@ export class NoAuthRestClient {
       }
       return response;
     } if (statusCode >= 400 && statusCode < 1000) {
-      if (this.emitter.cfg.dontThrowErrorFlg) {
+      if (this.cfg.dontThrowErrorFlg) {
         return {
           statusCode,
           headers: response.headers,
