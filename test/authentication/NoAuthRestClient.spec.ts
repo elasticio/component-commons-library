@@ -41,7 +41,7 @@ describe('NoAuthRestClient', () => {
       .get(`/${url}`)
       .reply(successStatusCode, successBody);
     const result = await client.makeRequest(options);
-    expect(result).to.be.deep.equal(successBody);
+    expect(result.body).to.be.deep.equal(successBody);
   });
 
   it('Should succeed, urlIsSegment: false', async () => {
@@ -51,7 +51,7 @@ describe('NoAuthRestClient', () => {
       .get('/')
       .reply(successStatusCode, successBody);
     const result = await client.makeRequest(options);
-    expect(result).to.be.deep.equal(successBody);
+    expect(result.body).to.be.deep.equal(successBody);
   });
 
   it('Should fail, 404', async () => {

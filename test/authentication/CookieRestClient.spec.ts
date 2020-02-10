@@ -67,7 +67,8 @@ describe('CookieRestClient', () => {
     await client.login();
     const result = await client.makeRequest(options);
     await client.logout();
-    expect(result).to.be.deep.equal(successBody);
+    expect(result.body).to.be.deep.equal(successBody);
+    expect(result.statusCode).to.be.deep.equal(200);
   });
 
   it('Login -> Call -> Logout', async () => {
@@ -101,7 +102,8 @@ describe('CookieRestClient', () => {
     await client.login();
     const result = await client.makeRequest(options);
     await client.logout();
-    expect(result).to.be.deep.equal(successBody);
+    expect(result.body).to.be.deep.equal(successBody);
+    expect(result.statusCode).to.be.deep.equal(200);
   });
 
   it('Logout Only', async () => {
@@ -133,7 +135,8 @@ describe('CookieRestClient', () => {
 
     const result = await client.makeRequest(options);
     await client.logout();
-    expect(result).to.be.deep.equal(successBody);
+    expect(result.body).to.be.deep.equal(successBody);
+    expect(result.statusCode).to.be.deep.equal(200);
   });
 
   it('Login Failure', async () => {
