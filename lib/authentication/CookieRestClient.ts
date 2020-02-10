@@ -1,9 +1,8 @@
 /* eslint-disable no-param-reassign,  no-underscore-dangle, class-methods-use-this */
-import { promisify } from 'util';
 import request from 'request';
 import { NoAuthRestClient } from './NoAuthRestClient';
+import requestCall from 'request-promise';
 
-const requestCall = promisify(request);
 
 export class CookieRestClient extends NoAuthRestClient {
   loggedIn: boolean;
@@ -42,6 +41,8 @@ export class CookieRestClient extends NoAuthRestClient {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       jar: this.jar,
+      resolveWithFullResponse: true,
+      simple: false,
     });
     this.handleLoginResponse(loginResponse);
     this.loggedIn = true;
@@ -55,6 +56,8 @@ export class CookieRestClient extends NoAuthRestClient {
         method: this.cfg.logoutMethod,
         url: this.cfg.logoutUrl,
         jar: this.jar,
+        resolveWithFullResponse: true,
+        simple: false,
       });
       this.handleLogoutResponse(logoutResponse);
       this.loggedIn = false;
@@ -64,7 +67,7 @@ export class CookieRestClient extends NoAuthRestClient {
     }
   }
 
-  protected addAuthenticationToRequestOptions(requestOptions) {
+  protected async addAuthenticationToRequestOptions(requestOptions) {
     requestOptions.jar = this.jar;
   }
 

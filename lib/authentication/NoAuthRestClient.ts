@@ -62,7 +62,7 @@ export class NoAuthRestClient {
     };
     Object.assign(requestOptions, options);
 
-    requestOptions.json = options.isJson ?? options.json ?? true,
+    requestOptions.json = options.isJson ?? options.json ?? true;
     requestOptions.url = requestOptions.urlIsSegment
       ? `${removeTrailingSlash(this.cfg.resourceServerUrl.trim())}/${removeLeadingSlash(requestOptions.url.trim())}` // Trim trailing or leading '/'
       : requestOptions.url.trim();

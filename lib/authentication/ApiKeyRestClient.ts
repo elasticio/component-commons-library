@@ -10,7 +10,7 @@ export class ApiKeyRestClient extends NoAuthRestClient {
     this.apiKeyHeaderValue = cfg.apiKeyHeaderValue;
   }
 
-  protected addAuthenticationToRequestOptions(requestOptions) {
+  protected async addAuthenticationToRequestOptions(requestOptions) {
     requestOptions.headers[this.apiKeyHeaderName] = this.apiKeyHeaderValue;
   }
 }

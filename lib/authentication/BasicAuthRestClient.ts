@@ -10,7 +10,7 @@ export class BasicAuthRestClient extends NoAuthRestClient {
     this.password = cfg.password;
   }
 
-  protected addAuthenticationToRequestOptions(requestOptions) {
+  protected async addAuthenticationToRequestOptions(requestOptions) {
     requestOptions.auth = {
       username: this.username,
       password: this.password,
