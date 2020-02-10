@@ -31,6 +31,7 @@
   "dependencies": {
     "@elastic.io/jsonata-moment": "1.1.4",
     "@types/node": "8.10.51",
+    "@types/request": "2.48.4",
     "axios": "0.18.1",
     "bunyan": "1.8.12",
     "bunyan-format": "0.2.1",
@@ -41,7 +42,7 @@
     "remove-trailing-slash": "0.1.0",
     "request": "2.88.0",
     "request-promise": "4.2.5",
-    "typescript": "3.4.4"
+    "typescript": "3.7.5"
   },
   "devDependencies": {
     "@types/jest": "24.0.16",
