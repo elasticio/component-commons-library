@@ -53,7 +53,6 @@ export class NoAuthRestClient {
   async makeRequest(options) {
     const requestOptions: any = {
       urlIsSegment: true,
-      headers: Headers,
       followRedirect: false,
       followAllRedirects: false,
       gzip: false,

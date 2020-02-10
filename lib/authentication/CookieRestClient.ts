@@ -1,8 +1,7 @@
 /* eslint-disable no-param-reassign,  no-underscore-dangle, class-methods-use-this */
 import request from 'request';
 import { NoAuthRestClient } from './NoAuthRestClient';
-import requestCall from 'request-promise';
-
+import requestPromise from 'request-promise';
 
 export class CookieRestClient extends NoAuthRestClient {
   loggedIn: boolean;
@@ -30,7 +29,7 @@ export class CookieRestClient extends NoAuthRestClient {
 
   async login() {
     this.emitter.logger.info('Performing Login ...');
-    const loginResponse = await requestCall({
+    const loginResponse = await requestPromise({
       method: 'POST',
       url: this.cfg.loginUrl,
       form: {
@@ -52,7 +51,7 @@ export class CookieRestClient extends NoAuthRestClient {
   async logout() {
     if (this.cfg.logoutUrl && this.loggedIn) {
       this.emitter.logger.info('Performing Logout...');
-      const logoutResponse = await requestCall({
+      const logoutResponse = await requestPromise({
         method: this.cfg.logoutMethod,
         url: this.cfg.logoutUrl,
         jar: this.jar,
