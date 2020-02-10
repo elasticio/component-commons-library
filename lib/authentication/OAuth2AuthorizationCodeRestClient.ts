@@ -1,12 +1,10 @@
 import { NoAuthRestClient } from './NoAuthRestClient';
-
-const { promisify } = require('util');
-const request = promisify(require('request'));
+import requestPromise from 'request-promise';
 
 export class OAuth2RestClient extends NoAuthRestClient {
   private async fetchNewToken() {
     this.emitter.logger.info('Fetching new token...');
-    const authTokenResponse = await request({
+    const authTokenResponse = await requestPromise({
       uri: this.cfg.authorizationServerTokenEndpointUrl,
       method: 'POST',
       json: true,
