@@ -54,7 +54,8 @@ describe('BasicAuthRestClient', () => {
       .basicAuth(basicAuthOptions)
       .reply(successStatusCode, successBody);
     const result = await client.makeRequest(options);
-    expect(result).to.be.deep.equal(successBody);
+    expect(result.body).to.be.deep.equal(successBody);
+    expect(result.statusCode).to.be.deep.equal(200);
   });
 
   it('Should succeed makeRequest method, urlIsSegment: true', async () => {
@@ -63,7 +64,8 @@ describe('BasicAuthRestClient', () => {
       .basicAuth(basicAuthOptions)
       .reply(successStatusCode, successBody);
     const result = await client.makeRequest(options);
-    expect(result).to.be.deep.equal(successBody);
+    expect(result.body).to.be.deep.equal(successBody);
+    expect(result.statusCode).to.be.deep.equal(200);
   });
 
   it('Should fail, 400', async () => {

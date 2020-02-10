@@ -52,12 +52,13 @@ describe('OAuth2AuthorizationCodeRestClient', () => {
     const client = new OAuth2RestClient(emitter, cfg);
     nock(cfg.authorizationServerTokenEndpointUrl)
       .post('/')
-      .reply(200, cfg.oauth2)
+      .reply(200, cfg.oauth2);
     nock(resourceServerUrl)
       .get(`/${url}`)
       .reply(successStatusCode, successBody);
     const result = await client.makeRequest(options);
-    expect(result).to.be.deep.equal(successBody);
+    expect(result.body).to.be.deep.equal(successBody);
+    expect(result.statusCode).to.be.deep.equal(200);
     expect(emitter.emit.withArgs('updateKeys').callCount).to.be.equal(0);
   });
 
@@ -68,7 +69,8 @@ describe('OAuth2AuthorizationCodeRestClient', () => {
       .get('/')
       .reply(successStatusCode, successBody);
     const result = await client.makeRequest(options);
-    expect(result).to.be.deep.equal(successBody);
+    expect(result.body).to.be.deep.equal(successBody);
+    expect(result.statusCode).to.be.deep.equal(200);
     expect(emitter.emit.withArgs('updateKeys').callCount).to.be.equal(0);
   });
 
@@ -115,7 +117,8 @@ describe('OAuth2AuthorizationCodeRestClient', () => {
 
     options.urlIsSegment = false;
     const result = await clientExpiredToken.makeRequest(options);
-    expect(result).to.be.deep.equal(successBody);
+    expect(result.body).to.be.deep.equal(successBody);
+    expect(result.statusCode).to.be.deep.equal(200);
     expect(emitter.emit.withArgs('updateKeys').callCount).to.be.equal(1);
     expect(emitter.emit.args[0][1]).to.be.equal(cfgExpToken.oauth2);
   });
