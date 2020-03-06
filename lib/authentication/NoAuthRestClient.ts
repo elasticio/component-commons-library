@@ -7,10 +7,12 @@ import removeLeadingSlash from 'remove-leading-slash';
 export class NoAuthRestClient {
   emitter;
   cfg;
+  request;
 
   constructor(emitter, cfg) {
     this.emitter = emitter;
     this.cfg = cfg;
+    this.request = request;
   }
 
   // @ts-ignore: no-unused-variable
@@ -54,7 +56,7 @@ export class NoAuthRestClient {
     // eslint-disable-next-line no-underscore-dangle
     await this.addAuthenticationToRequestOptions(requestOptions);
 
-    const response = await request(requestOptions);
+    const response = await this.request(requestOptions);
 
     return this.handleRestResponse(response);
   }

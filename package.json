@@ -1,6 +1,6 @@
 {
   "name": "@elastic.io/component-commons-library",
-  "version": "0.0.7",
+  "version": "1.0.0",
   "description": "Library for most common component development cases",
   "author": {
     "name": "elastic.io GmbH",
@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@elastic.io/jsonata-moment": "1.1.4",
+    "@elastic.io/ntlm-client": "1.0.0",
     "@types/node": "8.10.51",
     "axios": "0.18.1",
     "bunyan": "1.8.12",

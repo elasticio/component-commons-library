@@ -120,7 +120,20 @@ const Client = new OAuth2AuthorizationCodeRestClient(emitter, cfg);
 ```
 This class can handle, refresh and emit oauth2 EIO configuration.
 
+### NtlmRestClient
+[NtlmRestClient](https://github.com/elasticio/component-commons-library/blob/master/lib/authentication/NtlmRestClient.ts)
+class extends [NoAuthRestClient](#NoAuthRestClient) class.
+Makes requests to resource with [NTLM authentication](https://en.wikipedia.org/wiki/NT_LAN_Manager). 
+Falls back to basic authentication if NTLM authentication fails. 
+Handles both V1 and V2 of the NTLM Protocol.
 
+#### constructor(emitter, cfg)
+- cfg.username - mandatory cfg parameter contains username for authorization.  Domain information should be combined with this field. (e.g. `SOMEDOMAIN\SomeUser`) 
+- cfg.password - mandatory cfg parameter contains password for authorization.
+
+```
+const Client = new NtlmRestClient(emitter, cfg);
+```
 
 ## JSON Schema Converter
 Contains tools for JSON metadata generation
