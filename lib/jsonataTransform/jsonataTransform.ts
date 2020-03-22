@@ -13,8 +13,7 @@ export function jsonataTransform(msg, cfg, context) {
   const expression = cfg.expression;
   const compiledExpression = jsonata(expression);
   if (context && context.getFlowVariables) {
-    const flowVariables = context.getFlowVariables();
-    compiledExpression.assign('getFlowVariables', () => flowVariables);
+    compiledExpression.assign('getFlowVariables', () => context.getFlowVariables());
   }
   handlePassthrough(msg);
   const passthrough = msg.body[PASSTHROUGH_BODY_PROPERTY];
