@@ -7,11 +7,18 @@ const PASSTHROUGH_BODY_PROPERTY = 'elasticio';
  *
  * @param msg incoming message object that contains ``body`` with payload
  * @param cfg configuration that is account information and configuration field values
+ * @param context this of action or trigger, optional
  */
-export function jsonataTransform(msg, cfg) {
+export function jsonataTransform(msg, cfg, context) {
   const expression = cfg.expression;
   const compiledExpression = jsonata(expression);
+  if (context && context.getFlowVariables) {
+    const flowVariables = context.getFlowVariables();
+    compiledExpression.assign('getFlowVariables', () => flowVariables);
+  }
   handlePassthrough(msg);
+  const passthrough = msg.body[PASSTHROUGH_BODY_PROPERTY];
+  compiledExpression.assign('getPassthrough', () => passthrough);
   return compiledExpression.evaluate(msg.body);
 }
 
