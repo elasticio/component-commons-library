@@ -1,3 +1,9 @@
+## 1.1.1 (March 24, 2020)
+
+### General Changes
+
+* Changed Node version to >= 8.16.0
+
 ## 1.1.0 (March 23, 2020)
 
 ### General Changes
