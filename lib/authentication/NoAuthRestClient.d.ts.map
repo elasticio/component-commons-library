@@ -1,0 +1,1 @@
+{"version":3,"file":"NoAuthRestClient.d.ts","sourceRoot":"","sources":["NoAuthRestClient.ts"],"names":[],"mappings":"AAMA,qBAAa,gBAAgB;IAC3B,OAAO,MAAC;IACR,GAAG,MAAC;IACJ,OAAO,MAAC;gBAEI,OAAO,KAAA,EAAE,GAAG,KAAA;IAOxB,SAAS,CAAC,iCAAiC,CAAC,cAAc,KAAA;IAG1D,SAAS,CAAC,kBAAkB,CAAC,QAAQ,KAAA;IAgB/B,WAAW,CAAC,OAAO,KAAA;CAyB1B"}

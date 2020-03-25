@@ -1,0 +1,1 @@
+{"version":3,"file":"BasicAuthRestClient.d.ts","sourceRoot":"","sources":["BasicAuthRestClient.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,gBAAgB,EAAE,MAAM,oBAAoB,CAAC;AAEtD,qBAAa,mBAAoB,SAAQ,gBAAgB;IACvD,QAAQ,EAAE,MAAM,CAAC;IACjB,QAAQ,EAAE,MAAM,CAAC;gBAEL,OAAO,KAAA,EAAE,GAAG,KAAA;IAMxB,SAAS,CAAC,iCAAiC,CAAC,cAAc,KAAA;CAM3D"}
