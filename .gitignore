@@ -1,5 +1,6 @@
 *.js
 *.map
+*.d.ts
 !*.json
 # Logs
 logs
