@@ -8,6 +8,7 @@ const PASSTHROUGH_BODY_PROPERTY = 'elasticio';
  * @param msg incoming message object that contains ``body`` with payload
  * @param cfg configuration that is account information and configuration field values
  * @param context this of action or trigger, optional
+
  */
 export function jsonataTransform(msg, cfg, context) {
   const expression = cfg.expression;
@@ -15,10 +16,10 @@ export function jsonataTransform(msg, cfg, context) {
   if (context && context.getFlowVariables) {
     compiledExpression.assign('getFlowVariables', () => context.getFlowVariables());
   }
-  handlePassthrough(msg);
-  const passthrough = msg.body[PASSTHROUGH_BODY_PROPERTY];
+  const handledMessage = handlePassthrough(msg);
+  const passthrough = handledMessage.body[PASSTHROUGH_BODY_PROPERTY];
   compiledExpression.assign('getPassthrough', () => passthrough);
-  return compiledExpression.evaluate(msg.body);
+  return compiledExpression.evaluate(handledMessage.body);
 }
 
 function handlePassthrough(message) {
@@ -27,9 +28,10 @@ function handlePassthrough(message) {
       throw new Error(`${PASSTHROUGH_BODY_PROPERTY} property is reserved \
             if you are using passthrough functionality`);
     }
-
-    message.body.elasticio = {};
-    Object.assign(message.body.elasticio, message.passthrough);
+    const result = JSON.parse(JSON.stringify(message)); // Otherwise subsequent calls to Jsonata transform with same message would fail
+    result.body.elasticio = {};
+    Object.assign(result.body.elasticio, result.passthrough);
+    return result;
   }
   return message;
 }

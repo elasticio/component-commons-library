@@ -69,7 +69,31 @@ describe('Transformation test', () => {
     };
     const result = JsonataTransform.jsonataTransform(msg, {
       expression: '$getFlowVariables()',
-    },                                               { getFlowVariables: () => flowVariables});
+    },                                               { getFlowVariables: () => flowVariables });
     expect(result).to.deep.equal(flowVariables);
+  });
+  it('should handle 2 expressions on same message if dontThrowError=true', () => {
+    const msg = eioUtils.newMessageWithBody({
+      first: 'Renat',
+      last: 'Zubairov',
+    });
+    msg.passthrough = {
+      ps: 'psworks',
+    };
+    const first = JsonataTransform.jsonataTransform(msg, {
+      expression: '$getPassthrough()',
+    },                                              null);
+    msg.passthrough = { test: 'test' };
+    const second = JsonataTransform.jsonataTransform(msg, {
+      expression: '$getPassthrough()',
+    },                                               null);
+
+    expect(first).to.deep.equal({
+      ps: 'psworks',
+    });
+    expect(second).to.deep.equal({
+      test: 'test',
+    });
+    expect(msg.body.elasticio).to.be.undefined;
   });
 });
