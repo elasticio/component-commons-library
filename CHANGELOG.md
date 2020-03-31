@@ -1,3 +1,11 @@
+## 1.1.2 (March 24, 2020)
+
+### Bug fixes
+
+* Fix subsequent calls to Jsonata Transform error
+## Note
+* `JsontaTransform.jsonataTransform` now will not change body of input message
+
 ## 1.1.1 (March 24, 2020)
 
 ### General Changes
