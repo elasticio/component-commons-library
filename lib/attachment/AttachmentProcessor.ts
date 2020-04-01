@@ -1,16 +1,15 @@
 import axios, { AxiosRequestConfig } from 'axios';
+
 const restNodeClient = require('elasticio-rest-node')();
 
-const REQUEST_TIMEOUT = process.env.REQUEST_TIMEOUT ? parseInt(process.env.REQUEST_TIMEOUT, 10) : 10000; // 10s
-const REQUEST_MAX_RETRY = process.env.REQUEST_MAX_RETRY ? parseInt(process.env.REQUEST_MAX_RETRY, 10) : 7; // 10s
-const REQUEST_RETRY_DELAY = process.env.REQUEST_RETRY_DELAY ? parseInt(process.env.REQUEST_RETRY_DELAY, 10) : 7000; // 7s
-const REQUEST_MAX_CONTENT_LENGTH = process.env.REQUEST_MAX_CONTENT_LENGTH ? parseInt(process.env.REQUEST_MAX_CONTENT_LENGTH, 10) : 10485760; // 10MB
+import { REQUEST_TIMEOUT, REQUEST_ATTACHMENT_MAX_CONTENT_LENGTH, REQUEST_MAX_RETRY, REQUEST_RETRY_DELAY } from '../Constants';
+import { addRetryCountInterceptorToAxios } from "../helpers";
 
 export class AttachmentProcessor {
 
   async getAttachment(url: string, responseType: string) {
     const ax = axios.create();
-    AttachmentProcessor.addRetryCountInterceptorToAxios(ax);
+    addRetryCountInterceptorToAxios(ax);
 
     const axConfig = {
       url,
@@ -27,7 +26,7 @@ export class AttachmentProcessor {
   async uploadAttachment(body) {
     const putUrl = await AttachmentProcessor.preparePutUrl();
     const ax = axios.create();
-    AttachmentProcessor.addRetryCountInterceptorToAxios(ax);
+    addRetryCountInterceptorToAxios(ax);
 
     const axConfig = {
       url: putUrl,
@@ -36,7 +35,7 @@ export class AttachmentProcessor {
       timeout: REQUEST_TIMEOUT,
       retry: REQUEST_MAX_RETRY,
       delay: REQUEST_RETRY_DELAY,
-      maxContentLength: REQUEST_MAX_CONTENT_LENGTH,
+      maxContentLength: REQUEST_ATTACHMENT_MAX_CONTENT_LENGTH,
     } as AxiosRequestConfig;
 
     return ax(axConfig);
@@ -45,20 +44,5 @@ export class AttachmentProcessor {
   static async preparePutUrl() {
     const signedUrl = await restNodeClient.resources.storage.createSignedUrl();
     return signedUrl.put_url;
-  }
-
-  static addRetryCountInterceptorToAxios(ax) {
-    ax.interceptors.response.use(undefined, (err) => { //  Retry count interceptor for axios
-      const { config } = err;
-      if (!config || !config.retry || !config.delay) {
-        return Promise.reject(err);
-      }
-      config.currentRetryCount = config.currentRetryCount || 0;
-      if (config.currentRetryCount >= config.retry) {
-        return Promise.reject(err);
-      }
-      config.currentRetryCount += 1;
-      return new Promise(resolve => setTimeout(() => resolve(ax(config)), config.delay));
-    });
   }
 }
