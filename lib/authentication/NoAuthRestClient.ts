@@ -28,7 +28,7 @@ export class NoAuthRestClient {
       ...{
         rebound: false,
         maxRedirects: MAX_REDIRECTS_COUNT,
-        gzip: false, //TODO Implement gzip decompress feature,
+        gzip: false,
         useBaseURLFromConfig: true,
         maxContentLength: REQUEST_MAX_CONTENT_LENGTH,
         validateStatus:  () => {
@@ -37,6 +37,10 @@ export class NoAuthRestClient {
         timeout: REQUEST_TIMEOUT
       }, ...options
     };
+
+    if (requestOptions.gzip && !requestOptions.headers['accept-encoding']) {
+      requestOptions.headers['accept-encoding'] = 'gzip, deflate';
+    }
 
     if (options.useBaseURLFromConfig) {
       requestOptions.baseURL = this.cfg.baseURL;
@@ -52,8 +56,8 @@ export class NoAuthRestClient {
 
     await this.addAuthenticationToRequestOptions(requestOptions);
     const response = await axios(requestOptions);
-
-    return this.handleRestResponse(response);
+    const checkedResponse = this.validateStatus(response);
+    this.handleRestResponse(checkedResponse);
   }
 
   private addRebound(requestOptions: RequestOptionsType, client: AxiosInstance) {
@@ -64,7 +68,7 @@ export class NoAuthRestClient {
     }
   }
 
-  protected handleRestResponse(response) {
+  protected validateStatus(response): RestResponseType {
     const { status: statusCode, statusText, headers, data: body, config } = response;
     const responseObj: RestResponseType = {
       statusCode,
@@ -85,5 +89,9 @@ export class NoAuthRestClient {
       }
     }
     return responseObj;
+  }
+
+  protected handleRestResponse(response): RestResponseType{
+
   }
 }
