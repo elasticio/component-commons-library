@@ -31,7 +31,7 @@ export class NoAuthRestClient {
         gzip: false,
         useBaseURLFromConfig: true,
         maxContentLength: REQUEST_MAX_CONTENT_LENGTH,
-        validateStatus:  () => {
+        validateStatus: () => {
           return true;
         },
         timeout: REQUEST_TIMEOUT
@@ -80,7 +80,7 @@ export class NoAuthRestClient {
     if (statusCode >= 400) {
       throw new Error(`Error in making request to ${response.request.uri.href} Status code: ${statusCode}, Body: ${JSON.stringify(body)}`);
     }
-    if (statusCode >= 300 && config.maxRedirects>0) {
+    if (statusCode >= 300 && config.maxRedirects > 0) {
       responseObj.statusText = 'Redirection error. Please enable redirect mode if You need to support redirecting in the request.';
       if (!this.cfg.dontThrowError) {
         const err = new Error(JSON.stringify(responseObj));
@@ -91,7 +91,7 @@ export class NoAuthRestClient {
     return responseObj;
   }
 
-  protected handleRestResponse(response): RestResponseType{
-
+  protected handleRestResponse(response): RestResponseType {
+    return response;
   }
 }
