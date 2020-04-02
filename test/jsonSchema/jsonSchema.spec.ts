@@ -1,8 +1,8 @@
 import fs from 'fs';
 import chai from 'chai';
+import { JsonSchema } from '../../lib';
 
 const { expect } = chai;
-import { JsonSchema } from '../../lib';
 
 describe('Metadata converting ', () => {
   it('JSON schema to EIO metadata', async () => {

@@ -1,12 +1,13 @@
 import axios, { AxiosRequestConfig } from 'axios';
 
+import {
+  REQUEST_TIMEOUT, REQUEST_ATTACHMENT_MAX_CONTENT_LENGTH, REQUEST_MAX_RETRY, REQUEST_RETRY_DELAY,
+} from '../Constants';
+import { addRetryCountInterceptorToAxios } from '../helpers';
+
 const restNodeClient = require('elasticio-rest-node')();
 
-import { REQUEST_TIMEOUT, REQUEST_ATTACHMENT_MAX_CONTENT_LENGTH, REQUEST_MAX_RETRY, REQUEST_RETRY_DELAY } from '../Constants';
-import { addRetryCountInterceptorToAxios } from "../helpers";
-
 export class AttachmentProcessor {
-
   async getAttachment(url: string, responseType: string) {
     const ax = axios.create();
     addRetryCountInterceptorToAxios(ax);

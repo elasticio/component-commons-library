@@ -1,4 +1,4 @@
-import { AxiosRequestConfig } from "axios";
+import { AxiosRequestConfig } from 'axios';
 
 export interface RequestOptionsType extends AxiosRequestConfig{
   rebound?: boolean; // enable rebound

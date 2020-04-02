@@ -19,7 +19,7 @@
   ],
   "scripts": {
     "tsc": "rm -fr out && tsc",
-    "pretest": "tslint -c tslint.json --project tsconfig.json  lib/**/*.ts spec/**/*.ts --fix",
+    "pretest": "eslint '*/**/*.ts' --quiet --fix",
     "preparepublish": "npm run tsc",
     "prepublishOnly": "tsc -p ./ --outDir lib/",
     "test": "LOG_LEVEL=trace LOG_OUTPUT_MODE=long mocha --require ts-node/register test/**/*.ts --timeout 50000",
@@ -32,7 +32,7 @@
     "@elastic.io/jsonata-moment": "1.1.4",
     "@types/node": "8.10.51",
     "@types/request": "2.48.4",
-    "axios": "0.18.1",
+    "axios": "0.19.2",
     "bunyan": "1.8.12",
     "bunyan-format": "0.2.1",
     "bunyan-serializers": "0.0.2",
@@ -45,15 +45,18 @@
     "typescript": "3.7.5"
   },
   "devDependencies": {
-    "@types/jest": "24.0.16",
+    "@types/mocha": "7.0.2",
     "chai": "4.2.0",
     "chai-as-promised": "7.1.1",
-    "mocha": "5.2.0",
-    "nock": "9.6.1",
-    "sinon": "5.1.1",
-    "ts-node": "8.1.0",
-    "tslint": "5.16.0",
-    "tslint-config-airbnb": "5.11.1"
+    "mocha": "7.1.1",
+    "nock": "12.0.3",
+    "sinon": "9.0.1",
+    "ts-node": "8.8.1",
+    "@typescript-eslint/eslint-plugin": "2.26.0",
+    "@typescript-eslint/parser": "2.26.0",
+    "eslint": "6.8.0",
+    "eslint-config-airbnb-base": "14.1.0",
+    "eslint-plugin-import": "2.20.2"
   },
   "repository": "elasticio/component-commons-library",
   "license": "Apache-2.0"

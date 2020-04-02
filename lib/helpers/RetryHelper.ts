@@ -1,4 +1,4 @@
-import { AxiosInstance } from "axios";
+import { AxiosInstance } from 'axios';
 
 export function addRetryCountInterceptorToAxios(axios: AxiosInstance) {
   axios.interceptors.response.use(undefined, (err) => { //  Retry count interceptor for axios
@@ -11,6 +11,6 @@ export function addRetryCountInterceptorToAxios(axios: AxiosInstance) {
       return Promise.reject(err);
     }
     config.currentRetryCount += 1;
-    return new Promise(resolve => setTimeout(() => resolve(axios(config)), config.delay));
+    return new Promise((resolve) => setTimeout(() => resolve(axios(config)), config.delay));
   });
 }

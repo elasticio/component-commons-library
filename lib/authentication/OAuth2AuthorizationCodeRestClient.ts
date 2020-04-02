@@ -1,9 +1,9 @@
-import { NoAuthRestClient } from './NoAuthRestClient';
 import requestPromise from 'request-promise';
+import { NoAuthRestClient } from './NoAuthRestClient';
 
 export class OAuth2RestClient extends NoAuthRestClient {
   private async fetchNewToken() {
-    this.emitter.logger.info('Fetching new token...');
+    this.logger.info('Fetching new token...');
     const authTokenResponse = await requestPromise({
       uri: this.cfg.authorizationServerTokenEndpointUrl,
       method: 'POST',
@@ -19,8 +19,8 @@ export class OAuth2RestClient extends NoAuthRestClient {
       },
     });
 
-    this.emitter.logger.info('New token fetched...');
-    this.emitter.logger.debug('New token: %j', authTokenResponse);
+    this.logger.info('New token fetched...');
+    this.logger.debug('New token: %j', authTokenResponse);
 
     if (authTokenResponse.statusCode >= 400) {
       throw new Error(`Error in authentication.  Status code: ${authTokenResponse.statusCode}, Body: ${JSON.stringify(authTokenResponse.body)}`);
@@ -36,7 +36,7 @@ export class OAuth2RestClient extends NoAuthRestClient {
     const tokenExpiryTime = new Date(this.cfg.oauth2.tokenExpiryTime);
     const now = new Date();
     if (now < tokenExpiryTime) {
-      this.emitter.logger.info('Previously valid token found.');
+      this.logger.info('Previously valid token found.');
       return this.cfg.oauth2.access_token;
     }
 
@@ -44,8 +44,8 @@ export class OAuth2RestClient extends NoAuthRestClient {
     this.cfg.oauth2 = await this.fetchNewToken();
     this.cfg.oauth2.tokenExpiryTime = (new Date(tokenRefreshStartTime.getTime()
       + (this.cfg.oauth2.expires_in * 1000))).toISOString();
-    if (this.emitter && this.emitter.emit) {
-      this.emitter.emit('updateKeys', this.cfg.oauth2);
+    if (this.emit) {
+      this.emit('updateKeys', this.cfg.oauth2);
     }
     return this.cfg.oauth2.access_token;
   }

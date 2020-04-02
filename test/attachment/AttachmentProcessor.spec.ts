@@ -1,11 +1,10 @@
 import chai from 'chai';
 import fs from 'fs';
-
-const { expect } = chai;
 import { AttachmentProcessor } from '../../lib';
 
-describe('AttachmentProcessor', () => {
+const { expect } = chai;
 
+describe('AttachmentProcessor', () => {
   it('Should successfully retrieve csv', async () => {
     const attachmentOptions = {
       'content-type': 'arraybuffer',
@@ -14,7 +13,7 @@ describe('AttachmentProcessor', () => {
 
     const attachmentProcessor = new AttachmentProcessor();
     const result = await attachmentProcessor.getAttachment(attachmentOptions.url, attachmentOptions['content-type']);
-    const encodedResult = new Buffer(result.data, 'binary').toString('base64');
+    const encodedResult = Buffer.from(result.data, 'binary').toString('base64');
     const expectedResult = fs.readFileSync('test/attachment/resources/base64csv.txt').toString();
     expect(encodedResult).to.be.equal(expectedResult);
   });
@@ -27,7 +26,7 @@ describe('AttachmentProcessor', () => {
 
     const attachmentProcessor = new AttachmentProcessor();
     const result = await attachmentProcessor.getAttachment(attachmentOptions.url, 'arraybuffer');
-    const encodedResult = new Buffer(result.data, 'binary').toString('base64');
+    const encodedResult = Buffer.from(result.data, 'binary').toString('base64');
     const expectedResult = fs.readFileSync('test/attachment/resources/base64Png.txt').toString();
     expect(encodedResult).to.be.equal(expectedResult);
   });

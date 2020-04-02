@@ -1,10 +1,11 @@
 /* eslint-disable no-param-reassign,  no-underscore-dangle, class-methods-use-this */
 import request from 'request';
-import { NoAuthRestClient } from './NoAuthRestClient';
 import requestPromise from 'request-promise';
+import { NoAuthRestClient } from './NoAuthRestClient';
 
 export class CookieRestClient extends NoAuthRestClient {
   loggedIn: boolean;
+
   jar: any;
 
   constructor(emitter, cfg) {
@@ -28,7 +29,7 @@ export class CookieRestClient extends NoAuthRestClient {
   }
 
   async login() {
-    this.emitter.logger.info('Performing Login ...');
+    this.logger.info('Performing Login ...');
     const loginResponse = await requestPromise({
       method: 'POST',
       url: this.cfg.loginUrl,
@@ -45,12 +46,12 @@ export class CookieRestClient extends NoAuthRestClient {
     });
     this.handleLoginResponse(loginResponse);
     this.loggedIn = true;
-    this.emitter.logger.info('Login Complete.');
+    this.logger.info('Login Complete.');
   }
 
   async logout() {
     if (this.cfg.logoutUrl && this.loggedIn) {
-      this.emitter.logger.info('Performing Logout...');
+      this.logger.info('Performing Logout...');
       const logoutResponse = await requestPromise({
         method: this.cfg.logoutMethod,
         url: this.cfg.logoutUrl,
@@ -60,9 +61,9 @@ export class CookieRestClient extends NoAuthRestClient {
       });
       this.handleLogoutResponse(logoutResponse);
       this.loggedIn = false;
-      this.emitter.logger.info('Logout complete.');
+      this.logger.info('Logout complete.');
     } else {
-      this.emitter.logger.info('Nothing to logout');
+      this.logger.info('Nothing to logout');
     }
   }
 

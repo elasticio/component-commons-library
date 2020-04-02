@@ -1,17 +1,17 @@
 import bunyan from 'bunyan';
 import bunyanFormat from 'bunyan-format';
 
-const outputMode = process.env['LOG_OUTPUT_MODE'] || 'bunyan';
+const outputMode = process.env.LOG_OUTPUT_MODE || 'bunyan';
 
 const formatOut = bunyanFormat({
   outputMode,
   levelInString: true,
   colorFromLevel: {
-    10: 'white',   // TRACE
-    20: 'yellow',  // DEBUG
-    30: 'green',   // INFO
+    10: 'white', // TRACE
+    20: 'yellow', // DEBUG
+    30: 'green', // INFO
     40: 'magenta', // WARN
-    50: 'red',     // ERROR
+    50: 'red', // ERROR
     60: 'inverse', // FATAL
   },
 });
@@ -25,10 +25,10 @@ const lvlMap = {
   TRACE: bunyan.TRACE,
 };
 
-const appName = process.env['APP_NAME'] || 'app';
+const appName = process.env.APP_NAME || 'app';
 
 const defaultLevel = 'INFO';
-const level = process.env['LOG_LEVEL'] || defaultLevel;
+const level = process.env.LOG_LEVEL || defaultLevel;
 
 function errSerializerWithErrors(err) {
   const output = bunyan.stdSerializers.err(err);

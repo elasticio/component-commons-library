@@ -1,17 +1,24 @@
 /* eslint-disable no-param-reassign,  no-underscore-dangle, class-methods-use-this */
 import removeTrailingSlash from 'remove-trailing-slash';
 import axios, { AxiosInstance } from 'axios';
-import { RequestOptionsType } from "../types";
-import { MAX_REDIRECTS_COUNT, REQUEST_MAX_CONTENT_LENGTH, REQUEST_MAX_RETRY, REQUEST_RETRY_DELAY, REQUEST_TIMEOUT } from "../Constants";
-import { addRetryCountInterceptorToAxios } from "../helpers";
-import { RestResponseType } from "../types/RestResponseType";
+import { RequestOptionsType } from '../types';
+import {
+  MAX_REDIRECTS_COUNT, REQUEST_MAX_CONTENT_LENGTH, REQUEST_MAX_RETRY, REQUEST_RETRY_DELAY, REQUEST_TIMEOUT,
+} from '../Constants';
+import { addRetryCountInterceptorToAxios } from '../helpers';
+import { RestResponseType } from '../types/RestResponseType';
+
 
 export class NoAuthRestClient {
-  emitter;
-  cfg;
+  logger: any;
 
-  constructor(emitter, cfg) {
-    this.emitter = emitter;
+  emit: any;
+
+  cfg: any;
+
+  constructor(context, cfg) {
+    this.logger = context.logger;
+    this.emit = context.emit;
     this.cfg = cfg;
   }
 
@@ -23,7 +30,7 @@ export class NoAuthRestClient {
   protected async addAuthenticationToRequestOptions(requestOptions) {
   }
 
-  async makeRequest(options: RequestOptionsType) {
+  async makeRequest(options: RequestOptionsType): Promise<any> {
     const requestOptions: RequestOptionsType = {
       ...{
         rebound: false,
@@ -31,11 +38,10 @@ export class NoAuthRestClient {
         gzip: false,
         useBaseURLFromConfig: true,
         maxContentLength: REQUEST_MAX_CONTENT_LENGTH,
-        validateStatus: () => {
-          return true;
-        },
-        timeout: REQUEST_TIMEOUT
-      }, ...options
+        validateStatus: () => true,
+        timeout: REQUEST_TIMEOUT,
+      },
+      ...options,
     };
 
     if (requestOptions.gzip && !requestOptions.headers['accept-encoding']) {
@@ -46,16 +52,16 @@ export class NoAuthRestClient {
       requestOptions.baseURL = this.cfg.baseURL;
     }
     if (requestOptions.baseURL) {
-      requestOptions.baseURL = removeTrailingSlash(requestOptions.baseURL.trim());
+      requestOptions.baseURL = removeTrailingSlash(requestOptions.baseURL.trim()); // TODO Check if axios do not need removeTrailingSlash
     }
     const client = axios.create();
-    this.addRebound(requestOptions, client)
+    this.addRebound(requestOptions, client);
 
-    this.emitter.logger.info(`Making ${requestOptions.method} request to ${requestOptions.url}`);
-    this.emitter.logger.trace('Request options: %j', requestOptions);
+    this.logger.info(`Making ${requestOptions.method} request to ${requestOptions.url}`);
+    this.logger.trace('Request options: %j', requestOptions);
 
     await this.addAuthenticationToRequestOptions(requestOptions);
-    const response = await axios(requestOptions);
+    const response = await client(requestOptions);
     const checkedResponse = this.validateStatus(response);
     this.handleRestResponse(checkedResponse);
   }
@@ -69,14 +75,16 @@ export class NoAuthRestClient {
   }
 
   protected validateStatus(response): RestResponseType {
-    const { status: statusCode, statusText, headers, data: body, config } = response;
+    const {
+      status: statusCode, statusText, headers, data: body, config,
+    } = response;
     const responseObj: RestResponseType = {
       statusCode,
       statusText,
       headers,
       body,
     };
-    this.emitter.logger.trace(`Response statusCode: ${statusCode}, statusText: ${statusText} body: %j, headers: %j`, body, headers);
+    this.logger.trace(`Response statusCode: ${statusCode}, statusText: ${statusText} body: %j, headers: %j`, body, headers);
     if (statusCode >= 400) {
       throw new Error(`Error in making request to ${response.request.uri.href} Status code: ${statusCode}, Body: ${JSON.stringify(body)}`);
     }
@@ -92,6 +100,12 @@ export class NoAuthRestClient {
   }
 
   protected handleRestResponse(response): RestResponseType {
+    this.logger.trace('HTTP Response headers: %j', response.headers);
+    this.logger.trace('HTTP Response body: %o', response.body.toString('utf8'));
+
+    if (response.body && response.body.byteLength === 0) {
+      return response;
+    }
     return response;
   }
 }

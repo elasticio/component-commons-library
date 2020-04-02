@@ -1,9 +1,9 @@
 import chai from 'chai';
 import nock from 'nock';
 import sinon from 'sinon';
+import { Logger, OAuth2RestClient } from '../../lib';
 
 const { expect } = chai;
-import { Logger, OAuth2RestClient } from '../../lib';
 
 let options;
 let emitter;

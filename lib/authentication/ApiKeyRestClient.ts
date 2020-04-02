@@ -2,6 +2,7 @@ import { NoAuthRestClient } from './NoAuthRestClient';
 
 export class ApiKeyRestClient extends NoAuthRestClient {
   apiKeyHeaderName: string;
+
   apiKeyHeaderValue: string;
 
   constructor(emitter, cfg) {

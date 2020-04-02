@@ -42,11 +42,8 @@ function verifiedInputParameters(fieldNames, conditions, criteriaLinks) {
 }
 
 export async function readMetaFilter(condNumber: number, fieldNames, conditions, criteriaLinks) {
-  try {
-    verifiedInputParameters(fieldNames, conditions, criteriaLinks);
-  } catch (e) {
-    throw e;
-  }
+  verifiedInputParameters(fieldNames, conditions, criteriaLinks);
+
   const conditionEnum = conditions || CONDITION_ENUM;
   const criteriaLinkEnum = criteriaLinks || CRITERIA_LINK_ENUM;
   const conditionNumber = getValidConditionNumber(condNumber);
