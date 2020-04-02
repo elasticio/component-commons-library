@@ -1,19 +1,19 @@
 import chai from 'chai';
-import nock from 'nock';
 import sinon from 'sinon';
 import { BasicAuthRestClient, Logger } from '../../lib';
 
+import nock = require('nock');
 const { expect } = chai;
 
 let options;
 let emitter;
-const url = 'https://example.com';
-const resourceServerUrl = 'https://resourceServerUrl.com';
+const url = '/v2/users';
+const baseURL = 'https://resourceServerUrl.com';
 const successStatusCode = 200;
 const notFoundStatusCode = 404;
-const successBody = 'Ok';
+const successBody = { result: 'Ok' };
 const notFoundBody = 'Not found';
-const errNotFound = `Error in making request to ${url}/ Status code: ${notFoundStatusCode}, Body: "${notFoundBody}"`;
+const errNotFound = `Error in making request to ${baseURL} Status code: ${notFoundStatusCode}, Body: "${notFoundBody}"`;
 let cfg;
 
 describe('BasicAuthRestClient', () => {
@@ -35,7 +35,7 @@ describe('BasicAuthRestClient', () => {
     };
 
     cfg = {
-      resourceServerUrl,
+      baseURL,
       username: user,
       password: pass,
     };
@@ -47,9 +47,20 @@ describe('BasicAuthRestClient', () => {
     sinon.restore();
   });
 
-  it('Should succeed makeRequest method, urlIsSegment: false', async () => {
-    options.urlIsSegment = false;
-    nock(url)
+  it('Should succeed makeRequest method, useBaseURLFromConfig: true', async () => {
+    nock(baseURL)
+      .get(url)
+      .basicAuth(basicAuthOptions)
+      .reply(successStatusCode, successBody);
+    const result = await client.makeRequest(options);
+    expect(result.body).to.be.deep.equal(successBody);
+    expect(result.statusCode).to.be.deep.equal(200);
+  });
+
+  it('Should succeed makeRequest method, useBaseURLFromConfig: false', async () => {
+    options.useBaseURLFromConfig = false;
+    options.url = baseURL;
+    nock(baseURL)
       .get('/')
       .basicAuth(basicAuthOptions)
       .reply(successStatusCode, successBody);
@@ -58,19 +69,10 @@ describe('BasicAuthRestClient', () => {
     expect(result.statusCode).to.be.deep.equal(200);
   });
 
-  it('Should succeed makeRequest method, urlIsSegment: true', async () => {
-    nock(resourceServerUrl)
-      .get(`/${url}`)
-      .basicAuth(basicAuthOptions)
-      .reply(successStatusCode, successBody);
-    const result = await client.makeRequest(options);
-    expect(result.body).to.be.deep.equal(successBody);
-    expect(result.statusCode).to.be.deep.equal(200);
-  });
-
   it('Should fail, 400', async () => {
-    options.urlIsSegment = false;
-    nock(url)
+    options.useBaseURLFromConfig = false;
+    options.url = baseURL;
+    nock(baseURL)
       .get('/')
       .basicAuth(basicAuthOptions)
       .reply(notFoundStatusCode, notFoundBody);

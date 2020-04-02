@@ -1,5 +1,4 @@
 /* eslint-disable no-param-reassign,  no-underscore-dangle, class-methods-use-this */
-import removeTrailingSlash from 'remove-trailing-slash';
 import axios, { AxiosInstance } from 'axios';
 import { RequestOptionsType } from '../types';
 import {
@@ -48,22 +47,19 @@ export class NoAuthRestClient {
       requestOptions.headers['accept-encoding'] = 'gzip, deflate';
     }
 
-    if (options.useBaseURLFromConfig) {
+    if (requestOptions.useBaseURLFromConfig) {
       requestOptions.baseURL = this.cfg.baseURL;
-    }
-    if (requestOptions.baseURL) {
-      requestOptions.baseURL = removeTrailingSlash(requestOptions.baseURL.trim()); // TODO Check if axios do not need removeTrailingSlash
     }
     const client = axios.create();
     this.addRebound(requestOptions, client);
 
-    this.logger.info(`Making ${requestOptions.method} request to ${requestOptions.url}`);
+    this.logger.info(`Making ${requestOptions.method} request to ${requestOptions.baseURL ? `baseURL: '${requestOptions.baseURL}' and to ` : ''}url: '${requestOptions.url}'`);
     this.logger.trace('Request options: %j', requestOptions);
 
     await this.addAuthenticationToRequestOptions(requestOptions);
     const response = await client(requestOptions);
     const checkedResponse = this.validateStatus(response);
-    this.handleRestResponse(checkedResponse);
+    return this.handleRestResponse(checkedResponse);
   }
 
   private addRebound(requestOptions: RequestOptionsType, client: AxiosInstance) {
@@ -86,7 +82,7 @@ export class NoAuthRestClient {
     };
     this.logger.trace(`Response statusCode: ${statusCode}, statusText: ${statusText} body: %j, headers: %j`, body, headers);
     if (statusCode >= 400) {
-      throw new Error(`Error in making request to ${response.request.uri.href} Status code: ${statusCode}, Body: ${JSON.stringify(body)}`);
+      throw new Error(`Error in making request to ${config.url} Status code: ${statusCode}, Body: ${JSON.stringify(body)}`);
     }
     if (statusCode >= 300 && config.maxRedirects > 0) {
       responseObj.statusText = 'Redirection error. Please enable redirect mode if You need to support redirecting in the request.';
