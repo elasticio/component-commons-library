@@ -43,6 +43,10 @@ export class NoAuthRestClient {
       ...options,
     };
 
+    if (!this.cfg.followRedirect) {
+      requestOptions.maxRedirects = 0;
+    }
+
     if (requestOptions.gzip && !requestOptions.headers['accept-encoding']) {
       requestOptions.headers['accept-encoding'] = 'gzip, deflate';
     }
