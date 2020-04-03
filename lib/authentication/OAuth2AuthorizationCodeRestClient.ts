@@ -1,16 +1,13 @@
-import requestPromise from 'request-promise';
+import axios from 'axios';
 import { NoAuthRestClient } from './NoAuthRestClient';
 
 export class OAuth2RestClient extends NoAuthRestClient {
   private async fetchNewToken() {
     this.logger.info('Fetching new token...');
-    const authTokenResponse = await requestPromise({
-      uri: this.cfg.authorizationServerTokenEndpointUrl,
+    const authTokenResponse = await axios({
+      url: this.cfg.authorizationServerTokenEndpointUrl,
       method: 'POST',
-      json: true,
-      simple: false,
-      resolveWithFullResponse: true,
-      form: {
+      data: {
         refresh_token: this.cfg.oauth2.refresh_token,
         scope: this.cfg.oauth2.scope,
         grant_type: 'refresh_token',
@@ -22,11 +19,11 @@ export class OAuth2RestClient extends NoAuthRestClient {
     this.logger.info('New token fetched...');
     this.logger.debug('New token: %j', authTokenResponse);
 
-    if (authTokenResponse.statusCode >= 400) {
-      throw new Error(`Error in authentication.  Status code: ${authTokenResponse.statusCode}, Body: ${JSON.stringify(authTokenResponse.body)}`);
+    if (authTokenResponse.status >= 400) {
+      throw new Error(`Error in authentication.  Status code: ${authTokenResponse.status}, Body: ${JSON.stringify(authTokenResponse.data)}`);
     }
 
-    return authTokenResponse.body;
+    return authTokenResponse.data;
   }
 
   private async getValidToken() {
