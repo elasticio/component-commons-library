@@ -1,13 +1,18 @@
 /* eslint-disable no-param-reassign,  no-underscore-dangle, class-methods-use-this */
 import removeTrailingSlash from 'remove-trailing-slash';
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { RequestOptionsType } from '../types';
 import {
   MAX_REDIRECTS_COUNT, REQUEST_MAX_CONTENT_LENGTH, REQUEST_MAX_RETRY, REQUEST_RETRY_DELAY, REQUEST_TIMEOUT,
 } from '../Constants';
-import { addRetryCountInterceptorToAxios } from '../helpers';
+import { addRetryCountInterceptorToAxios, prepareResponseStructure, processPromisesInSeqence } from '../helpers';
 import { RestResponseType } from '../types/RestResponseType';
+import { AbstractResponseFeature } from '../features/response/AbstractResponseFeature';
+import { AbstractRequestFeature } from '../features/request/AbstractRequestFeature';
+import { FEATURES_MAP, RequestFeature, ResponseFeature } from '../features';
 
+type RequestFeatureSubClass = { new(args?): AbstractRequestFeature };
+type ResponseFeatureSubClass = { new(args?): AbstractResponseFeature } ;
 
 export class NoAuthRestClient {
   logger: any;
@@ -16,10 +21,34 @@ export class NoAuthRestClient {
 
   cfg: any;
 
+  requestFeatures: Array<{ new(): AbstractRequestFeature }>;
+
+  responseFeatures: Array<ResponseFeatureSubClass>;
+
   constructor(context, cfg) {
     this.logger = context.logger;
     this.emit = context.emit;
     this.cfg = cfg;
+    this.requestFeatures = [];
+    this.responseFeatures = [];
+  }
+
+  public registerRequestFeature(feature: RequestFeature) {
+    const FeatureSubClass: RequestFeatureSubClass = FEATURES_MAP[feature];
+    this.requestFeatures.push(FeatureSubClass);
+  }
+
+  public registerResponseFeature(feature: ResponseFeature) {
+    const FeatureSubClass: ResponseFeatureSubClass = FEATURES_MAP[feature];
+    this.responseFeatures.push(FeatureSubClass);
+  }
+
+  public setRequestFeature(featuresList: Array<RequestFeature>) {
+    this.requestFeatures = featuresList.map((feature) => FEATURES_MAP[feature]);
+  }
+
+  public setResponseFeature(featuresList: Array<ResponseFeature>) {
+    this.responseFeatures = featuresList.map((feature) => FEATURES_MAP[feature]);
   }
 
   public replaceDefaultResponseHandler(responseHandler) {
@@ -44,9 +73,10 @@ export class NoAuthRestClient {
       ...options,
     };
 
-    if (requestOptions.gzip && !requestOptions.headers['accept-encoding']) {
-      requestOptions.headers['accept-encoding'] = 'gzip, deflate';
-    }
+    await processPromisesInSeqence(this.requestFeatures.map((FeatureClass) => {
+      const feature: AbstractRequestFeature = new FeatureClass();
+      return feature.apply(requestOptions);
+    }));
 
     if (options.useBaseURLFromConfig) {
       requestOptions.baseURL = this.cfg.baseURL;
@@ -63,6 +93,12 @@ export class NoAuthRestClient {
     await this.addAuthenticationToRequestOptions(requestOptions);
     const response = await client(requestOptions);
     const checkedResponse = this.validateStatus(response);
+
+    await processPromisesInSeqence(this.responseFeatures.map((FeatureClass) => {
+      const feature: AbstractResponseFeature = new FeatureClass();
+      return feature.apply(response);
+    }));
+
     this.handleRestResponse(checkedResponse);
   }
 
@@ -74,38 +110,28 @@ export class NoAuthRestClient {
     }
   }
 
-  protected validateStatus(response): RestResponseType {
+  protected validateStatus(response): AxiosResponse {
     const {
       status: statusCode, statusText, headers, data: body, config,
     } = response;
-    const responseObj: RestResponseType = {
-      statusCode,
-      statusText,
-      headers,
-      body,
-    };
     this.logger.trace(`Response statusCode: ${statusCode}, statusText: ${statusText} body: %j, headers: %j`, body, headers);
     if (statusCode >= 400) {
       throw new Error(`Error in making request to ${response.request.uri.href} Status code: ${statusCode}, Body: ${JSON.stringify(body)}`);
     }
     if (statusCode >= 300 && config.maxRedirects > 0) {
-      responseObj.statusText = 'Redirection error. Please enable redirect mode if You need to support redirecting in the request.';
+      response.statusText = 'Redirection error. Please enable redirect mode if You need to support redirecting in the request.';
       if (!this.cfg.dontThrowError) {
-        const err = new Error(JSON.stringify(responseObj));
+        const err = new Error(JSON.stringify(prepareResponseStructure(response)));
         err.name = 'HTTP redirection error';
         throw err;
       }
     }
-    return responseObj;
+    return response;
   }
 
-  protected handleRestResponse(response): RestResponseType {
-    this.logger.trace('HTTP Response headers: %j', response.headers);
-    this.logger.trace('HTTP Response body: %o', response.body.toString('utf8'));
-
-    if (response.body && response.body.byteLength === 0) {
-      return response;
-    }
-    return response;
+  protected handleRestResponse(response: AxiosResponse): RestResponseType {
+    const restResponse: RestResponseType = prepareResponseStructure(response);
+    this.logger.trace('HTTP Response restResponse: %j');
+    return restResponse;
   }
 }

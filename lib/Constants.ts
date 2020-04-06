@@ -4,3 +4,6 @@ export const REQUEST_RETRY_DELAY = process.env.REQUEST_RETRY_DELAY ? parseInt(pr
 export const REQUEST_ATTACHMENT_MAX_CONTENT_LENGTH = process.env.REQUEST_MAX_CONTENT_LENGTH ? parseInt(process.env.REQUEST_MAX_CONTENT_LENGTH, 10) : 10485760; // 10MB
 export const REQUEST_MAX_CONTENT_LENGTH = process.env.REQUEST_MAX_CONTENT_LENGTH ? parseInt(process.env.REQUEST_MAX_CONTENT_LENGTH, 10) : 10485760; // 10MB
 export const MAX_REDIRECTS_COUNT = process.env.MAX_REDIRECTS_COUNT ? parseInt(process.env.MAX_REDIRECTS_COUNT, 10) : 10;
+
+
+export const HTTP2_HEADER_CONTENT_TYPE = 'content-type'; // in the axios, all headers names lowercased

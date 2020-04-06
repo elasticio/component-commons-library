@@ -1,2 +1,4 @@
 export { addRetryCountInterceptorToAxios } from './RetryHelper';
-export { parseResponse } from './ParseResponseHelper';
+export { prepareResponseStructure } from './ResponseStructureHelper';
+export { xml2Json } from './Xml2JsonHelper';
+export { processPromisesInSeqence } from './Utils';

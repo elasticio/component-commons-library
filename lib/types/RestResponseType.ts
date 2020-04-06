@@ -1,6 +1,6 @@
 export interface RestResponseType {
-  body: object;
   statusCode: number;
   statusText?: string;
+  body: object;
   headers: object
 }
