@@ -1,21 +1,21 @@
 import chai from 'chai';
-import nock from 'nock';
 import sinon from 'sinon';
 import { Logger, OAuth2RestClient } from '../../lib';
 
+import nock = require('nock');
 const { expect } = chai;
 
 let options;
 let emitter;
-const url = 'https://example.com';
-const resourceServerUrl = 'https://resourceServerUrl.com';
+const url = '/v2/users';
+const baseURL = 'https://resourceServerUrl.com';
 const successStatusCode = 200;
 const notFoundStatusCode = 404;
-const successBody = 'Ok';
+const successBody = { result: 'Ok' };
 const notFoundBody = 'Not found';
-const errNotFound = `Error in making request to ${url}/ Status code: ${notFoundStatusCode}, Body: "${notFoundBody}"`;
+const errNotFound = `Error in making request to ${baseURL} Status code: ${notFoundStatusCode}, Body: "${notFoundBody}"`;
 const cfg = {
-  resourceServerUrl,
+  baseURL,
   oauth2: {
     refresh_token: 'some_token',
     scope: [
@@ -48,13 +48,13 @@ describe('OAuth2AuthorizationCodeRestClient', () => {
     sinon.restore();
   });
 
-  it('Should succeed, urlIsSegment: true', async () => {
+  it('Should succeed, useBaseURLFromConfig: true', async () => {
     const client = new OAuth2RestClient(emitter, cfg);
     nock(cfg.authorizationServerTokenEndpointUrl)
       .post('/')
       .reply(200, cfg.oauth2);
-    nock(resourceServerUrl)
-      .get(`/${url}`)
+    nock(baseURL)
+      .get(url)
       .reply(successStatusCode, successBody);
     const result = await client.makeRequest(options);
     expect(result.body).to.be.deep.equal(successBody);
@@ -62,10 +62,11 @@ describe('OAuth2AuthorizationCodeRestClient', () => {
     expect(emitter.emit.withArgs('updateKeys').callCount).to.be.equal(0);
   });
 
-  it('Should succeed, urlIsSegment: false', async () => {
+  it('Should succeed, useBaseURLFromConfig: false', async () => {
     const client = new OAuth2RestClient(emitter, cfg);
-    options.urlIsSegment = false;
-    nock(url)
+    options.useBaseURLFromConfig = false;
+    options.url = baseURL;
+    nock(baseURL)
       .get('/')
       .reply(successStatusCode, successBody);
     const result = await client.makeRequest(options);
@@ -76,8 +77,9 @@ describe('OAuth2AuthorizationCodeRestClient', () => {
 
   it('Should fail, 404', async () => {
     const client = new OAuth2RestClient(emitter, cfg);
-    options.urlIsSegment = false;
-    nock(url)
+    options.useBaseURLFromConfig = false;
+    options.url = baseURL;
+    nock(baseURL)
       .get('/')
       .reply(notFoundStatusCode, notFoundBody);
     await client.makeRequest(options)
@@ -92,7 +94,7 @@ describe('OAuth2AuthorizationCodeRestClient', () => {
 
   it('Test makeRequest with expired access_token', async () => {
     const cfgExpToken = {
-      resourceServerUrl,
+      resourceServerUrl: baseURL,
       oauth2: {
         refresh_token: 'some_token',
         scope: [
@@ -107,7 +109,8 @@ describe('OAuth2AuthorizationCodeRestClient', () => {
       oauth2_field_client_secret: 'some_secret',
     };
     const clientExpiredToken = new OAuth2RestClient(emitter, cfgExpToken);
-    nock(url)
+    options.url = baseURL;
+    nock(baseURL)
       .get('/')
       .reply(successStatusCode, successBody);
 
@@ -115,7 +118,7 @@ describe('OAuth2AuthorizationCodeRestClient', () => {
       .post('/')
       .reply(successStatusCode, cfgExpToken.oauth2);
 
-    options.urlIsSegment = false;
+    options.useBaseURLFromConfig = false;
     const result = await clientExpiredToken.makeRequest(options);
     expect(result.body).to.be.deep.equal(successBody);
     expect(result.statusCode).to.be.deep.equal(200);

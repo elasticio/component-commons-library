@@ -1,20 +1,19 @@
-// import bunyan from 'bunyan';
 import chai from 'chai';
-import nock from 'nock';
 import sinon from 'sinon';
 import { ApiKeyRestClient, Logger } from '../../lib';
 
+import nock = require('nock');
 const { expect } = chai;
 
 let options;
 let emitter;
-const url = 'https://example.com';
-const resourceServerUrl = 'https://resourceServerUrl.com';
+const url = '/v2/users';
+const baseURL = 'https://resourceServerUrl.com';
 const successStatusCode = 200;
 const notFoundStatusCode = 404;
-const successBody = 'Ok';
+const successBody = { result: 'Ok' };
 const notFoundBody = 'Not found';
-const errNotFound = `Error in making request to ${url}/ Status code: ${notFoundStatusCode}, Body: "${notFoundBody}"`;
+const errNotFound = `Error in making request to ${baseURL} Status code: ${notFoundStatusCode}, Body: "${notFoundBody}"`;
 let cfg;
 
 describe('ApiKeyRestClient', () => {
@@ -34,7 +33,7 @@ describe('ApiKeyRestClient', () => {
     };
 
     cfg = {
-      resourceServerUrl,
+      baseURL,
       apiKeyHeaderName: 'apiHeader',
       apiKeyHeaderValue: 'apiKey',
     };
@@ -49,9 +48,19 @@ describe('ApiKeyRestClient', () => {
     sinon.restore();
   });
 
-  it('Should succeed makeRequest method, urlIsSegment: false', async () => {
-    options.urlIsSegment = false;
-    nock(url, { reqheaders })
+  it('Should succeed makeRequest method, useBaseURLFromConfig: true', async () => {
+    nock(baseURL, { reqheaders })
+      .get(url)
+      .reply(successStatusCode, successBody);
+    const result = await client.makeRequest(options);
+    expect(result.body).to.be.deep.equal(successBody);
+    expect(result.statusCode).to.be.deep.equal(200);
+  });
+
+  it('Should succeed makeRequest method, useBaseURLFromConfig: false', async () => {
+    options.useBaseURLFromConfig = false;
+    options.url = baseURL;
+    nock(baseURL, { reqheaders })
       .get('/')
       .reply(successStatusCode, successBody);
     const result = await client.makeRequest(options);
@@ -59,18 +68,10 @@ describe('ApiKeyRestClient', () => {
     expect(result.statusCode).to.be.deep.equal(200);
   });
 
-  it('Should succeed makeRequest method, urlIsSegment: true', async () => {
-    nock(resourceServerUrl, { reqheaders })
-      .get(`/${url}`)
-      .reply(successStatusCode, successBody);
-    const result = await client.makeRequest(options);
-    expect(result.body).to.be.deep.equal(successBody);
-    expect(result.statusCode).to.be.deep.equal(200);
-  });
-
   it('Should fail, 400', async () => {
-    options.urlIsSegment = false;
-    nock(url, { reqheaders })
+    options.useBaseURLFromConfig = false;
+    options.url = baseURL;
+    nock(baseURL, { reqheaders })
       .get('/')
       .reply(notFoundStatusCode, notFoundBody);
     await client.makeRequest(options)
