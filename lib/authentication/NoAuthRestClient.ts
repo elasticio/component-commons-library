@@ -7,10 +7,20 @@ import {
 import { addRetryCountInterceptorToAxios, prepareResponseStructure, processPromisesInSeqence } from '../helpers';
 import { AbstractResponseFeature } from '../features/response/AbstractResponseFeature';
 import { AbstractRequestFeature } from '../features/request/AbstractRequestFeature';
-import { FEATURES_MAP, RequestFeature, ResponseFeature } from '../features';
+import { RequestFeature, ResponseFeature } from '../features';
+import { GzipRequestFeature } from '../features/request';
+import { Xml2JsonResponseFeature } from '../features/response';
 
 type RequestFeatureSubClass = { new(args?): AbstractRequestFeature };
 type ResponseFeatureSubClass = { new(args?): AbstractResponseFeature } ;
+
+const REQUEST_FEATURES_MAP = new Map<RequestFeature, RequestFeatureSubClass>([
+  [RequestFeature.Gzip, GzipRequestFeature],
+]);
+
+const RESPONSE_FEATURES_MAP = new Map<ResponseFeature, ResponseFeatureSubClass>([
+  [ResponseFeature.Xml2Json, Xml2JsonResponseFeature],
+]);
 
 export class NoAuthRestClient {
   logger: any;
@@ -19,9 +29,9 @@ export class NoAuthRestClient {
 
   cfg: any;
 
-  requestFeatures: Array<{ new(): AbstractRequestFeature }>;
+  requestFeatures: Array<RequestFeatureSubClass>;
 
-  responseFeatures: Array<ResponseFeatureSubClass>;
+  responseFeatures: Array<RequestFeatureSubClass>;
 
   constructor(context, cfg) {
     this.logger = context.logger;
@@ -32,21 +42,39 @@ export class NoAuthRestClient {
   }
 
   public registerRequestFeature(feature: RequestFeature) {
-    const FeatureSubClass: RequestFeatureSubClass = FEATURES_MAP[feature];
+    const FeatureSubClass: RequestFeatureSubClass | undefined = REQUEST_FEATURES_MAP.get(feature);
+    if (!FeatureSubClass) {
+      throw new Error(`Feature: ${feature}, was not found`);
+    }
     this.requestFeatures.push(FeatureSubClass);
   }
 
   public registerResponseFeature(feature: ResponseFeature) {
-    const FeatureSubClass: ResponseFeatureSubClass = FEATURES_MAP[feature];
+    const FeatureSubClass: ResponseFeatureSubClass | undefined = RESPONSE_FEATURES_MAP.get(feature);
+    if (!FeatureSubClass) {
+      throw new Error(`Feature: ${feature}, was not found`);
+    }
     this.responseFeatures.push(FeatureSubClass);
   }
 
   public setRequestFeature(featuresList: Array<RequestFeature>) {
-    this.requestFeatures = featuresList.map((feature) => FEATURES_MAP[feature]);
+    this.requestFeatures = featuresList.map((feature) => {
+      const FeatureSubClass: RequestFeatureSubClass | undefined = REQUEST_FEATURES_MAP.get(feature);
+      if (!FeatureSubClass) {
+        throw new Error(`Feature: ${feature}, was not found`);
+      }
+      return FeatureSubClass;
+    });
   }
 
   public setResponseFeature(featuresList: Array<ResponseFeature>) {
-    this.responseFeatures = featuresList.map((feature) => FEATURES_MAP[feature]);
+    this.responseFeatures = featuresList.map((feature) => {
+      const FeatureSubClass: RequestFeatureSubClass | undefined = RESPONSE_FEATURES_MAP.get(feature);
+      if (!FeatureSubClass) {
+        throw new Error(`Feature: ${feature}, was not found`);
+      }
+      return FeatureSubClass;
+    });
   }
 
   public replaceDefaultResponseHandler(responseHandler) {

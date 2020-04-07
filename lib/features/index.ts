@@ -1,1 +1,1 @@
-export { FEATURES_MAP, ResponseFeature, RequestFeature } from './FeaturesEnum';
+export { ResponseFeature, RequestFeature } from './FeaturesEnum';
