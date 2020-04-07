@@ -1,11 +1,10 @@
 /* eslint-disable no-param-reassign,  no-underscore-dangle, class-methods-use-this */
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
-import { RequestOptionsType } from '../types';
+import { RequestOptionsType, RestResponseType } from '../types';
 import {
   MAX_REDIRECTS_COUNT, REQUEST_MAX_CONTENT_LENGTH, REQUEST_MAX_RETRY, REQUEST_RETRY_DELAY, REQUEST_TIMEOUT,
 } from '../Constants';
 import { addRetryCountInterceptorToAxios, prepareResponseStructure, processPromisesInSeqence } from '../helpers';
-import { RestResponseType } from '../types/RestResponseType';
 import { AbstractResponseFeature } from '../features/response/AbstractResponseFeature';
 import { AbstractRequestFeature } from '../features/request/AbstractRequestFeature';
 import { FEATURES_MAP, RequestFeature, ResponseFeature } from '../features';
