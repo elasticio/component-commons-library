@@ -156,7 +156,7 @@ export class NoAuthRestClient {
 
   protected handleRestResponse(response: AxiosResponse): RestResponseType {
     const restResponse: RestResponseType = prepareResponseStructure(response);
-    this.logger.trace('HTTP Response restResponse: %j');
+    this.logger.trace('HTTP Response restResponse: %j', restResponse);
     return restResponse;
   }
 }
