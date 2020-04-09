@@ -34,23 +34,24 @@ Each of the REST Clients extends from the `NoAuthRestClient`, overriding the rel
 ### NoAuthRestClient
 [NoAuthRestClient](https://github.com/elasticio/component-commons-library/blob/master/lib/authentication/NoAuthRestClient.ts) class to make rest requests no no auth APIs by provided options. 
 
-#### constructor(emitter, cfg)
+#### constructor(emitter, configuration)
 - emitter - EIO emitting context.
-- cfg - configuration of EIO component object.
+- configuration - configuration of EIO component object.
 
 ```
-const Client = new NoAuthRestClient(emitter, cfg);
+const Client = new NoAuthRestClient(emitter, configuration);
 ```
 
+`configuration` can contains following properties:
+ - baseURL: if request option `useBaseURLFromConfig` equal true, this baseURL will be used for request
+ - followRedirect: if equal `false` maxRedirects request option will be set to 0
+ - dontThrowError: if redirection is enabled but was failed will return response 
 #### async makeRequest(options)
-Makes requests:
-options expects the following sub-variables:
-  - url: Url to call
-  - method: HTTP verb to use
-  - body: Body of the request, if applicable. Defaults to undefined.
-  - headers: Any HTTP headers to add to the request. Defaults to {}
-  - urlIsSegment: Whether to append to the base server url or if the provided URL is an absolute path. Defaults to true
-  - isJson: If the request is in JSON format. Defaults to true
+For making requests it is used `Axios` library, so options is the same as [axios options](https://www.npmjs.com/package/axios#request-config) and additional options: 
+  - rebound: boolean, enable rebound 
+  - useBaseURLFromConfig: boolean, if true baseURL will be used from configuration.
+  - retry: number of retry for rebound
+  - delay: delay for rebound
 
 
 Class can be extended to have custom authentication
