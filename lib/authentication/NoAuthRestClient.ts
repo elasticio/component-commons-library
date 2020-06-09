@@ -59,7 +59,7 @@ export class NoAuthRestClient {
     const response = await this.request(requestOptions);
 
     if (responseHandler) {
-      return responseHandler(response, this.handleRestResponse);
+      return responseHandler(response, this.handleRestResponse.bind(this));
     }
 
     return this.handleRestResponse(response);
