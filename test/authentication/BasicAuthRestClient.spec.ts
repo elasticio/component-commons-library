@@ -80,4 +80,19 @@ describe('BasicAuthRestClient', () => {
         expect(e.message).to.be.equal(errNotFound);
       });
   });
+
+  it('Should fail, 400 - Call responseHandler', async () => {
+    options.urlIsSegment = false;
+    nock(url)
+      .get('/')
+      .basicAuth(basicAuthOptions)
+      .reply(notFoundStatusCode, notFoundBody);
+    await client.makeRequest(options)
+      .then(() => {
+        throw new Error('Test case does not expect success response');
+      })
+      .catch((e) => {
+        expect(e.message).to.be.equal(errNotFound);
+      });
+  });
 });
