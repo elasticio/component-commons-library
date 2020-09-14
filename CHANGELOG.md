@@ -1,3 +1,8 @@
+## 1.1.3 (Sept 25, 2020)
+* Don't log sensitive data
+* Update dependencies
+* Set minimum node version to v12.
+
 ## 1.1.2 (March 24, 2020)
 
 ### Bug fixes

@@ -26,33 +26,33 @@
     "posttest": "npm run tsc"
   },
   "engines": {
-    "node": ">=8.16.0"
+    "node": ">=12"
   },
   "dependencies": {
     "@elastic.io/jsonata-moment": "1.1.4",
     "@elastic.io/ntlm-client": "1.0.0",
-    "@types/node": "8.10.51",
-    "axios": "0.18.1",
-    "bunyan": "1.8.12",
+    "@types/node": "14.10.1",
+    "axios": "0.20.0",
+    "bunyan": "1.8.14",
     "bunyan-format": "0.2.1",
     "bunyan-serializers": "0.0.2",
     "elasticio-node": "0.0.9",
-    "elasticio-rest-node": "1.2.3",
+    "elasticio-rest-node": "1.2.6",
     "remove-leading-slash": "1.0.1",
     "remove-trailing-slash": "0.1.0",
-    "request": "2.88.0",
-    "typescript": "3.4.4"
+    "request": "2.88.2",
+    "typescript": "4.0.2"
   },
   "devDependencies": {
-    "@types/jest": "24.0.16",
+    "@types/jest": "26.0.13",
     "chai": "4.2.0",
     "chai-as-promised": "7.1.1",
-    "mocha": "5.2.0",
-    "nock": "9.6.1",
-    "sinon": "5.1.1",
-    "ts-node": "8.1.0",
-    "tslint": "5.16.0",
-    "tslint-config-airbnb": "5.11.1"
+    "mocha": "8.1.3",
+    "nock": "13.0.4",
+    "sinon": "9.0.3",
+    "ts-node": "9.0.0",
+    "tslint": "6.1.3",
+    "tslint-config-airbnb": "5.11.2"
   },
   "repository": "elasticio/component-commons-library",
   "license": "Apache-2.0"
