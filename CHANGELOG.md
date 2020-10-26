@@ -1,3 +1,7 @@
+## 1.1.5 (October 26, 2020)
+* Allow the response handler to be overridden at a per request level.
+* Bump dependencies.
+
 ## 1.1.4 (October 20, 2020)
 * Annual audit of the component code to check if it exposes a sensitive data in the logs
 
