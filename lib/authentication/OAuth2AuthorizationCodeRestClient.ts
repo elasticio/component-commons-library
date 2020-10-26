@@ -22,7 +22,6 @@ export class OAuth2RestClient extends NoAuthRestClient {
     });
 
     this.emitter.logger.info('New token fetched...');
-    this.emitter.logger.debug('New token: %j', authTokenResponse);
 
     if (authTokenResponse.statusCode >= 400) {
       throw new Error(`Error in authentication.  Status code: ${authTokenResponse.statusCode}, Body: ${JSON.stringify(authTokenResponse.body)}`);
