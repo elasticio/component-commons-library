@@ -1,3 +1,6 @@
+## 1.1.4 (October 30, 2020)
+* Fix axios version
+
 ## 1.1.4 (October 20, 2020)
 * Annual audit of the component code to check if it exposes a sensitive data in the logs
 
