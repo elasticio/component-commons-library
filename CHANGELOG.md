@@ -1,4 +1,4 @@
-## 1.1.5 (October 26, 2020)
+## 1.1.5 (October 29, 2020)
 * Allow the response handler to be overridden at a per request level.
 * Bump dependencies.
 
