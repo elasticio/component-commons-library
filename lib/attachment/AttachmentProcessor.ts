@@ -1,6 +1,14 @@
 import axios, { AxiosRequestConfig } from 'axios';
+import { URL } from 'url';
+import ObjectStorage from '@elastic.io/maester-client/dist/ObjectStorage';
+import StorageClient from '@elastic.io/maester-client/dist/StorageClient';
 const restNodeClient = require('elasticio-rest-node')();
 
+const STORAGE_TYPE_PARAMETER = 'storage_type';
+const DEFAULT_STORAGE_TYPE = 'steward';
+const MAESTER_OBJECT_ID_ENDPOINT = '/objects/';
+const { ELASTICIO_OBJECT_STORAGE_TOKEN = '' , ELASTICIO_OBJECT_STORAGE_URI= '' } = process.env;
+const maesterCreds = { jwtSecret: ELASTICIO_OBJECT_STORAGE_TOKEN, uri: ELASTICIO_OBJECT_STORAGE_URI };
 const REQUEST_TIMEOUT = process.env.REQUEST_TIMEOUT ? parseInt(process.env.REQUEST_TIMEOUT, 10) : 10000; // 10s
 const REQUEST_MAX_RETRY = process.env.REQUEST_MAX_RETRY ? parseInt(process.env.REQUEST_MAX_RETRY, 10) : 7; // 10s
 const REQUEST_RETRY_DELAY = process.env.REQUEST_RETRY_DELAY ? parseInt(process.env.REQUEST_RETRY_DELAY, 10) : 7000; // 7s
@@ -11,6 +19,7 @@ export class AttachmentProcessor {
   async getAttachment(url: string, responseType: string) {
     const ax = axios.create();
     AttachmentProcessor.addRetryCountInterceptorToAxios(ax);
+    const storageType = AttachmentProcessor.getStorageTypeByUrl(url);
 
     const axConfig = {
       url,
@@ -21,7 +30,11 @@ export class AttachmentProcessor {
       delay: REQUEST_RETRY_DELAY,
     } as AxiosRequestConfig;
 
-    return ax(axConfig);
+    switch (storageType){
+      case 'steward': return AttachmentProcessor.getStewardAttachment(ax, axConfig);
+      case 'maester': return AttachmentProcessor.getMaesterAttachment(ax, axConfig);
+      default: throw new Error(`Storage type "${storageType}" is not supported`);
+    }
   }
 
   async uploadAttachment(body) {
@@ -45,6 +58,32 @@ export class AttachmentProcessor {
   static async preparePutUrl() {
     const signedUrl = await restNodeClient.resources.storage.createSignedUrl();
     return signedUrl.put_url;
+  }
+
+  static async getStewardAttachment(ax, axConfig) {
+    return ax(axConfig);
+  }
+
+  static async getMaesterAttachment(ax, axConfig) {
+    const client = new StorageClient(maesterCreds, ax);
+    const objectStorage = new ObjectStorage(maesterCreds, client);
+    const maesterAttachmentId = AttachmentProcessor.getMaesterAttachmentIdIdFromUrl(axConfig.url);
+    return objectStorage.getById(maesterAttachmentId);
+  }
+
+  static getStorageTypeByUrl(urlString) {
+    const url = new URL(urlString);
+    const storageType = url.searchParams.get(STORAGE_TYPE_PARAMETER);
+    return storageType || DEFAULT_STORAGE_TYPE;
+  }
+
+  static getMaesterAttachmentIdIdFromUrl(urlString): string {
+    const { pathname } = new URL(urlString);
+    const maesterAttachmentId = pathname.split(MAESTER_OBJECT_ID_ENDPOINT)[1];
+    if (!maesterAttachmentId) {
+      throw new Error('Invalid Maester Endpoint');
+    }
+    return maesterAttachmentId;
   }
 
   static addRetryCountInterceptorToAxios(ax) {
