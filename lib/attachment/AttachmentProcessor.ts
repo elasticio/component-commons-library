@@ -1,7 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { URL } from 'url';
-import ObjectStorage from '@elastic.io/maester-client/dist/ObjectStorage';
-import StorageClient from '@elastic.io/maester-client/dist/StorageClient';
+import { StorageClient, ObjectStorage } from '@elastic.io/maester-client/dist';
 const restNodeClient = require('elasticio-rest-node')();
 
 const STORAGE_TYPE_PARAMETER = 'storage_type';
@@ -65,11 +64,22 @@ export class AttachmentProcessor {
   }
 
   static async getMaesterAttachment(ax, axConfig) {
-    ax.defaults.baseURL = maesterCreds.uri;
-    const client = new StorageClient(maesterCreds, ax);
+    const axiosInstance = AttachmentProcessor.formAxiosInstance(ax, axConfig, maesterCreds.uri);
+    const client = new StorageClient(maesterCreds, axiosInstance);
     const objectStorage = new ObjectStorage(maesterCreds, client);
     const maesterAttachmentId = AttachmentProcessor.getMaesterAttachmentIdFromUrl(axConfig.url);
     return objectStorage.getById(maesterAttachmentId);
+  }
+
+  static formAxiosInstance(ax, axConfig, baseURL) {
+    return {
+      ...ax,
+      defaults: {
+        ...ax.defaults,
+        ...axConfig,
+        baseURL,
+      },
+    };
   }
 
   static getStorageTypeByUrl(urlString) {
