@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig } from 'axios';
+import { Readable } from 'stream';
 import http from 'http';
 import https from 'https';
 import { URL } from 'url';
@@ -22,6 +23,7 @@ export class AttachmentProcessor {
   private static httpsAgent = new https.Agent({ keepAlive: true });
 
   async getAttachment(url: string, responseType: string) {
+    console.log(responseType);
     const storageType = AttachmentProcessor.getStorageTypeByUrl(url);
     const axConfig = {
       url,
@@ -75,8 +77,11 @@ export class AttachmentProcessor {
     const objectStorage = new ObjectStorage(maesterCreds, client);
     const maesterAttachmentId = AttachmentProcessor.getMaesterAttachmentIdFromUrl(axConfig.url);
     try {
-      const resp = await objectStorage.getById(maesterAttachmentId);
-      return resp;
+      const dataString = await objectStorage.getById(maesterAttachmentId);
+      const stream = new Readable();
+      stream.push(dataString);
+      stream.push(null);
+      return stream;
     } catch (error: any) {
       console.log('maester getById err');
       if (error.response && error.response.data) {

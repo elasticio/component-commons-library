@@ -36,7 +36,7 @@ describe('AttachmentProcessor', () => {
       expect(encodedResult).to.be.equal(expectedResult);
     });
   })
-  describe('maester', () => {
+  xdescribe('maester', () => {
     it('Should successfully retrieve response', async () => {
       const attachmentOptions = {
         'content-type': 'arraybuffer',
