@@ -66,7 +66,7 @@ export class AttachmentProcessor {
   static async getMaesterAttachment(axConfig) {
     const client = new StorageClient(maesterCreds);
     const objectStorage = new ObjectStorage(maesterCreds, client);
-    const maesterAttachmentId = AttachmentProcessor.getMaesterAttachmentIdFromUrl(axConfig.url);
+    const maesterAttachmentId = AttachmentProcessor.getMaesterAttachmentIdByUrl(axConfig.url);
     const response = await objectStorage.getById(maesterAttachmentId, axConfig.responseType);
     return { data: response };
   }
@@ -77,7 +77,7 @@ export class AttachmentProcessor {
     return storageType || DEFAULT_STORAGE_TYPE;
   }
 
-  static getMaesterAttachmentIdFromUrl(urlString): string {
+  static getMaesterAttachmentIdByUrl(urlString): string {
     const { pathname } = new URL(urlString);
     const maesterAttachmentId = pathname.split(MAESTER_OBJECT_ID_ENDPOINT)[1];
     if (!maesterAttachmentId) {
