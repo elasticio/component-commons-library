@@ -1,12 +1,20 @@
 import chai from 'chai';
 import fs from 'fs';
 import nock from 'nock';
+import { Readable } from 'stream';
 
 const { expect } = chai;
 const maesterUri = 'https://ma.estr';
 process.env.ELASTICIO_OBJECT_STORAGE_TOKEN = 'token';
 process.env.ELASTICIO_OBJECT_STORAGE_URI = maesterUri;
 import { AttachmentProcessor, STORAGE_TYPE_PARAMETER, MAESTER_OBJECT_ID_ENDPOINT } from '../../lib/attachment/AttachmentProcessor';
+
+const formStream = (dataString: string): Readable => {
+  const stream = new Readable();
+  stream.push(dataString);
+  stream.push(null);
+  return stream;
+}
 
 describe('AttachmentProcessor', () => {
   const attachmentProcessor = new AttachmentProcessor();
@@ -36,19 +44,19 @@ describe('AttachmentProcessor', () => {
       expect(encodedResult).to.be.equal(expectedResult);
     });
   })
-  xdescribe('maester', () => {
-    it('Should successfully retrieve response', async () => {
+  describe('maester', () => {
+    it('Should successfully retrieve response (stream)', async () => {
       const attachmentOptions = {
-        'content-type': 'arraybuffer',
+        'content-type': 'stream',
         url: `${maesterUri}${MAESTER_OBJECT_ID_ENDPOINT}object_id?${STORAGE_TYPE_PARAMETER}=maester`,
       };
 
       const getById = nock(maesterUri)
         .get('/objects/object_id')
-        .reply(200, 'response');
+        .reply(200, formStream('i`m a stream'));
 
       const result: any = await attachmentProcessor.getAttachment(attachmentOptions.url, attachmentOptions['content-type']);
-      expect(result).to.be.equal('response');
+      expect(result.toString('base64')).to.be.equal({data: formStream('i`m a stream')}.toString());
       expect(getById.isDone()).to.be.equal(true);
     });
   })

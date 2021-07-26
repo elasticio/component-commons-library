@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { URL } from 'url';
-import { StorageClient, ObjectStorage, ObjectStorageWrapper } from '@elastic.io/maester-client/dist';
+import { StorageClient, ObjectStorage } from '@elastic.io/maester-client/dist';
 const restNodeClient = require('elasticio-rest-node')();
 
 export const STORAGE_TYPE_PARAMETER = 'storage_type';
@@ -30,7 +30,6 @@ export class AttachmentProcessor {
     switch (storageType) {
       case 'steward': return AttachmentProcessor.getStewardAttachment(axConfig);
       case 'maester': return AttachmentProcessor.getMaesterAttachment(axConfig);
-      case 'maester2': return AttachmentProcessor.getMaesterAttachment2(axConfig);
       default: throw new Error(`Storage type "${storageType}" is not supported`);
     }
   }
@@ -68,38 +67,8 @@ export class AttachmentProcessor {
     const client = new StorageClient(maesterCreds);
     const objectStorage = new ObjectStorage(maesterCreds, client);
     const maesterAttachmentId = AttachmentProcessor.getMaesterAttachmentIdFromUrl(axConfig.url);
-    try {
-      const response = await objectStorage.getById(maesterAttachmentId, axConfig.responseType);
-      return { data: response };
-    } catch (error: any) {
-      console.log('maester getById err', error);
-      if (error.response && error.response.data) {
-        console.log(error.response.data);
-      }
-      throw error;
-    }
-  }
-
-  static async getMaesterAttachment2(axConfig) {
-    const context = {
-      logger: {
-        info: () => {},
-        error: () => {},
-        debug: () => {},
-      },
-    };
-    const objectStorage = new ObjectStorageWrapper(context);
-    const maesterAttachmentId = AttachmentProcessor.getMaesterAttachmentIdFromUrl(axConfig.url);
-    try {
-      const response = await objectStorage.lookupObjectById(maesterAttachmentId, axConfig.responseType);
-      return { data: response };
-    } catch (error: any) {
-      console.log('maester getById err', error);
-      if (error.response && error.response.data) {
-        console.log(error.response.data);
-      }
-      throw error;
-    }
+    const response = await objectStorage.getById(maesterAttachmentId, axConfig.responseType);
+    return { data: response };
   }
 
   static getStorageTypeByUrl(urlString) {
