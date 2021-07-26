@@ -69,8 +69,8 @@ export class AttachmentProcessor {
     const objectStorage = new ObjectStorage(maesterCreds, client);
     const maesterAttachmentId = AttachmentProcessor.getMaesterAttachmentIdFromUrl(axConfig.url);
     try {
-      const response = await objectStorage.getById(maesterAttachmentId, 'stream');
-      return response;
+      const response = await objectStorage.getById(maesterAttachmentId, axConfig.responseType);
+      return { data: response };
     } catch (error: any) {
       console.log('maester getById err', error);
       if (error.response && error.response.data) {
@@ -91,8 +91,8 @@ export class AttachmentProcessor {
     const objectStorage = new ObjectStorageWrapper(context);
     const maesterAttachmentId = AttachmentProcessor.getMaesterAttachmentIdFromUrl(axConfig.url);
     try {
-      const resp = await objectStorage.lookupObjectById(maesterAttachmentId, 'stream');
-      return resp;
+      const response = await objectStorage.lookupObjectById(maesterAttachmentId, axConfig.responseType);
+      return { data: response };
     } catch (error: any) {
       console.log('maester getById err', error);
       if (error.response && error.response.data) {
