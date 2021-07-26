@@ -1,7 +1,4 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { Readable } from 'stream';
-import http from 'http';
-import https from 'https';
 import { URL } from 'url';
 import { StorageClient, ObjectStorage, ObjectStorageWrapper } from '@elastic.io/maester-client/dist';
 const restNodeClient = require('elasticio-rest-node')();
@@ -18,12 +15,8 @@ const REQUEST_MAX_BODY_LENGTH = process.env.REQUEST_MAX_BODY_LENGTH ? parseInt(p
 
 export class AttachmentProcessor {
 
-  private static httpAgent = new http.Agent({ keepAlive: true });
-
-  private static httpsAgent = new https.Agent({ keepAlive: true });
-
   async getAttachment(url: string, responseType: string) {
-    console.log(responseType);
+    console.log('getAttachment responseType:', responseType);
     const storageType = AttachmentProcessor.getStorageTypeByUrl(url);
     const axConfig = {
       url,
@@ -72,18 +65,14 @@ export class AttachmentProcessor {
   }
 
   static async getMaesterAttachment(axConfig) {
-    const axiosInstance = AttachmentProcessor.formMaesterAxiosInstance(axConfig, maesterCreds.uri);
-    const client = new StorageClient(maesterCreds, axiosInstance);
+    const client = new StorageClient(maesterCreds);
     const objectStorage = new ObjectStorage(maesterCreds, client);
     const maesterAttachmentId = AttachmentProcessor.getMaesterAttachmentIdFromUrl(axConfig.url);
     try {
-      const dataString = await objectStorage.getById(maesterAttachmentId);
-      const stream = new Readable();
-      stream.push(dataString);
-      stream.push(null);
-      return stream;
+      const response = await objectStorage.getById(maesterAttachmentId, 'stream');
+      return response;
     } catch (error: any) {
-      console.log('maester getById err');
+      console.log('maester getById err', error);
       if (error.response && error.response.data) {
         console.log(error.response.data);
       }
@@ -102,10 +91,10 @@ export class AttachmentProcessor {
     const objectStorage = new ObjectStorageWrapper(context);
     const maesterAttachmentId = AttachmentProcessor.getMaesterAttachmentIdFromUrl(axConfig.url);
     try {
-      const resp = await objectStorage.lookupObjectById(maesterAttachmentId);
+      const resp = await objectStorage.lookupObjectById(maesterAttachmentId, 'stream');
       return resp;
     } catch (error: any) {
-      console.log('maester getById err');
+      console.log('maester getById err', error);
       if (error.response && error.response.data) {
         console.log(error.response.data);
       }
@@ -117,19 +106,6 @@ export class AttachmentProcessor {
     const url = new URL(urlString);
     const storageType = url.searchParams.get(STORAGE_TYPE_PARAMETER);
     return storageType || DEFAULT_STORAGE_TYPE;
-  }
-
-  static formMaesterAxiosInstance(axConfig, baseURL) {
-    const ax = axios.create({
-      ...axConfig,
-      baseURL,
-      httpAgent: AttachmentProcessor.httpAgent,
-      httpsAgent: AttachmentProcessor.httpsAgent,
-      maxContentLength: Infinity,
-      maxRedirects: 0,
-    });
-    AttachmentProcessor.addRetryCountInterceptorToAxios(ax);
-    return ax;
   }
 
   static getMaesterAttachmentIdFromUrl(urlString): string {
