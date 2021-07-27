@@ -16,7 +16,6 @@ const REQUEST_MAX_BODY_LENGTH = process.env.REQUEST_MAX_BODY_LENGTH ? parseInt(p
 export class AttachmentProcessor {
 
   async getAttachment(url: string, responseType: string) {
-    console.log('getAttachment responseType:', responseType);
     const storageType = AttachmentProcessor.getStorageTypeByUrl(url);
     const axConfig = {
       url,

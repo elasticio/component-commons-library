@@ -18,7 +18,7 @@
 # Description
 This library provides some of the most common component development functionality in a simple, reusable way.
 
-To install, type 
+To install, type
 
 ```
 npm install @elastic.io/component-commons-library
@@ -32,7 +32,7 @@ A number of REST Client classes are available to use and extend to create Client
 Each of the REST Clients extends from the `NoAuthRestClient`, overriding the relevant methods.
 
 ### NoAuthRestClient
-[NoAuthRestClient](https://github.com/elasticio/component-commons-library/blob/master/lib/authentication/NoAuthRestClient.ts) class to make rest requests no no auth APIs by provided options. 
+[NoAuthRestClient](https://github.com/elasticio/component-commons-library/blob/master/lib/authentication/NoAuthRestClient.ts) class to make rest requests no no auth APIs by provided options.
 
 #### constructor(emitter, cfg)
 - emitter - EIO emitting context.
@@ -123,12 +123,12 @@ This class can handle, refresh and emit oauth2 EIO configuration.
 ### NtlmRestClient
 [NtlmRestClient](https://github.com/elasticio/component-commons-library/blob/master/lib/authentication/NtlmRestClient.ts)
 class extends [NoAuthRestClient](#NoAuthRestClient) class.
-Makes requests to resource with [NTLM authentication](https://en.wikipedia.org/wiki/NT_LAN_Manager). 
-Falls back to basic authentication if NTLM authentication fails. 
+Makes requests to resource with [NTLM authentication](https://en.wikipedia.org/wiki/NT_LAN_Manager).
+Falls back to basic authentication if NTLM authentication fails.
 Handles both V1 and V2 of the NTLM Protocol.
 
 #### constructor(emitter, cfg)
-- cfg.username - mandatory cfg parameter contains username for authorization.  Domain information should be combined with this field. (e.g. `SOMEDOMAIN\SomeUser`) 
+- cfg.username - mandatory cfg parameter contains username for authorization.  Domain information should be combined with this field. (e.g. `SOMEDOMAIN\SomeUser`)
 - cfg.password - mandatory cfg parameter contains password for authorization.
 
 ```
@@ -150,7 +150,8 @@ Contains functions to transform platform data that contains JSONata expressions
 The attachment processor function can be used to store attachments on the platform. It exposes the following functions
 
 - `uploadAttachment(streamContent)`, which will upload an attachment to the platform and return the result and file url
-- `getAttachment(url, contentType)`, which will retrieve an attachment from the platform
+- `getAttachment(url, contentType)`, which will retrieve an attachment from `steward` or `maester`. To specify storage - query parameter
+`storage_type` must be provided. To get items from `maester` storage - `?storage_type=maester` should added to the `url` argument. By default attachments are retrieved from `steward` storage, so `?storage_type=steward` is not obligated to be added to the `url` argument.
 
 Example:
 
@@ -161,6 +162,13 @@ const stream = new Stream();
 const result = await new AttachmentProcessor().uploadAttachment(stream);
 
 const storedFileUrl = result.config.url;
+```
+```javascript
+const { AttachmentProcessor } = require('@elastic.io/component-commons-library');
+
+const result = await new AttachmentProcessor().getAttachment('http://example.com'); // steward storage
+const result = await new AttachmentProcessor().getAttachment('http://example.com?storage_type=steward'); // steward storage
+const result = await new AttachmentProcessor().getAttachment('http://example.com?storage_type=maester'); // maester storage
 ```
 
 ## Logger

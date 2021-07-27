@@ -1,3 +1,6 @@
+## 1.1.6 (July 29, 2021)
+* Now `getAttachment` from `AttachmentProcessor` may retrieve items from `Maester`
+
 ## 1.1.5 (October 29, 2020)
 * Allow the response handler to be overridden at a per request level.
 * Bump dependencies.
