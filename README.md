@@ -151,7 +151,8 @@ The attachment processor function can be used to store attachments on the platfo
 
 - `uploadAttachment(streamContent)`, which will upload an attachment to the platform and return the result and file url
 - `getAttachment(url, contentType)`, which will retrieve an attachment from `steward` or `maester` storage. To specify the storage - query parameter
-`storage_type` must be provided. To get items from `maester` storage - `?storage_type=maester` should added to the `url` argument. By default attachments are retrieved from `steward` storage, so `?storage_type=steward` is not obligated to be added to the `url` argument.
+`storage_type` must be provided. To get items from `maester` storage - `?storage_type=maester` should added to the `url` argument. By default attachments are retrieved from `steward` storage, so `?storage_type=steward` is not obligated to be added to the `url` argument. `contentType` -
+one of [`stream`, `arraybuffer` ]
 
 Example:
 
@@ -166,9 +167,9 @@ const storedFileUrl = result.config.url;
 ```javascript
 const { AttachmentProcessor } = require('@elastic.io/component-commons-library');
 
-const result = await new AttachmentProcessor().getAttachment('http://example.com'); // steward storage
-const result = await new AttachmentProcessor().getAttachment('http://example.com?storage_type=steward'); // steward storage
-const result = await new AttachmentProcessor().getAttachment('http://example.com?storage_type=maester'); // maester storage
+const result = await new AttachmentProcessor().getAttachment('http://example.com', 'stream'); // steward storage
+const result = await new AttachmentProcessor().getAttachment('http://example.com?storage_type=steward', 'arraybuffer'); // steward storage
+const result = await new AttachmentProcessor().getAttachment('http://example.com?storage_type=maester', 'stream'); // maester storage
 ```
 
 ## Logger
