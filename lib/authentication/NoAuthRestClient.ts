@@ -24,7 +24,7 @@ export class NoAuthRestClient {
       throw new Error(`Error in making request to ${response.request.uri.href} Status code: ${response.statusCode}, Body: ${JSON.stringify(response.body)}`);
     }
 
-    this.emitter.logger.debug(`Response statusCode: ${response.statusCode}`);
+    this.emitter.logger.trace(`Response statusCode: ${response.statusCode}`);
     return response.body;
   }
 
@@ -43,7 +43,7 @@ export class NoAuthRestClient {
       ? `${removeTrailingSlash(this.cfg.resourceServerUrl.trim())}/${removeLeadingSlash(url.trim())}` // Trim trailing or leading '/'
       : url.trim();
 
-    this.emitter.logger.debug(`Making ${method} request...`);
+    this.emitter.logger.trace(`Making ${method} request...`);
 
     const requestOptions = {
       method,

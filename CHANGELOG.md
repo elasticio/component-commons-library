@@ -1,3 +1,6 @@
+## 1.1.7 (August 13, 2021)
+* Adjust existing logs levels more carefully
+
 ## 1.1.6 (July 29, 2021)
 * Now `getAttachment` from `AttachmentProcessor` may retrieve items from `Maester`
 
