@@ -37,7 +37,14 @@ export class NoAuthRestClient {
   //    if the provided URL is an absolute path. Defaults to true
   async makeRequest(options) {
     const {
-      url, method, body, headers = {}, urlIsSegment = true, isJson = true, responseHandler,
+      body,
+      headers = {},
+      forever = true,
+      isJson = true,
+      method,
+      responseHandler,
+      url,
+      urlIsSegment = true,
     } = options;
     const urlToCall = urlIsSegment
       ? `${removeTrailingSlash(this.cfg.resourceServerUrl.trim())}/${removeLeadingSlash(url.trim())}` // Trim trailing or leading '/'
@@ -46,11 +53,12 @@ export class NoAuthRestClient {
     this.emitter.logger.trace(`Making ${method} request...`);
 
     const requestOptions = {
-      method,
       body,
+      forever,
       headers,
-      url: urlToCall,
+      method,
       json: isJson,
+      url: urlToCall,
     };
 
     // eslint-disable-next-line no-underscore-dangle
