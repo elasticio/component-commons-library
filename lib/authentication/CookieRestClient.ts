@@ -1,18 +1,19 @@
 /* eslint-disable no-param-reassign,  no-underscore-dangle, class-methods-use-this */
-import { promisify } from 'util';
-import request from 'request';
+import axios, { AxiosInstance } from 'axios';
+import querystring from 'querystring';
+import toughCookie, { CookieJar } from 'tough-cookie';
 import { NoAuthRestClient } from './NoAuthRestClient';
-
-const requestCall = promisify(request);
 
 export class CookieRestClient extends NoAuthRestClient {
   loggedIn: boolean;
-  jar: any;
+  jar: CookieJar;
+  requestCall: AxiosInstance;
 
   constructor(emitter, cfg) {
     super(emitter, cfg);
-    this.jar = request.jar();
+    this.jar = new toughCookie.CookieJar();
     this.loggedIn = false;
+    this.requestCall = axios.create();
   }
 
   private basicResponseCheck(response) {
@@ -31,18 +32,22 @@ export class CookieRestClient extends NoAuthRestClient {
 
   async login() {
     this.emitter.logger.info('Performing Login ...');
-    const loginResponse = await requestCall({
+    const loginResponse = await this.requestCall({
       method: 'POST',
       url: this.cfg.loginUrl,
-      form: {
+      data: querystring.stringify({
         username: this.cfg.username,
         password: this.cfg.password,
-      },
+      }),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      jar: this.jar,
+      withCredentials: true,
     });
+
+    loginResponse.headers['set-cookie']
+      .forEach(async (cookie) => { await this.jar.setCookie(cookie, loginResponse.config.url!); });
+
     this.handleLoginResponse(loginResponse);
     this.loggedIn = true;
     this.emitter.logger.info('Login Complete.');
@@ -51,10 +56,13 @@ export class CookieRestClient extends NoAuthRestClient {
   async logout() {
     if (this.cfg.logoutUrl && this.loggedIn) {
       this.emitter.logger.info('Performing Logout...');
-      const logoutResponse = await requestCall({
+      const logoutResponse = await this.requestCall({
         method: this.cfg.logoutMethod,
         url: this.cfg.logoutUrl,
-        jar: this.jar,
+        withCredentials: true,
+        headers: {
+          Cookie: await this.jar.getCookieString(this.cfg.logoutUrl),
+        },
       });
       this.handleLogoutResponse(logoutResponse);
       this.loggedIn = false;
@@ -64,8 +72,10 @@ export class CookieRestClient extends NoAuthRestClient {
     }
   }
 
-  protected addAuthenticationToRequestOptions(requestOptions) {
-    requestOptions.jar = this.jar;
+  protected async addAuthenticationToRequestOptions(requestOptions) {
+    if (!requestOptions.headers) requestOptions.headers = {};
+    requestOptions.headers.Cookie = await this.jar.getCookieString(requestOptions.url);
+    requestOptions.withCredentials = true;
   }
 
   async makeRequest(options) {

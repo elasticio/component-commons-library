@@ -16,6 +16,9 @@ export class NtlmRestClient extends NoAuthRestClient {
           headers: requestOptions.headers,
         },
       });
+      response.data = response.body;
+      response.status = response.statusCode;
+      response.config = { url: response.request.uri.href.replace(/\/+$/, '') };
       return response;
     };
   }

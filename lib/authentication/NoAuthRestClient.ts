@@ -1,6 +1,5 @@
 /* eslint-disable no-param-reassign,  no-underscore-dangle, class-methods-use-this */
-import { promisify } from 'util';
-const request = promisify(require('request'));
+import axios from 'axios';
 import removeTrailingSlash from 'remove-trailing-slash';
 import removeLeadingSlash from 'remove-leading-slash';
 
@@ -12,7 +11,7 @@ export class NoAuthRestClient {
   constructor(emitter, cfg) {
     this.emitter = emitter;
     this.cfg = cfg;
-    this.request = request;
+    this.request = axios.create();
   }
 
   // @ts-ignore: no-unused-variable
@@ -21,7 +20,7 @@ export class NoAuthRestClient {
 
   protected handleRestResponse(response) {
     if (response.statusCode >= 400) {
-      throw new Error(`Error in making request to ${response.request.uri.href} Status code: ${response.statusCode}, Body: ${JSON.stringify(response.body)}`);
+      throw new Error(`Error in making request to ${response.config.url}/ Status code: ${response.statusCode}, Body: ${JSON.stringify(response.body)}`);
     }
 
     this.emitter.logger.debug(`Response statusCode: ${response.statusCode}`);
@@ -56,7 +55,14 @@ export class NoAuthRestClient {
     // eslint-disable-next-line no-underscore-dangle
     await this.addAuthenticationToRequestOptions(requestOptions);
 
-    const response = await this.request(requestOptions);
+    let response;
+    try {
+      response = await this.request(requestOptions);
+    } catch (err) {
+      response = err.response || err;
+    }
+    response.body = response.data;
+    response.statusCode = response.status;
 
     if (responseHandler) {
       return responseHandler(response, this.handleRestResponse.bind(this));
