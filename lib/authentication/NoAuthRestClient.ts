@@ -1,5 +1,7 @@
 /* eslint-disable no-param-reassign,  no-underscore-dangle, class-methods-use-this */
 import axios from 'axios';
+import http from 'http';
+import https from 'https';
 import removeTrailingSlash from 'remove-trailing-slash';
 import removeLeadingSlash from 'remove-leading-slash';
 
@@ -11,7 +13,10 @@ export class NoAuthRestClient {
   constructor(emitter, cfg) {
     this.emitter = emitter;
     this.cfg = cfg;
-    this.request = axios.create();
+    this.request = axios.create({
+      httpAgent: new http.Agent({ keepAlive: true }),
+      httpsAgent: new https.Agent({ keepAlive: true }),
+    });
   }
 
   // @ts-ignore: no-unused-variable
