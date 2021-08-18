@@ -1,3 +1,7 @@
+## 1.1.7 (August 18, 2021)
+* Migrate from `request` to `axios` as main lib
+* Keep alive connection by default
+
 ## 1.1.6 (July 29, 2021)
 * Now `getAttachment` from `AttachmentProcessor` may retrieve items from `Maester`
 
