@@ -51,6 +51,7 @@ options expects the following sub-variables:
   - headers: Any HTTP headers to add to the request. Defaults to {}
   - urlIsSegment: Whether to append to the base server url or if the provided URL is an absolute path. Defaults to true
   - isJson: If the request is in JSON format. Defaults to true
+  - axiosOptions: object, that will be implemented in request as additional parameters according [axios documentation](https://axios-http.com/docs/req_config). Defaults to {}
 
 
 Class can be extended to have custom authentication
