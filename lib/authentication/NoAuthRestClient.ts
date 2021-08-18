@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign,  no-underscore-dangle, class-methods-use-this */
-import { promisify } from 'util';
-const request = promisify(require('request'));
+import axios from 'axios';
+import http from 'http';
+import https from 'https';
 import removeTrailingSlash from 'remove-trailing-slash';
 import removeLeadingSlash from 'remove-leading-slash';
 
@@ -12,7 +13,10 @@ export class NoAuthRestClient {
   constructor(emitter, cfg) {
     this.emitter = emitter;
     this.cfg = cfg;
-    this.request = request;
+    this.request = axios.create({
+      httpAgent: new http.Agent({ keepAlive: true }),
+      httpsAgent: new https.Agent({ keepAlive: true }),
+    });
   }
 
   // @ts-ignore: no-unused-variable
@@ -21,10 +25,10 @@ export class NoAuthRestClient {
 
   protected handleRestResponse(response) {
     if (response.statusCode >= 400) {
-      throw new Error(`Error in making request to ${response.request.uri.href} Status code: ${response.statusCode}, Body: ${JSON.stringify(response.body)}`);
+      throw new Error(`Error in making request to ${response.config.url}/ Status code: ${response.statusCode}, Body: ${JSON.stringify(response.body)}`);
     }
 
-    this.emitter.logger.debug(`Response statusCode: ${response.statusCode}`);
+    this.emitter.logger.trace(`Response statusCode: ${response.statusCode}`);
     return response.body;
   }
 
@@ -37,26 +41,41 @@ export class NoAuthRestClient {
   //    if the provided URL is an absolute path. Defaults to true
   async makeRequest(options) {
     const {
-      url, method, body, headers = {}, urlIsSegment = true, isJson = true, responseHandler,
+      axiosOptions = {},
+      body,
+      headers = {},
+      isJson = true,
+      method,
+      responseHandler,
+      url,
+      urlIsSegment = true,
     } = options;
     const urlToCall = urlIsSegment
       ? `${removeTrailingSlash(this.cfg.resourceServerUrl.trim())}/${removeLeadingSlash(url.trim())}` // Trim trailing or leading '/'
       : url.trim();
 
-    this.emitter.logger.debug(`Making ${method} request...`);
+    this.emitter.logger.trace(`Making ${method} request...`);
 
     const requestOptions = {
-      method,
-      body,
+      ...axiosOptions,
       headers,
+      method,
+      data: body,
       url: urlToCall,
-      json: isJson,
     };
+    if (isJson) requestOptions.headers['Content-type'] = 'application/json';
 
     // eslint-disable-next-line no-underscore-dangle
     await this.addAuthenticationToRequestOptions(requestOptions);
 
-    const response = await this.request(requestOptions);
+    let response;
+    try {
+      response = await this.request(requestOptions);
+    } catch (err) {
+      response = err.response || err;
+    }
+    response.body = response.data;
+    response.statusCode = response.status;
 
     if (responseHandler) {
       return responseHandler(response, this.handleRestResponse.bind(this));

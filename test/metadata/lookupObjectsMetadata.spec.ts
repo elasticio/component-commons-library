@@ -6,11 +6,11 @@ import { Error } from 'tslint/lib/error';
 
 describe('Utils metadata resolver', () => {
   it('Retrieving object structure metadata with filter condition number = 3', async () => {
-    expect(await readMetaFilter(3, ['ID', 'CallbackURL', 'ClientID'], undefined, undefined)).to.deep.eql(expectedFilterObject);
+    expect(await readMetaFilter(3, ['ID', 'CallbackURL', 'ClientID'], undefined, undefined)).to.deep.equal(expectedFilterObject);
   });
 
   it('Retrieving object structure metadata with filter condition number = 0', async () => {
-    expect(await readMetaFilter(0, ['ID', 'CallbackURL', 'ClientID'], undefined, undefined)).to.deep.eql({});
+    expect(await readMetaFilter(0, ['ID', 'CallbackURL', 'ClientID'], undefined, undefined)).to.deep.equal({});
   });
 
   it('Retrieving object structure metadata with filter fieldNames undefined', async () => {
@@ -18,7 +18,7 @@ describe('Utils metadata resolver', () => {
       await readMetaFilter(3, undefined, undefined, undefined);
       throw new Error('Test should fail');
     } catch (e) {
-      expect(e.message).to.eql('Field names is required');
+      expect(e.message).to.equal('Field names is required');
     }
   });
 
@@ -27,7 +27,7 @@ describe('Utils metadata resolver', () => {
       await readMetaFilter(3, 'ID,Name', undefined, undefined);
       throw new Error('Test should fail');
     } catch (e) {
-      expect(e.message).to.eql('Field Names should be array');
+      expect(e.message).to.equal('Field Names should be array');
     }
   });
 
@@ -36,7 +36,7 @@ describe('Utils metadata resolver', () => {
       await readMetaFilter(3, ['ID', 'Name'], 'and,or', undefined);
       throw new Error('Test should fail');
     } catch (e) {
-      expect(e.message).to.eql('Conditions should be array');
+      expect(e.message).to.equal('Conditions should be array');
     }
   });
 
@@ -45,7 +45,7 @@ describe('Utils metadata resolver', () => {
       await readMetaFilter(3, ['ID', 'Name'], undefined, 'and,or');
       throw new Error('Test should fail');
     } catch (e) {
-      expect(e.message).to.eql('Criteria links should be array');
+      expect(e.message).to.equal('Criteria links should be array');
     }
   });
 });
