@@ -5,7 +5,7 @@ const request = promisify(require('request'));
 
 export class OAuth2RestClient extends NoAuthRestClient {
   private async fetchNewToken() {
-    this.emitter.logger.info('Fetching new token...');
+    this.emitter.logger.trace('Fetching new token...');
     const authTokenResponse = await request({
       uri: this.cfg.authorizationServerTokenEndpointUrl,
       method: 'POST',
@@ -21,7 +21,7 @@ export class OAuth2RestClient extends NoAuthRestClient {
       },
     });
 
-    this.emitter.logger.info('New token fetched...');
+    this.emitter.logger.trace('New token fetched...');
 
     if (authTokenResponse.statusCode >= 400) {
       throw new Error(`Error in authentication.  Status code: ${authTokenResponse.statusCode}, Body: ${JSON.stringify(authTokenResponse.body)}`);
@@ -37,7 +37,7 @@ export class OAuth2RestClient extends NoAuthRestClient {
     const tokenExpiryTime = new Date(this.cfg.oauth2.tokenExpiryTime);
     const now = new Date();
     if (now < tokenExpiryTime) {
-      this.emitter.logger.info('Previously valid token found.');
+      this.emitter.logger.trace('Previously valid token found.');
       return this.cfg.oauth2.access_token;
     }
 

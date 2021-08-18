@@ -36,7 +36,7 @@ export class CookieRestClient extends NoAuthRestClient {
   }
 
   async login() {
-    this.emitter.logger.info('Performing Login ...');
+    this.emitter.logger.trace('Performing Login ...');
     const loginResponse = await this.requestCall({
       method: 'POST',
       url: this.cfg.loginUrl,
@@ -55,12 +55,12 @@ export class CookieRestClient extends NoAuthRestClient {
 
     this.handleLoginResponse(loginResponse);
     this.loggedIn = true;
-    this.emitter.logger.info('Login Complete.');
+    this.emitter.logger.trace('Login Complete.');
   }
 
   async logout() {
     if (this.cfg.logoutUrl && this.loggedIn) {
-      this.emitter.logger.info('Performing Logout...');
+      this.emitter.logger.trace('Performing Logout...');
       const logoutResponse = await this.requestCall({
         method: this.cfg.logoutMethod,
         url: this.cfg.logoutUrl,
@@ -71,9 +71,9 @@ export class CookieRestClient extends NoAuthRestClient {
       });
       this.handleLogoutResponse(logoutResponse);
       this.loggedIn = false;
-      this.emitter.logger.info('Logout complete.');
+      this.emitter.logger.trace('Logout complete.');
     } else {
-      this.emitter.logger.info('Nothing to logout');
+      this.emitter.logger.trace('Nothing to logout');
     }
   }
 
