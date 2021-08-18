@@ -31,6 +31,8 @@ A number of REST Client classes are available to use and extend to create Client
 
 Each of the REST Clients extends from the `NoAuthRestClient`, overriding the relevant methods.
 
+By default enabled [keepAlive](https://nodejs.org/api/http.html#http_new_agent_options) for all requests
+
 ### NoAuthRestClient
 [NoAuthRestClient](https://github.com/elasticio/component-commons-library/blob/master/lib/authentication/NoAuthRestClient.ts) class to make rest requests no no auth APIs by provided options.
 
@@ -52,6 +54,21 @@ options expects the following sub-variables:
   - urlIsSegment: Whether to append to the base server url or if the provided URL is an absolute path. Defaults to true
   - isJson: If the request is in JSON format. Defaults to true
   - axiosOptions: object, that will be implemented in request as additional parameters according [axios documentation](https://axios-http.com/docs/req_config). Defaults to {}
+
+  Example:
+  options = {
+    url: 'https://example.com/',
+    method: 'get',
+    headers: {
+      foo: 'bar'
+    },
+    urlIsSegment: false,
+    isJson: true,
+    axiosOptions: {
+      timeout: 1000,
+      responseType: 'arraybuffer'
+    }
+  }
 
 
 Class can be extended to have custom authentication
