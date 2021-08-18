@@ -56,6 +56,7 @@ options expects the following sub-variables:
   - axiosOptions: object, that will be implemented in request as additional parameters according [axios documentation](https://axios-http.com/docs/req_config). Defaults to {}
 
   Example:
+  ```javascript
   options = {
     url: 'https://example.com/',
     method: 'get',
@@ -69,6 +70,7 @@ options expects the following sub-variables:
       responseType: 'arraybuffer'
     }
   }
+  ```
 
 
 Class can be extended to have custom authentication
