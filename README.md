@@ -29,7 +29,7 @@ npm install @elastic.io/component-commons-library
 ## REST Clients
 A number of REST Client classes are available to use and extend to create Clients for a given API.
 
-Each of the REST Clients extends from the `NoAuthRestClient`, overriding the relevant methods.
+Each of the REST Clients extends from the `NoAuthRestClient`, overriding the relevant methods. Exception is PlatformApiRestClient and PlatformApiLogicClient.
 
 ### NoAuthRestClient
 [NoAuthRestClient](https://github.com/elasticio/component-commons-library/blob/master/lib/authentication/NoAuthRestClient.ts) class to make rest requests no no auth APIs by provided options.
