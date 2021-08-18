@@ -28,7 +28,7 @@ export class NoAuthRestClient {
       throw new Error(`Error in making request to ${response.config.url}/ Status code: ${response.statusCode}, Body: ${JSON.stringify(response.body)}`);
     }
 
-    this.emitter.logger.debug(`Response statusCode: ${response.statusCode}`);
+    this.emitter.logger.trace(`Response statusCode: ${response.statusCode}`);
     return response.body;
   }
 
@@ -41,18 +41,25 @@ export class NoAuthRestClient {
   //    if the provided URL is an absolute path. Defaults to true
   async makeRequest(options) {
     const {
-      url, method, body, headers = {}, urlIsSegment = true, isJson = true, responseHandler, axiosOptions = {},
+      axiosOptions = {},
+      body,
+      headers = {},
+      isJson = true,
+      method,
+      responseHandler,
+      url,
+      urlIsSegment = true,
     } = options;
     const urlToCall = urlIsSegment
       ? `${removeTrailingSlash(this.cfg.resourceServerUrl.trim())}/${removeLeadingSlash(url.trim())}` // Trim trailing or leading '/'
       : url.trim();
 
-    this.emitter.logger.debug(`Making ${method} request...`);
+    this.emitter.logger.trace(`Making ${method} request...`);
 
     const requestOptions = {
       ...axiosOptions,
-      method,
       headers,
+      method,
       data: body,
       url: urlToCall,
     };
