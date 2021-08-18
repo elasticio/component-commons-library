@@ -31,7 +31,7 @@ A number of REST Client classes are available to use and extend to create Client
 
 Each of the REST Clients extends from the `NoAuthRestClient`, overriding the relevant methods.
 
-By default enabled [keepAlive](https://nodejs.org/api/http.html#http_new_agent_options) for all requests
+By default enabled [keepAlive](https://nodejs.org/api/http.html#http_new_agent_options) for all HTTP(S) requests
 
 ### NoAuthRestClient
 [NoAuthRestClient](https://github.com/elasticio/component-commons-library/blob/master/lib/authentication/NoAuthRestClient.ts) class to make rest requests no no auth APIs by provided options.
