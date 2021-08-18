@@ -1,5 +1,7 @@
 /* eslint-disable no-param-reassign,  no-underscore-dangle, class-methods-use-this */
 import axios, { AxiosInstance } from 'axios';
+import http from 'http';
+import https from 'https';
 import querystring from 'querystring';
 import toughCookie, { CookieJar } from 'tough-cookie';
 import { NoAuthRestClient } from './NoAuthRestClient';
@@ -13,7 +15,10 @@ export class CookieRestClient extends NoAuthRestClient {
     super(emitter, cfg);
     this.jar = new toughCookie.CookieJar();
     this.loggedIn = false;
-    this.requestCall = axios.create();
+    this.requestCall = axios.create({
+      httpAgent: new http.Agent({ keepAlive: true }),
+      httpsAgent: new https.Agent({ keepAlive: true }),
+    });
   }
 
   private basicResponseCheck(response) {
