@@ -1,8 +1,9 @@
-const { BasicAuthRestClient } = require('./BasicAuthRestClient');
-const removeTrailingSlash = require('remove-trailing-slash');
-const util = require('util');
+import { BasicAuthRestClient } from './BasicAuthRestClient';
+import removeTrailingSlash from 'remove-trailing-slash';
+import util from 'util';
 
-module.exports = class PlatformApiRestClient extends BasicAuthRestClient {
+export class PlatformApiRestClient extends BasicAuthRestClient {
+  usingTaskUser: boolean;
   constructor(emitter, cfg) {
     if (!!cfg.email !== !!cfg.apiKey) {
       throw new Error('Either both Email and API Key need to be provided or neither should be provided.');
@@ -44,4 +45,4 @@ module.exports = class PlatformApiRestClient extends BasicAuthRestClient {
     this.emitter.logger.trace(`Response statusCode: ${response.statusCode}, body: %j`, response.body);
     return response.body;
   }
-};
+}

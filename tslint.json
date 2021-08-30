@@ -12,5 +12,10 @@
       240
     ]
   },
-  "rulesDirectory": []
+  "rulesDirectory": [],
+  "linterOptions": {
+    "exclude": [
+        "lib/authentication/PlatformApiLogicClient.ts"
+    ]
+  }
 }

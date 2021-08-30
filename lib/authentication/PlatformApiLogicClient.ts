@@ -1,5 +1,5 @@
-const mapLimit = require('async/mapLimit');
-const PlatformApiRestClient = require('./platformApiRestClient');
+import { mapLimit } from 'async/mapLimit';
+import { PlatformApiRestClient } from './PlatformApiRestClient';
 
 async function sleep(amount) { await new Promise((r) => setTimeout(r, amount)); }
 
@@ -7,22 +7,18 @@ const DEFAULT_PARALLEL_PLATFORM_API_CALLS = process.env.PARALLEL_PLATFORM_API_CA
 const DEFAULT_OBJECTS_PER_PAGE = process.env.DEFAULT_OBJECTS_PER_PAGE || 20;
 
 interface AllFlowsForWorkspaceOptions {
-  objectsPerPage?: number,
-  parallelCalls?: number,
-  workspaceId?: string,
-}
-
-interface FlowListOptions {
-  parallelCalls?: number,
-  workspaceId?: string,
+  objectsPerPage?: number;
+  parallelCalls?: number;
+  workspaceId?: string;
 }
 
 interface WorkspaceListOptions {
-  objectsPerPage?: number,
-  parallelCalls?: number,
+  objectsPerPage?: number;
+  parallelCalls?: number;
 }
 
-module.exports = class PlatformApiLogicClient extends PlatformApiRestClient {
+export class PlatformApiLogicClient extends PlatformApiRestClient {
+  workspaceList: any;
   /**
    * Fetch all flows for a given workspace
    * @param {string} options.workspaceId Id of the workspace to search
@@ -406,7 +402,7 @@ module.exports = class PlatformApiLogicClient extends PlatformApiRestClient {
     const flowsForWS = await this.fetchAllFlowsForWorkspace({ workspaceId });
     const matchingFlows = flowsForWS.filter((wsFlow) => wsFlow.attributes.name === flowName);
     if (matchingFlows.length !== 1) {
-      throw new Error(`Found ${matchingFlows.length} matching flow insted of 1`);
+      throw new Error(`Found ${matchingFlows.length} matching flow instead of 1`);
     }
     return matchingFlows[0];
   }
@@ -582,4 +578,4 @@ module.exports = class PlatformApiLogicClient extends PlatformApiRestClient {
 
     return flow;
   }
-};
+}

@@ -9,6 +9,8 @@
     - [ApiKeyRestClient](#ApiKeyRestClient)
     - [CookieRestClient](#CookieRestClient)
     - [OAuth2AuthorizationCodeRestClient](#OAuth2AuthorizationCodeRestClient)
+    - [PlatformApiRestClient](#PlatformApiRestClient)
+    - [PlatformApiLogicClient](#PlatformApiLogicClient)
   - [JSON Schema Converter](#JSON-Schema-Converter)
   - [JSON Transformation](#JSON-Transformation)
   - [Attachment Processor](#Attachment-Processor)
@@ -134,6 +136,49 @@ Handles both V1 and V2 of the NTLM Protocol.
 ```
 const Client = new NtlmRestClient(emitter, cfg);
 ```
+
+### PlatformApiRestClient
+[PlatformApiRestClient](https://github.com/elasticio/component-commons-library/blob/master/lib/authentication/PlatformApiRestClient.ts)
+class extends [BasicAuthRestClient](#BasicAuthRestClient) class.
+Implements method for checking of response correctness (like containment of status code, correct JSON content type of headers end other expected response fields).
+
+#### constructor(emitter, cfg)
+- emitter - EIO emitting context.
+- cfg - configuration of EIO component object.
+
+```
+const Client = new PlatformApiRestClient(emitter, cfg);
+```
+
+### PlatformApiLogicClient
+[PlatformApiLogicClient](https://github.com/elasticio/component-commons-library/blob/master/lib/authentication/PlatformApiLogicClient.ts)
+class extends [PlatformApiRestClient](#PlatformApiRestClient) class.
+Contains useful methods to manipulate flow's state to set it either to active running or to inactive stopped, searching flows, workspaces, credentials and more.
+
+#### constructor(emitter, cfg)
+- emitter - EIO emitting context.
+- cfg - configuration of EIO component object.
+
+```
+const Client = new PlatformApiLogicClient(emitter, cfg);
+```
+
+#### List of methods
+- fetchAllFlowsForWorkspace(options) - Fetch all flows for a given workspace
+- fetchAllCredentialsForWorkspace(options) - Fetch all credentials for a given workspace
+- fetchComponentsAccessibleFromContract(options) - Fetch All Components Accessible From a Given Workspace
+- splitParallelization(maxParallelization, splitFactor) - Helping method to calculate right number of parallel calls
+- fetchFlowList(options) - Fetches a list of flows
+- fetchWorkspaceList(options) - Fetch a list of all workspaces across all contracts for a user
+- fetchWorkspaceId(workspaceUniqueCriteria) - Given a set of unique criteria, find the workspace that matches
+- removeNonWritableProperties(flow, includeDataSamples) - Given a flow, remove the properties of the flow that are regularly changed by the system such as last executed time
+- fetchFlowId(flowUniqueCriteria) - Fetch flow bu it's unique criteria
+- fetchFlowById(id) - Fetch flow bu it's id
+- fetchFlowByNameAndWorkspaceId(flowName, workspaceId) - 
+- changeFlowState(options) - Given a flow, change the flow to a given state (running, stopped, etc)
+- startFlow(flowId, options = {}) - sets the flow to active running state
+- stopFlow(flowId, options = {}) - sets the flow to inactive stopped state
+- hydrateFlow(options) - Hydrates the flow using removeNonWritableProperties method, but additionally enriches the flow with all data samples, credential names, command and component Id fields.
 
 ## JSON Schema Converter
 Contains tools for JSON metadata generation
