@@ -1,7 +1,7 @@
 import { mapLimit } from 'async/mapLimit';
 import { PlatformApiRestClient } from './PlatformApiRestClient';
 
-async function sleep(amount) { await new Promise((r) => setTimeout(r, amount)); }
+async function sleep(amount) { await new Promise(r => setTimeout(r, amount)); }
 
 const DEFAULT_PARALLEL_PLATFORM_API_CALLS = process.env.PARALLEL_PLATFORM_API_CALLS || 20;
 const DEFAULT_OBJECTS_PER_PAGE = process.env.DEFAULT_OBJECTS_PER_PAGE || 20;
@@ -40,7 +40,7 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
 
     const objectCount = objectCountResponse.meta.total;
     const numPages = Math.ceil(objectCount / Number(objectsPerPage));
-    const pageRange = Array.from({ length: numPages }, (_x, i) => i + 1);
+    const pageRange = Array.from({ length: numPages }, (_X, i) => i + 1);
     await mapLimit(pageRange, parallelCalls, async (pageNumber) => {
       const pageResult = await this.makeRequest({
         url: `/flows?workspace_id=${workspaceId}&page[size]=${objectsPerPage}&page[number]=${pageNumber}`,
@@ -71,7 +71,7 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
       method: 'GET',
       url: `/credentials?workspace_id=${workspaceId}`,
     });
-    return credentialsResponse.data.map((credential) => ({
+    return credentialsResponse.data.map(credential => ({
       credentialId: credential.id,
       credentialName: credential.attributes.name.trim(),
       componentId: credential.relationships.component.data.id,
@@ -96,7 +96,7 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
       method: 'GET',
       url: `/components?contract_id=${contractId}`,
     });
-    return componentsResponse.data.map((component) => ({
+    return componentsResponse.data.map(component => ({
       componentId: component.id,
       componentName: component.attributes.name,
       componentDevTeam: component.attributes.team_name,
@@ -145,10 +145,10 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
     const workspaces = await this.fetchWorkspaceList({});
     if (!workspaceId) {
       const nonFlatFlows = await mapLimit(workspaces, realSplitFactor,
-        async (workspace) => this.fetchAllFlowsForWorkspace({
-          parallelCalls: parallelizationPerTask,
-          workspaceId: workspace.workspaceId,
-        }));
+                                          async workspace => this.fetchAllFlowsForWorkspace({
+                                            parallelCalls: parallelizationPerTask,
+                                            workspaceId: workspace.workspaceId,
+                                          }));
       flows = nonFlatFlows.flat();
     } else {
       flows = await this.fetchAllFlowsForWorkspace({
@@ -159,7 +159,7 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
 
     return flows.map((flow) => {
       const matchingWorkspaces = workspaces
-        .filter((workspace) => workspace.workspaceId === flow.relationships.workspace.data.id);
+        .filter(workspace => workspace.workspaceId === flow.relationships.workspace.data.id);
       if (matchingWorkspaces.length !== 1) {
         throw new Error('Failed to find matching workspace');
       }
@@ -209,9 +209,9 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
         });
         const contract = contractRequest.data;
         this.workspaceList = [{
+          contractId,
           workspaceId: workspace.id,
           workspaceName: workspace.attributes.name,
-          contractId,
           contractName: contract.attributes.name,
           contractDetails: contract,
           workspaceDetails: workspace,
@@ -224,7 +224,7 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
         url: '/contracts?page[size]=1',
       });
       const contractsCount = contractsRequest.meta.total;
-      const contractsPageRange = Array.from({ length: contractsCount }, (_x, i) => i + 1);
+      const contractsPageRange = Array.from({ length: contractsCount }, (_X, i) => i + 1);
       const nonFlatContracts = await mapLimit(
         contractsPageRange,
         parallelCalls,
@@ -242,7 +242,7 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
         /* eslint-disable-next-line no-param-reassign */
         soFar[contract.id] = contract;
         return soFar;
-      }, {});
+      },                                           {});
 
       const nonFlatWorkspaces = await mapLimit(
         contracts,
@@ -255,7 +255,7 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
           });
           const objectCount = workspacesCountResponse.meta.total;
           const numPages = Math.ceil(objectCount / Number(objectsPerPage));
-          const pageRange = Array.from({ length: numPages }, (_x, i) => i + 1);
+          const pageRange = Array.from({ length: numPages }, (_X, i) => i + 1);
 
           return mapLimit(
             pageRange,
@@ -281,9 +281,9 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
       this.workspaceList = workspaces.map((workspace) => {
         const contractId = workspace.relationships.contract.data.id;
         return {
+          contractId,
           workspaceId: workspace.id,
           workspaceName: workspace.attributes.name,
-          contractId,
           contractName: contractsDictionary[contractId].attributes.name,
           contractDetails: contractsDictionary[contractId],
           workspaceDetails: workspace,
@@ -310,9 +310,9 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
   async fetchWorkspaceId(workspaceUniqueCriteria) {
     const workspaces = await this.fetchWorkspaceList({});
 
-    const matchingWorkspaces = workspaces.filter((workspace) => Object
+    const matchingWorkspaces = workspaces.filter(workspace => Object
       .keys(workspaceUniqueCriteria.value)
-      .every((key) => (key.includes('flow') ? true : workspaceUniqueCriteria.value[key] === workspace[key])));
+      .every(key => (key.includes('flow') ? true : workspaceUniqueCriteria.value[key] === workspace[key])));
 
     if (matchingWorkspaces.length !== 1) {
       this.emitter.logger.trace('Found %d workspaces for criteria: %j, throwing error', matchingWorkspaces.length, workspaceUniqueCriteria);
@@ -374,9 +374,9 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
   async fetchFlowId(flowUniqueCriteria) {
     const flows = await this.fetchFlowList({});
 
-    const matchingFlows = flows.filter((flow) => Object
+    const matchingFlows = flows.filter(flow => Object
       .keys(flowUniqueCriteria.value)
-      .every((key) => flowUniqueCriteria.value[key] === flow[key]));
+      .every(key => flowUniqueCriteria.value[key] === flow[key]));
 
     if (matchingFlows.length === 0) {
       return null;
@@ -400,7 +400,7 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
   // much faster and less load to API than fetchFlowId
   async fetchFlowByNameAndWorkspaceId(flowName, workspaceId) {
     const flowsForWS = await this.fetchAllFlowsForWorkspace({ workspaceId });
-    const matchingFlows = flowsForWS.filter((wsFlow) => wsFlow.attributes.name === flowName);
+    const matchingFlows = flowsForWS.filter(wsFlow => wsFlow.attributes.name === flowName);
     if (matchingFlows.length !== 1) {
       throw new Error(`Found ${matchingFlows.length} matching flow instead of 1`);
     }
@@ -470,18 +470,18 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
   async startFlow(flowId, options = {}) {
     return this.changeFlowState({
       ...options,
+      flowId,
       action: 'start',
       desiredStatus: 'active',
-      flowId,
     });
   }
 
   async stopFlow(flowId, options = {}) {
     return this.changeFlowState({
       ...options,
+      flowId,
       action: 'stop',
       desiredStatus: 'inactive',
-      flowId,
     });
   }
 
@@ -496,8 +496,8 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
     // Enrich all data samples
     if (includeDataSamples) {
       const sampleIds = flow.attributes.graph.nodes
-        .filter((node) => node.selected_data_samples)
-        .map((node) => node.selected_data_samples)
+        .filter(node => node.selected_data_samples)
+        .map(node => node.selected_data_samples)
         .flat();
       const samples = await mapLimit(sampleIds, parallelCalls, async (sampleId) => {
         let sampleRequest;
@@ -519,17 +519,17 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
         /* eslint-disable-next-line no-param-reassign */
         soFar[sample.sampleId] = sample.sample;
         return soFar;
-      }, {});
+      },                                      {});
       flow.attributes.graph.nodes
-        .filter((node) => node.selected_data_samples)
+        .filter(node => node.selected_data_samples)
         .forEach((node) => {
           /* eslint-disable-next-line no-param-reassign */
           node.selected_data_samples = node.selected_data_samples
-            .map((sampleId) => sampleDictionary[sampleId]);
+            .map(sampleId => sampleDictionary[sampleId]);
         });
     } else {
       flow.attributes.graph.nodes
-        .filter((node) => node.selected_data_samples)
+        .filter(node => node.selected_data_samples)
         .forEach((node) => {
           /* eslint-disable-next-line no-param-reassign */
           delete node.selected_data_samples;
@@ -548,7 +548,7 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
     flow.attributes.graph.nodes.forEach((node) => {
       if (node.credentials_id) {
         const matchingCredentials = credentialsList
-          .filter((credential) => credential.credentialId === node.credentials_id);
+          .filter(credential => credential.credentialId === node.credentials_id);
         if (matchingCredentials.length !== 1) {
           throw new Error('Expected a single matching credential');
         }

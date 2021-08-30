@@ -140,7 +140,7 @@ const Client = new NtlmRestClient(emitter, cfg);
 ### PlatformApiRestClient
 [PlatformApiRestClient](https://github.com/elasticio/component-commons-library/blob/master/lib/authentication/PlatformApiRestClient.ts)
 class extends [BasicAuthRestClient](#BasicAuthRestClient) class.
-Implements method for checking of response correctness (like containment of status code, correct JSON content type of headers end other expected response fields).
+The method inside this class checks for the status code 200, if not, then throws an error. And also checks that the response came with the correct data in the JSON format and the other expected response headers.
 
 #### constructor(emitter, cfg)
 - emitter - EIO emitting context.
@@ -172,9 +172,9 @@ const Client = new PlatformApiLogicClient(emitter, cfg);
 - fetchWorkspaceList(options) - Fetch a list of all workspaces across all contracts for a user
 - fetchWorkspaceId(workspaceUniqueCriteria) - Given a set of unique criteria, find the workspace that matches
 - removeNonWritableProperties(flow, includeDataSamples) - Given a flow, remove the properties of the flow that are regularly changed by the system such as last executed time
-- fetchFlowId(flowUniqueCriteria) - Fetch flow bu it's unique criteria
-- fetchFlowById(id) - Fetch flow bu it's id
-- fetchFlowByNameAndWorkspaceId(flowName, workspaceId) - 
+- fetchFlowId(flowUniqueCriteria) - Fetch flow by it's unique criteria
+- fetchFlowById(id) - Fetch flow by it's id
+- fetchFlowByNameAndWorkspaceId(flowName, workspaceId) - Fetch flow by flow name and workspace id
 - changeFlowState(options) - Given a flow, change the flow to a given state (running, stopped, etc)
 - startFlow(flowId, options = {}) - sets the flow to active running state
 - stopFlow(flowId, options = {}) - sets the flow to inactive stopped state
