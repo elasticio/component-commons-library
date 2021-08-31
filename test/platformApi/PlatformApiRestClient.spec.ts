@@ -1,7 +1,7 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import { Logger } from '../../lib';
-import { PlatformApiRestClient } from '../../lib/authentication/PlatformApiRestClient';
+import { PlatformApiRestClient } from '../../lib/platformApi/PlatformApiRestClient';
 import * as flow from '../helpers/flow.json';
 
 const { expect } = chai;

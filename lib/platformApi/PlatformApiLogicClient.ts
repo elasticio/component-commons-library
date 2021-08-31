@@ -19,6 +19,8 @@ interface WorkspaceListOptions {
 
 export class PlatformApiLogicClient extends PlatformApiRestClient {
   workspaceList: any;
+  makeRequest: any;
+  emitter: any;
   /**
    * Fetch all flows for a given workspace
    * @param {string} options.workspaceId Id of the workspace to search

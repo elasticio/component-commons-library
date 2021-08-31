@@ -1,7 +1,7 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import { Logger } from '../../lib';
-import { PlatformApiLogicClient } from '../../lib/authentication/PlatformApiLogicClient';
+import { PlatformApiLogicClient } from '../../lib/platformApi/PlatformApiLogicClient';
 import * as allFlowsForWorkspace from '../helpers/allFlowsForWorkspace.json';
 import * as allCredentialsForWorkspace from '../helpers/allCredentialsForWorkspace.json';
 import * as componentsAccessibleFromContract from '../helpers/componentsAccessibleFromContract.json';

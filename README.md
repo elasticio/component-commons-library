@@ -9,6 +9,7 @@
     - [ApiKeyRestClient](#ApiKeyRestClient)
     - [CookieRestClient](#CookieRestClient)
     - [OAuth2AuthorizationCodeRestClient](#OAuth2AuthorizationCodeRestClient)
+  - [Platform API Clients](#PlatformAPI-Clients)
     - [PlatformApiRestClient](#PlatformApiRestClient)
     - [PlatformApiLogicClient](#PlatformApiLogicClient)
   - [JSON Schema Converter](#JSON-Schema-Converter)
@@ -137,6 +138,9 @@ Handles both V1 and V2 of the NTLM Protocol.
 const Client = new NtlmRestClient(emitter, cfg);
 ```
 
+## Platform API Clients
+A number of Platform API Client classes are available to use and extend them to create Clients for Platform API.
+
 ### PlatformApiRestClient
 [PlatformApiRestClient](https://github.com/elasticio/component-commons-library/blob/master/lib/authentication/PlatformApiRestClient.ts)
 class extends [BasicAuthRestClient](#BasicAuthRestClient) class.
@@ -176,8 +180,8 @@ const Client = new PlatformApiLogicClient(emitter, cfg);
 - fetchFlowById(id) - Fetch flow by it's id
 - fetchFlowByNameAndWorkspaceId(flowName, workspaceId) - Fetch flow by flow name and workspace id
 - changeFlowState(options) - Given a flow, change the flow to a given state (running, stopped, etc)
-- startFlow(flowId, options = {}) - sets the flow to active running state
-- stopFlow(flowId, options = {}) - sets the flow to inactive stopped state
+- startFlow(flowId, options) - sets the flow to active running state
+- stopFlow(flowId, options) - sets the flow to inactive stopped state
 - hydrateFlow(options) - Hydrates the flow using removeNonWritableProperties method, but additionally enriches the flow with all data samples, credential names, command and component Id fields.
 
 ## JSON Schema Converter

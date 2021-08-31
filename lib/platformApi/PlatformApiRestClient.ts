@@ -1,4 +1,4 @@
-import { BasicAuthRestClient } from './BasicAuthRestClient';
+import { BasicAuthRestClient } from '../authentication/BasicAuthRestClient';
 import removeTrailingSlash from 'remove-trailing-slash';
 import util from 'util';
 
