@@ -26,7 +26,7 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
    * @param {string} options.workspaceId Id of the workspace to search
    * @returns {Promise<[]>} An array of flows
    */
-  async fetchAllFlowsForWorkspace(options: AllFlowsForWorkspaceOptions): Promise<any[]> {
+  async fetchAllFlowsForWorkspace(options: AllFlowsForWorkspaceOptions = {}): Promise<any[]> {
     const {
       objectsPerPage = DEFAULT_OBJECTS_PER_PAGE,
       parallelCalls = DEFAULT_PARALLEL_PLATFORM_API_CALLS,
@@ -64,7 +64,7 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
    *     componentId: string,
    * }}]>}
    */
-  async fetchAllCredentialsForWorkspace(options) {
+  async fetchAllCredentialsForWorkspace(options: any = {}) {
     const {
       workspaceId,
     } = options;
@@ -89,7 +89,7 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
    *    componentDevTeam: string
    * }}]>}
    */
-  async fetchComponentsAccessibleFromContract(options) {
+  async fetchComponentsAccessibleFromContract(options: any = {}) {
     const {
       contractId,
     } = options;
@@ -132,7 +132,7 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
    *     workspaceDetails: object
    * }}]>}
    */
-  async fetchFlowList(options: any) {
+  async fetchFlowList(options: any = {}) {
     const {
       parallelCalls = DEFAULT_PARALLEL_PLATFORM_API_CALLS,
       workspaceId,
@@ -147,10 +147,10 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
     const workspaces = await this.fetchWorkspaceList({});
     if (!workspaceId) {
       const nonFlatFlows = await mapLimit(workspaces, realSplitFactor,
-      async workspace => this.fetchAllFlowsForWorkspace({
-        parallelCalls: parallelizationPerTask,
-        workspaceId: workspace.workspaceId,
-      }));
+                                          async workspace => this.fetchAllFlowsForWorkspace({
+                                            parallelCalls: parallelizationPerTask,
+                                            workspaceId: workspace.workspaceId,
+                                          }));
       flows = nonFlatFlows.flat();
     } else {
       flows = await this.fetchAllFlowsForWorkspace({
@@ -187,7 +187,7 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
    *     workspaceDetails: object
    * }}]>}
    */
-  async fetchWorkspaceList(options: WorkspaceListOptions) {
+  async fetchWorkspaceList(options: WorkspaceListOptions = {}) {
     if (!this.workspaceList) {
       const {
         objectsPerPage = DEFAULT_OBJECTS_PER_PAGE,
@@ -420,7 +420,7 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
    * @returns {Promise<>}
    */
   /* eslint-disable no-await-in-loop */
-  async changeFlowState(options) {
+  async changeFlowState(options: any = {}) {
     const {
       timeout = 90000,
       pollInterval = 1000,
@@ -487,7 +487,7 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
     });
   }
 
-  async hydrateFlow(options) {
+  async hydrateFlow(options: any = {}) {
     const {
       flow,
       includeDataSamples,
@@ -521,7 +521,7 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
         /* eslint-disable-next-line no-param-reassign */
         soFar[sample.sampleId] = sample.sample;
         return soFar;
-      }, {});
+      },                                      {});
       flow.attributes.graph.nodes
         .filter(node => node.selected_data_samples)
         .forEach((node) => {
