@@ -1,4 +1,4 @@
-import { mapLimit } from 'async/mapLimit';
+import mapLimit from 'async/mapLimit';
 import { PlatformApiRestClient } from './PlatformApiRestClient';
 
 async function sleep(amount) { await new Promise(r => setTimeout(r, amount)); }
@@ -147,10 +147,10 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
     const workspaces = await this.fetchWorkspaceList({});
     if (!workspaceId) {
       const nonFlatFlows = await mapLimit(workspaces, realSplitFactor,
-                                          async workspace => this.fetchAllFlowsForWorkspace({
-                                            parallelCalls: parallelizationPerTask,
-                                            workspaceId: workspace.workspaceId,
-                                          }));
+      async workspace => this.fetchAllFlowsForWorkspace({
+        parallelCalls: parallelizationPerTask,
+        workspaceId: workspace.workspaceId,
+      }));
       flows = nonFlatFlows.flat();
     } else {
       flows = await this.fetchAllFlowsForWorkspace({
@@ -508,7 +508,7 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
             method: 'GET',
             url: `/data-samples/${sampleId}`,
           });
-        } catch (e) {
+        } catch (e: any) {
           throw new Error(`Can't extract data sample with id: ${sampleId}. Error: ${e.message}`);
         }
         const sample = sampleRequest.data.attributes;
@@ -521,7 +521,7 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
         /* eslint-disable-next-line no-param-reassign */
         soFar[sample.sampleId] = sample.sample;
         return soFar;
-      },                                      {});
+      }, {});
       flow.attributes.graph.nodes
         .filter(node => node.selected_data_samples)
         .forEach((node) => {
