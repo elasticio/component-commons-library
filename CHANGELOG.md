@@ -1,3 +1,6 @@
+## 1.1.7 (August 30, 2021)
+* Added `PlatformApiRestClient` and `PlatformApiLogicClient` classes from `IPaaS-core-component`
+
 ## 1.1.6 (July 29, 2021)
 * Now `getAttachment` from `AttachmentProcessor` may retrieve items from `Maester`
 

@@ -1,6 +1,6 @@
 {
   "name": "@elastic.io/component-commons-library",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "description": "Library for most common component development cases",
   "author": {
     "name": "elastic.io GmbH",
@@ -34,6 +34,7 @@
     "@elastic.io/ntlm-client": "1.0.0",
     "@types/node": "14.14.3",
     "axios": "0.21.0",
+    "async": "3.2.0",
     "bunyan": "1.8.14",
     "bunyan-format": "0.2.1",
     "bunyan-serializers": "0.0.2",
