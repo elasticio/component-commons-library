@@ -33,7 +33,7 @@
     "@elastic.io/maester-client": "3.4.1",
     "@elastic.io/ntlm-client": "1.0.0",
     "@types/node": "14.14.3",
-    "axios": "0.21.0",
+    "axios": "0.21.2",
     "async": "3.2.0",
     "bunyan": "1.8.14",
     "bunyan-format": "0.2.1",
