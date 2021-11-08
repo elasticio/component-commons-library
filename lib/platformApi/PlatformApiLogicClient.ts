@@ -81,6 +81,33 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
   }
 
   /**
+ * Fetch all credentials for a given workspace
+ * @param {string} options.workspaceId
+ * @returns {Promise<[{{
+   *     secretId: string,
+   *     secretName: string,
+   *     componentIds: string[],
+   * }}]>}
+   */
+  async fetchAllSecretsForWorkspace(options: any = {}) {
+    const { workspaceId } = options;
+    const secrets = await this.makeRequest({ method: 'GET', url: `/workspaces/${workspaceId}/secrets` });
+    const resp: any = {};
+
+    for (const secret of secrets.data) {
+      resp.secretId = secret.id;
+      resp.secretName = secret.attributes.name.trim();
+      if (secret.relationships.component) resp.componentIds = [secret.relationships.component.data.id];
+      if (secret.relationships.auth_client) {
+        const clientId = secret.relationships.auth_client.data.id;
+        const clientResponse = await this.makeRequest({ method: 'GET', url: `/auth-clients/${clientId}` });
+        resp.componentIds = clientResponse.relationships.components.data.map(x => x.id);
+      }
+    }
+    return resp;
+  }
+
+  /**
    * Fetch All Components Accessible From a Given Workspace
    * @param {string} options.contractId Contract ID
    * @returns {Promise<[{{
