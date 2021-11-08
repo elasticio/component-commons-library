@@ -589,6 +589,20 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
       }
     });
 
+    const secretsList = await this.fetchAllSecretsForWorkspace({
+      workspaceId: flow.relationships.workspace.data.id,
+    });
+    flow.attributes.graph.nodes.forEach((node) => {
+      if (node.secret_id) {
+        const matchingSecrets = secretsList.filter(secret => secret.secretId === node.secret_id);
+        if (matchingSecrets.length !== 1) throw new Error('Expected a single matching secret');
+        /* eslint-disable-next-line no-param-reassign */
+        node.secret_id = {
+          secretId: matchingSecrets[0].secretId,
+          secretName: matchingSecrets[0].secretName,
+        };
+      }
+    });
     // Enrich command and component Id fields
     flow.attributes.graph.nodes.forEach((node) => {
       const commandParts = node.command.split(/[/:@]/);
