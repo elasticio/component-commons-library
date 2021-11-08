@@ -92,17 +92,19 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
   async fetchAllSecretsForWorkspace(options: any = {}) {
     const { workspaceId } = options;
     const secrets = await this.makeRequest({ method: 'GET', url: `/workspaces/${workspaceId}/secrets` });
-    const resp: any = {};
+    const resp: any = [];
 
     for (const secret of secrets.data) {
-      resp.secretId = secret.id;
-      resp.secretName = secret.attributes.name.trim();
-      if (secret.relationships.component) resp.componentIds = [secret.relationships.component.data.id];
+      const secretId = secret.id;
+      const secretName = secret.attributes.name.trim();
+      let componentIds: any = [];
+      if (secret.relationships.component) componentIds.push(secret.relationships.component.data.id)
       if (secret.relationships.auth_client) {
         const clientId = secret.relationships.auth_client.data.id;
         const clientResponse = await this.makeRequest({ method: 'GET', url: `/auth-clients/${clientId}` });
-        resp.componentIds = clientResponse.relationships.components.data.map(x => x.id);
+        componentIds = clientResponse.relationships.components.data.map(x => x.id);
       }
+      resp.push({ secretId, secretName, componentIds })
     }
     return resp;
   }
@@ -174,10 +176,10 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
     const workspaces = await this.fetchWorkspaceList({});
     if (!workspaceId) {
       const nonFlatFlows = await mapLimit(workspaces, realSplitFactor,
-                                          async workspace => this.fetchAllFlowsForWorkspace({
-                                            parallelCalls: parallelizationPerTask,
-                                            workspaceId: workspace.workspaceId,
-                                          }));
+        async workspace => this.fetchAllFlowsForWorkspace({
+          parallelCalls: parallelizationPerTask,
+          workspaceId: workspace.workspaceId,
+        }));
       flows = nonFlatFlows.flat();
     } else {
       flows = await this.fetchAllFlowsForWorkspace({
@@ -271,7 +273,7 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
         /* eslint-disable-next-line no-param-reassign */
         soFar[contract.id] = contract;
         return soFar;
-      },                                           {});
+      }, {});
 
       const nonFlatWorkspaces = await mapLimit(
         contracts,
@@ -548,7 +550,7 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
         /* eslint-disable-next-line no-param-reassign */
         soFar[sample.sampleId] = sample.sample;
         return soFar;
-      },                                      {});
+      }, {});
       flow.attributes.graph.nodes
         .filter(node => node.selected_data_samples)
         .forEach((node) => {
