@@ -81,6 +81,40 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
   }
 
   /**
+ * Fetch all credentials for a given workspace
+ * @param {string} options.workspaceId
+ * @returns {Promise<[{{
+   *     secretId: string,
+   *     secretName: string,
+   *     componentIds: string[],
+   * }}]>}
+   */
+  async fetchAllSecretsForWorkspace(options: any = {}) {
+    const { workspaceId } = options;
+    if (!workspaceId) throw new Error(`workspaceId not provided, can't fetch secrets`)
+    const secrets = await this.makeRequest({ method: 'GET', url: `/workspaces/${workspaceId}/secrets` });
+    const resp: any = [];
+
+    for (const secret of secrets.data) {
+      const secretId = secret.id;
+      const secretName = secret.attributes.name.trim();
+      let componentIds: any = [];
+      try {
+        if (secret.relationships.component) componentIds.push(secret.relationships.component.data.id);
+        if (secret.relationships.auth_client) {
+          const clientId = secret.relationships.auth_client.data.id;
+          const clientResponse = await this.makeRequest({ method: 'GET', url: `/auth-clients/${clientId}` });
+          componentIds = clientResponse.data.relationships.components.data.map(x => x.id);
+        }
+      } catch (e: any) {
+        this.emitter.logger.info(`Can't find related to secret component - ${e.message}`)
+      }
+      resp.push({ secretId, secretName, componentIds });
+    }
+    return resp;
+  }
+
+  /**
    * Fetch All Components Accessible From a Given Workspace
    * @param {string} options.contractId Contract ID
    * @returns {Promise<[{{
@@ -147,10 +181,7 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
     const workspaces = await this.fetchWorkspaceList({});
     if (!workspaceId) {
       const nonFlatFlows = await mapLimit(workspaces, realSplitFactor,
-                                          async workspace => this.fetchAllFlowsForWorkspace({
-                                            parallelCalls: parallelizationPerTask,
-                                            workspaceId: workspace.workspaceId,
-                                          }));
+        async workspace => this.fetchAllFlowsForWorkspace({ parallelCalls: parallelizationPerTask, workspaceId: workspace.workspaceId }));
       flows = nonFlatFlows.flat();
     } else {
       flows = await this.fetchAllFlowsForWorkspace({
@@ -244,7 +275,7 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
         /* eslint-disable-next-line no-param-reassign */
         soFar[contract.id] = contract;
         return soFar;
-      },                                           {});
+      }, {});
 
       const nonFlatWorkspaces = await mapLimit(
         contracts,
@@ -521,7 +552,7 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
         /* eslint-disable-next-line no-param-reassign */
         soFar[sample.sampleId] = sample.sample;
         return soFar;
-      },                                      {});
+      }, {});
       flow.attributes.graph.nodes
         .filter(node => node.selected_data_samples)
         .forEach((node) => {
@@ -562,6 +593,20 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
       }
     });
 
+    const secretsList = await this.fetchAllSecretsForWorkspace({
+      workspaceId: flow.relationships.workspace.data.id,
+    });
+    flow.attributes.graph.nodes.forEach((node) => {
+      if (node.secret_id) {
+        const matchingSecrets = secretsList.filter(secret => secret.secretId === node.secret_id);
+        if (matchingSecrets.length !== 1) throw new Error('Expected a single matching secret');
+        /* eslint-disable-next-line no-param-reassign */
+        node.secret_id = {
+          secretId: matchingSecrets[0].secretId,
+          secretName: matchingSecrets[0].secretName,
+        };
+      }
+    });
     // Enrich command and component Id fields
     flow.attributes.graph.nodes.forEach((node) => {
       const commandParts = node.command.split(/[/:@]/);

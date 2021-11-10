@@ -4,6 +4,7 @@ import { Logger } from '../../lib';
 import { PlatformApiLogicClient } from '../../lib/platformApi/PlatformApiLogicClient';
 import * as allFlowsForWorkspace from '../helpers/allFlowsForWorkspace.json';
 import * as allCredentialsForWorkspace from '../helpers/allCredentialsForWorkspace.json';
+import * as allSecretsForWorkspace from '../helpers/allSecretsForWorkspace.json';
 import * as componentsAccessibleFromContract from '../helpers/componentsAccessibleFromContract.json';
 import * as flowList from '../helpers/flowList.json';
 import * as workspaceList from '../helpers/workspaceList.json';
@@ -66,6 +67,14 @@ describe('PlatformApiLogicClient', () => {
     stub = sinon.stub(client, 'fetchAllCredentialsForWorkspace');
     stub.withArgs(options).returns(successBody);
     const result = await client.fetchAllCredentialsForWorkspace(options);
+    expect(result).to.be.deep.equal(successBody);
+  });
+
+  it('Should succeed fetch all secrets for workspace', async () => {
+    successBody = allSecretsForWorkspace;
+    stub = sinon.stub(client, 'fetchAllSecretsForWorkspace');
+    stub.withArgs(options).returns(successBody);
+    const result = await client.fetchAllSecretsForWorkspace(options);
     expect(result).to.be.deep.equal(successBody);
   });
 
