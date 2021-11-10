@@ -1,4 +1,4 @@
-## 1.2.0 (August 30, 2021)
+## 1.2.0 (November 12, 2021)
 * Added `fetchAllSecretsForWorkspace` method to `PlatformApiLogicClient`
 
 ## 1.1.7 (August 30, 2021)

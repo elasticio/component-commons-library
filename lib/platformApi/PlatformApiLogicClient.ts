@@ -91,6 +91,7 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
    */
   async fetchAllSecretsForWorkspace(options: any = {}) {
     const { workspaceId } = options;
+    if (!workspaceId) throw new Error(`workspaceId not provided, can't fetch secrets`)
     const secrets = await this.makeRequest({ method: 'GET', url: `/workspaces/${workspaceId}/secrets` });
     const resp: any = [];
 
