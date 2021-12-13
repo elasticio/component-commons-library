@@ -91,7 +91,7 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
    */
   async fetchAllSecretsForWorkspace(options: any = {}) {
     const { workspaceId } = options;
-    if (!workspaceId) throw new Error(`workspaceId not provided, can't fetch secrets`)
+    if (!workspaceId) throw new Error("workspaceId not provided, can't fetch secrets");
     const secrets = await this.makeRequest({ method: 'GET', url: `/workspaces/${workspaceId}/secrets` });
     const resp: any = [];
 
@@ -107,7 +107,7 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
           componentIds = clientResponse.data.relationships.components.data.map(x => x.id);
         }
       } catch (e: any) {
-        this.emitter.logger.info(`Can't find related to secret component - ${e.message}`)
+        this.emitter.logger.info(`Can't find related to secret component - ${e.message}`);
       }
       resp.push({ secretId, secretName, componentIds });
     }
@@ -181,7 +181,7 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
     const workspaces = await this.fetchWorkspaceList({});
     if (!workspaceId) {
       const nonFlatFlows = await mapLimit(workspaces, realSplitFactor,
-        async workspace => this.fetchAllFlowsForWorkspace({ parallelCalls: parallelizationPerTask, workspaceId: workspace.workspaceId }));
+                                          async workspace => this.fetchAllFlowsForWorkspace({ parallelCalls: parallelizationPerTask, workspaceId: workspace.workspaceId }));
       flows = nonFlatFlows.flat();
     } else {
       flows = await this.fetchAllFlowsForWorkspace({
@@ -275,7 +275,7 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
         /* eslint-disable-next-line no-param-reassign */
         soFar[contract.id] = contract;
         return soFar;
-      }, {});
+      },                                           {});
 
       const nonFlatWorkspaces = await mapLimit(
         contracts,
@@ -552,7 +552,7 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
         /* eslint-disable-next-line no-param-reassign */
         soFar[sample.sampleId] = sample.sample;
         return soFar;
-      }, {});
+      },                                      {});
       flow.attributes.graph.nodes
         .filter(node => node.selected_data_samples)
         .forEach((node) => {

@@ -1,12 +1,11 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { URL } from 'url';
 import { StorageClient, ObjectStorage } from '@elastic.io/maester-client/dist';
-const restNodeClient = require('elasticio-rest-node')();
 
 export const STORAGE_TYPE_PARAMETER = 'storage_type';
 export const DEFAULT_STORAGE_TYPE = 'steward';
 export const MAESTER_OBJECT_ID_ENDPOINT = '/objects/';
-const { ELASTICIO_OBJECT_STORAGE_TOKEN = '' , ELASTICIO_OBJECT_STORAGE_URI = '' } = process.env;
+const { ELASTICIO_OBJECT_STORAGE_TOKEN = '', ELASTICIO_OBJECT_STORAGE_URI = '' } = process.env;
 const maesterCreds = { jwtSecret: ELASTICIO_OBJECT_STORAGE_TOKEN, uri: ELASTICIO_OBJECT_STORAGE_URI };
 const REQUEST_TIMEOUT = process.env.REQUEST_TIMEOUT ? parseInt(process.env.REQUEST_TIMEOUT, 10) : 10000; // 10s
 const REQUEST_MAX_RETRY = process.env.REQUEST_MAX_RETRY ? parseInt(process.env.REQUEST_MAX_RETRY, 10) : 7; // 10s
@@ -33,15 +32,19 @@ export class AttachmentProcessor {
     }
   }
 
-  async uploadAttachment(body) {
-    const putUrl = await AttachmentProcessor.preparePutUrl();
+  async uploadAttachment(body, contentType) {
     const ax = axios.create();
     AttachmentProcessor.addRetryCountInterceptorToAxios(ax);
+    const url = `${ELASTICIO_OBJECT_STORAGE_URI}${MAESTER_OBJECT_ID_ENDPOINT}`;
 
     const axConfig = {
-      url: putUrl,
+      url,
       data: body,
-      method: 'put',
+      method: 'post',
+      headers: {
+        Authorization: `Bearer ${ELASTICIO_OBJECT_STORAGE_TOKEN}`,
+        'Content-Type': contentType,
+      },
       timeout: REQUEST_TIMEOUT,
       retry: REQUEST_MAX_RETRY,
       delay: REQUEST_RETRY_DELAY,
@@ -49,11 +52,6 @@ export class AttachmentProcessor {
     } as AxiosRequestConfig;
 
     return ax(axConfig);
-  }
-
-  static async preparePutUrl() {
-    const signedUrl = await restNodeClient.resources.storage.createSignedUrl();
-    return signedUrl.put_url;
   }
 
   static async getStewardAttachment(axConfig) {

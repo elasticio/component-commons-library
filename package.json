@@ -1,6 +1,6 @@
 {
   "name": "@elastic.io/component-commons-library",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Library for most common component development cases",
   "author": {
     "name": "elastic.io GmbH",
@@ -23,7 +23,8 @@
     "preparepublish": "npm run tsc",
     "prepublishOnly": "tsc -p ./ --outDir lib/",
     "test": "LOG_LEVEL=trace LOG_OUTPUT_MODE=long mocha --require ts-node/register test/**/*.ts --timeout 50000",
-    "posttest": "npm run tsc"
+    "posttest": "npm run tsc",
+    "integration-test": "npm run pretest && mocha --require ts-node/register \"spec-integration/**/*spec.ts\" --timeout 10000"
   },
   "engines": {
     "node": ">=12"
@@ -39,7 +40,6 @@
     "bunyan-format": "0.2.1",
     "bunyan-serializers": "0.0.2",
     "elasticio-node": "0.0.9",
-    "elasticio-rest-node": "1.2.6",
     "remove-leading-slash": "1.0.1",
     "remove-trailing-slash": "0.1.1",
     "request": "2.88.2",
@@ -49,6 +49,7 @@
     "@types/jest": "26.0.15",
     "chai": "4.2.0",
     "chai-as-promised": "7.1.1",
+    "dotenv": "10.0.0",
     "mocha": "8.4.0",
     "nock": "13.0.4",
     "sinon": "9.2.0",
