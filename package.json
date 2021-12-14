@@ -1,6 +1,6 @@
 {
   "name": "@elastic.io/component-commons-library",
-  "version": "2.0.0-dev.1",
+  "version": "2.0.0-dev.2",
   "description": "Library for most common component development cases",
   "author": {
     "name": "elastic.io GmbH",
@@ -21,7 +21,7 @@
     "tsc": "rm -fr out && tsc",
     "pretest": "tslint -c tslint.json --project tsconfig.json  lib/**/*.ts spec/**/*.ts --fix",
     "preparepublish": "npm run tsc",
-    "prepublishOnly": "tsc -p ./ --outDir lib/",
+    "prepublishOnly": "tsc",
     "test": "LOG_LEVEL=trace LOG_OUTPUT_MODE=long mocha --require ts-node/register test/**/*.ts --timeout 50000",
     "posttest": "npm run tsc",
     "integration-test": "npm run pretest && mocha --require ts-node/register \"spec-integration/**/*spec.ts\" --timeout 10000"
