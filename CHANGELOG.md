@@ -1,4 +1,6 @@
-## 1.2.1 (January 14, 2022)
+## 2.0.0 (January 14, 2022)
+* Now method `uploadAttachment` from `AttachmentProcessor` saves attachments directly to `Maester`
+* Now method `uploadAttachment` from `AttachmentProcessor` accepts additional argument `contentType`
 * Update dev dependencies
 
 ## 1.2.0 (November 12, 2021)

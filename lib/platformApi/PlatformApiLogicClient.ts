@@ -91,7 +91,7 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
    */
   async fetchAllSecretsForWorkspace(options: any = {}) {
     const { workspaceId } = options;
-    if (!workspaceId) throw new Error(`workspaceId not provided, can't fetch secrets`)
+    if (!workspaceId) throw new Error("workspaceId not provided, can't fetch secrets");
     const secrets = await this.makeRequest({ method: 'GET', url: `/workspaces/${workspaceId}/secrets` });
     const resp: any = [];
 
@@ -107,7 +107,7 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
           componentIds = clientResponse.data.relationships.components.data.map(x => x.id);
         }
       } catch (e: any) {
-        this.emitter.logger.info(`Can't find related to secret component - ${e.message}`)
+        this.emitter.logger.info(`Can't find related to secret component - ${e.message}`);
       }
       resp.push({ secretId, secretName, componentIds });
     }

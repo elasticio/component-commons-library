@@ -199,7 +199,8 @@ Contains functions to transform platform data that contains JSONata expressions
 ## Attachment Processor
 The attachment processor function can be used to store attachments on the platform. It exposes the following functions
 
-- `uploadAttachment(streamContent)`, which will upload an attachment to the platform and return the result and file url
+- `uploadAttachment(body, contentType)`, which will upload an attachment to the platform `Maester` storage and return the result object.
+Where `body` - attachment content, `contentType` - it's corresponding `Content-Type` value.
 - `getAttachment(url, contentType)`, which will retrieve an attachment from `steward` or `maester` storage. To specify the storage - query parameter
 `storage_type` must be provided. To get items from `maester` storage - `?storage_type=maester` should added to the `url` argument. By default attachments are retrieved from `steward` storage, so `?storage_type=steward` is not obligated to be added to the `url` argument. `contentType` -
 one of [`stream`, `arraybuffer` ]
@@ -210,9 +211,9 @@ Example:
 const { AttachmentProcessor } = require('@elastic.io/component-commons-library');
 
 const stream = new Stream();
-const result = await new AttachmentProcessor().uploadAttachment(stream);
+const result = await new AttachmentProcessor().uploadAttachment(body, 'application/octet-stream');
 
-const storedFileUrl = result.config.url;
+const { objectId } = result.data;
 ```
 ```javascript
 const { AttachmentProcessor } = require('@elastic.io/component-commons-library');
