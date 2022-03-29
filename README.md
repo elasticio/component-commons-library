@@ -1,5 +1,5 @@
 # component-commons-library
-![](https://github.com/elasticio/elasticio/blob/master/elastic.io%20Logo%20with%20Restricted.png#)
+![](https://github.com/elasticio/splitter-component/blob/master/elastic.io%20Logo%20pure-01.png)
 
 ## Table of Contents
 - [Description](#description)
