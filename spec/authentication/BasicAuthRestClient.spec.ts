@@ -3,7 +3,7 @@ import nock from 'nock';
 import sinon from 'sinon';
 
 const { expect } = chai;
-import { BasicAuthRestClient, Logger } from '../../lib';
+import { BasicAuthRestClient, Logger } from '../../src';
 
 let options;
 let emitter;

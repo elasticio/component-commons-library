@@ -7,14 +7,14 @@ const { expect } = chai;
 const maesterUri = 'https://ma.estr';
 process.env.ELASTICIO_OBJECT_STORAGE_TOKEN = 'token';
 process.env.ELASTICIO_OBJECT_STORAGE_URI = maesterUri;
-import { AttachmentProcessor, STORAGE_TYPE_PARAMETER, MAESTER_OBJECT_ID_ENDPOINT } from '../../lib/attachment/AttachmentProcessor';
+import { AttachmentProcessor, STORAGE_TYPE_PARAMETER, MAESTER_OBJECT_ID_ENDPOINT } from '../../src/attachment/AttachmentProcessor';
 
 const formStream = (dataString: string): Readable => {
   const stream = new Readable();
   stream.push(dataString);
   stream.push(null);
   return stream;
-}
+};
 
 describe('AttachmentProcessor', () => {
   const attachmentProcessor = new AttachmentProcessor();
@@ -28,7 +28,7 @@ describe('AttachmentProcessor', () => {
 
       const result: any = await attachmentProcessor.getAttachment(attachmentOptions.url, attachmentOptions['content-type']);
       const encodedResult = new Buffer(result.data, 'binary').toString('base64');
-      const expectedResult = fs.readFileSync('test/attachment/resources/base64csv.txt').toString();
+      const expectedResult = fs.readFileSync('spec/attachment/resources/base64csv.txt').toString();
       expect(encodedResult).to.be.equal(expectedResult);
     });
 
@@ -40,10 +40,10 @@ describe('AttachmentProcessor', () => {
 
       const result: any = await attachmentProcessor.getAttachment(attachmentOptions.url, 'arraybuffer');
       const encodedResult = new Buffer(result.data, 'binary').toString('base64');
-      const expectedResult = fs.readFileSync('test/attachment/resources/base64Png.txt').toString();
+      const expectedResult = fs.readFileSync('spec/attachment/resources/base64Png.txt').toString();
       expect(encodedResult).to.be.equal(expectedResult);
     });
-  })
+  });
   describe('maester', () => {
     it('Should successfully retrieve response (stream)', async () => {
       const attachmentOptions = {
@@ -56,8 +56,8 @@ describe('AttachmentProcessor', () => {
         .reply(200, formStream('i`m a stream'));
 
       const result: any = await attachmentProcessor.getAttachment(attachmentOptions.url, attachmentOptions['content-type']);
-      expect(result.toString('base64')).to.be.equal({data: formStream('i`m a stream')}.toString());
+      expect(result.toString('base64')).to.be.equal({ data: formStream('i`m a stream') }.toString());
       expect(getById.isDone()).to.be.equal(true);
     });
-  })
+  });
 });

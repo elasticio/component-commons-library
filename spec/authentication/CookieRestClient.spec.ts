@@ -4,7 +4,7 @@ import sinon from 'sinon';
 
 const { expect } = chai;
 chai.use(require('chai-as-promised'));
-import { CookieRestClient, Logger } from '../../lib';
+import { CookieRestClient, Logger } from '../../src';
 
 let options;
 let emitter;

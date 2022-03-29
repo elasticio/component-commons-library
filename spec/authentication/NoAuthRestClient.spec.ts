@@ -3,10 +3,8 @@ import nock from 'nock';
 import sinon from 'sinon';
 
 const { expect } = chai;
-import { NtlmRestClient, Logger } from '../../lib';
+import { Logger, NoAuthRestClient } from '../../src';
 
-let options;
-let emitter;
 const url = 'https://example.com';
 const resourceServerUrl = 'https://resourceServerUrl.com';
 const successStatusCode = 200;
@@ -14,10 +12,11 @@ const notFoundStatusCode = 404;
 const successBody = 'Ok';
 const notFoundBody = 'Not found';
 const errNotFound = `Error in making request to ${url}/ Status code: ${notFoundStatusCode}, Body: "${notFoundBody}"`;
-let cfg;
+const cfg = { resourceServerUrl };
 
-describe('NtlmRestClient', () => {
-  let client;
+describe('NoAuthRestClient', () => {
+  let options;
+  let emitter;
 
   beforeEach(() => {
     options = {
@@ -30,21 +29,23 @@ describe('NtlmRestClient', () => {
       emit: sinon.spy(),
       logger: Logger.getLogger(),
     };
-
-    cfg = {
-      resourceServerUrl,
-      username: 'ntlmUsername',
-      password: 'ntlmPassword',
-    };
-
-    client = new NtlmRestClient(emitter, cfg);
   });
 
   afterEach(() => {
     sinon.restore();
   });
 
-  it('Should succeed makeRequest method, urlIsSegment: false', async () => {
+  it('Should succeed, urlIsSegment: true', async () => {
+    const client = new NoAuthRestClient(emitter, cfg);
+    nock(resourceServerUrl)
+      .get(`/${url}`)
+      .reply(successStatusCode, successBody);
+    const result = await client.makeRequest(options);
+    expect(result).to.be.deep.equal(successBody);
+  });
+
+  it('Should succeed, urlIsSegment: false', async () => {
+    const client = new NoAuthRestClient(emitter, cfg);
     options.urlIsSegment = false;
     nock(url)
       .get('/')
@@ -53,15 +54,8 @@ describe('NtlmRestClient', () => {
     expect(result).to.be.deep.equal(successBody);
   });
 
-  it('Should succeed makeRequest method, urlIsSegment: true', async () => {
-    nock(resourceServerUrl)
-      .get(`/${url}`)
-      .reply(successStatusCode, successBody);
-    const result = await client.makeRequest(options);
-    expect(result).to.be.deep.equal(successBody);
-  });
-
-  it('Should fail, 400', async () => {
+  it('Should fail, 404', async () => {
+    const client = new NoAuthRestClient(emitter, cfg);
     options.urlIsSegment = false;
     nock(url)
       .get('/')

@@ -35,7 +35,7 @@ A number of REST Client classes are available to use and extend to create Client
 Each of the REST Clients extends from the `NoAuthRestClient`, overriding the relevant methods. Exception is PlatformApiRestClient and PlatformApiLogicClient.
 
 ### NoAuthRestClient
-[NoAuthRestClient](https://github.com/elasticio/component-commons-library/blob/master/lib/authentication/NoAuthRestClient.ts) class to make rest requests no no auth APIs by provided options.
+[NoAuthRestClient](https://github.com/elasticio/component-commons-library/blob/master/src/authentication/NoAuthRestClient.ts) class to make rest requests no no auth APIs by provided options.
 
 #### constructor(emitter, cfg)
 - emitter - EIO emitting context.
@@ -79,7 +79,7 @@ class MyClient extends NoAuthRestClient {
 ```
 
 ### BasicAuthRestClient
-[BasicAuthRestClient](https://github.com/elasticio/component-commons-library/blob/master/lib/authentication/BasicAuthRestClient.ts)
+[BasicAuthRestClient](https://github.com/elasticio/component-commons-library/blob/master/src/authentication/BasicAuthRestClient.ts)
 class extends [NoAuthRestClient](#NoAuthRestClient) class.
 Makes requests to resource with basic auth.
 
@@ -93,7 +93,7 @@ const Client = new BasicAuthRestClient(emitter, cfg, user, pass);
 
 
 ### ApiKeyRestClient
-[ApiKeyRestClient](https://github.com/elasticio/component-commons-library/blob/master/lib/authentication/ApiKeyRestClient.ts)
+[ApiKeyRestClient](https://github.com/elasticio/component-commons-library/blob/master/src/authentication/ApiKeyRestClient.ts)
 class extends [NoAuthRestClient](#NoAuthRestClient) class.
 Makes requests to resource with api key (custom header) auth.
 
@@ -106,13 +106,13 @@ const Client = new BasicAuthRestClient(emitter, cfg, user, pass);
 ```
 
 ### CookieRestClient
-[CookieRestClient](https://github.com/elasticio/component-commons-library/blob/master/lib/authentication/CookieRestClient.ts)
+[CookieRestClient](https://github.com/elasticio/component-commons-library/blob/master/src/authentication/CookieRestClient.ts)
 class extends [NoAuthRestClient](#NoAuthRestClient) class.
 
 TBD
 
 ### OAuth2AuthorizationCodeRestClient
-[OAuth2RestClient](https://github.com/elasticio/component-commons-library/blob/master/lib/authentication/OAuth2AuthorizationCodeRestClient.ts)
+[OAuth2RestClient](https://github.com/elasticio/component-commons-library/blob/master/src/authentication/OAuth2AuthorizationCodeRestClient.ts)
 class extends [NoAuthRestClient](#NoAuthRestClient) class.
 Makes requests to resource with oauth2 access token auth.
 
@@ -124,7 +124,7 @@ const Client = new OAuth2AuthorizationCodeRestClient(emitter, cfg);
 This class can handle, refresh and emit oauth2 EIO configuration.
 
 ### NtlmRestClient
-[NtlmRestClient](https://github.com/elasticio/component-commons-library/blob/master/lib/authentication/NtlmRestClient.ts)
+[NtlmRestClient](https://github.com/elasticio/component-commons-library/blob/master/src/authentication/NtlmRestClient.ts)
 class extends [NoAuthRestClient](#NoAuthRestClient) class.
 Makes requests to resource with [NTLM authentication](https://en.wikipedia.org/wiki/NT_LAN_Manager).
 Falls back to basic authentication if NTLM authentication fails.
@@ -142,7 +142,7 @@ const Client = new NtlmRestClient(emitter, cfg);
 A number of Platform API Client classes are available to use and extend them to create Clients for Platform API.
 
 ### PlatformApiRestClient
-[PlatformApiRestClient](https://github.com/elasticio/component-commons-library/blob/master/lib/authentication/PlatformApiRestClient.ts)
+[PlatformApiRestClient](https://github.com/elasticio/component-commons-library/blob/master/src/authentication/PlatformApiRestClient.ts)
 class extends [BasicAuthRestClient](#BasicAuthRestClient) class.
 The method inside this class checks for the status code 200, if not, then throws an error. And also checks that the response came with the correct data in the JSON format and the other expected response headers.
 
@@ -155,7 +155,7 @@ const Client = new PlatformApiRestClient(emitter, cfg);
 ```
 
 ### PlatformApiLogicClient
-[PlatformApiLogicClient](https://github.com/elasticio/component-commons-library/blob/master/lib/authentication/PlatformApiLogicClient.ts)
+[PlatformApiLogicClient](https://github.com/elasticio/component-commons-library/blob/master/src/authentication/PlatformApiLogicClient.ts)
 class extends [PlatformApiRestClient](#PlatformApiRestClient) class.
 Contains useful methods to manipulate flow's state to set it either to active running or to inactive stopped, searching flows, workspaces, credentials and more.
 
@@ -224,7 +224,7 @@ const result = await new AttachmentProcessor().getAttachment('http://example.com
 ```
 
 ## Logger
-The built in logger uses Bunyan Logger as its base implementation. The available logger methods can be found [here](https://github.com/elasticio/component-commons-library/blob/master/lib/logger/logger.ts#L19).
+The built in logger uses Bunyan Logger as its base implementation. The available logger methods can be found [here](https://github.com/elasticio/component-commons-library/blob/master/src/logger/logger.ts#L19).
 
 Example:
 

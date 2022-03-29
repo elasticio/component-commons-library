@@ -3,7 +3,7 @@ import nock from 'nock';
 import sinon from 'sinon';
 
 const { expect } = chai;
-import { Logger, OAuth2RestClient } from '../../lib';
+import { Logger, OAuth2RestClient } from '../../src';
 
 let options;
 let emitter;
@@ -52,7 +52,7 @@ describe('OAuth2AuthorizationCodeRestClient', () => {
     const client = new OAuth2RestClient(emitter, cfg);
     nock(cfg.authorizationServerTokenEndpointUrl)
       .post('/')
-      .reply(200, cfg.oauth2)
+      .reply(200, cfg.oauth2);
     nock(resourceServerUrl)
       .get(`/${url}`)
       .reply(successStatusCode, successBody);

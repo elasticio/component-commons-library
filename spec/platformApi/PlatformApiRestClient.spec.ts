@@ -1,14 +1,14 @@
 import chai from 'chai';
 import sinon from 'sinon';
-import { Logger } from '../../lib';
-import { PlatformApiRestClient } from '../../lib/platformApi/PlatformApiRestClient';
+import { Logger } from '../../src';
+import { PlatformApiRestClient } from '../../src/platformApi/PlatformApiRestClient';
 import * as flow from '../helpers/flow.json';
 
 const { expect } = chai;
 let emitter;
 const url = 'https://example.com';
-const email = process.env.ELASTICIO_API_USERNAME || 'userName'
-const apiKey = process.env.ELASTICIO_API_KEY || 'dXNlck5hbWU6YXBpS2V5'
+const email = process.env.ELASTICIO_API_USERNAME || 'userName';
+const apiKey = process.env.ELASTICIO_API_KEY || 'dXNlck5hbWU6YXBpS2V5';
 const resourceServerUrl = 'https://resourceServerUrl.com';
 const successStatusCode = 200;
 const notFoundStatusCode = 404;
@@ -45,7 +45,7 @@ describe('PlatformApiRestClient', () => {
     const response = {
       statusCode: successStatusCode,
       body: flow,
-    }
+    };
     successBody = flow;
     stub = sinon.stub(client, 'handleRestResponse');
     stub.withArgs(response).returns(successBody);
@@ -57,11 +57,11 @@ describe('PlatformApiRestClient', () => {
     const response = {
       statusCode: notFoundStatusCode,
       body: {
-        errors: [{ message: 'Error in making request' }]
-      }
-    }
+        errors: [{ message: 'Error in making request' }],
+      },
+    };
     const body = {
-      errors: [{ message: 'Error in making request' }]
+      errors: [{ message: 'Error in making request' }],
     };
     stub = sinon.stub(client, 'handleRestResponse');
     stub.withArgs(response).returns(body);

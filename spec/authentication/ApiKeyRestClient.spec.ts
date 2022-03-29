@@ -4,7 +4,7 @@ import nock from 'nock';
 import sinon from 'sinon';
 
 const { expect } = chai;
-import { ApiKeyRestClient, Logger } from '../../lib';
+import { ApiKeyRestClient, Logger } from '../../src';
 
 let options;
 let emitter;

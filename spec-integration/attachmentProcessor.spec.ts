@@ -3,7 +3,7 @@ import path from 'path';
 import { expect } from 'chai';
 import { setEnvs } from './common';
 setEnvs();
-import { AttachmentProcessor } from '../lib/attachment/AttachmentProcessor';
+import { AttachmentProcessor } from '../src/attachment/AttachmentProcessor';
 
 
 describe('AttachmentProcessor', () => {

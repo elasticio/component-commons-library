@@ -1,34 +1,34 @@
 import fs from 'fs';
 import chai from 'chai';
+import { JsonSchema } from '../../src';
 
 const { expect } = chai;
-import { JsonSchema } from '../../lib';
 
 describe('Metadata converting ', () => {
   it('JSON schema to EIO metadata', async () => {
-    const inputMetadata = JSON.parse(fs.readFileSync('test/jsonSchema/samples/inputSchema.json')
+    const inputMetadata = JSON.parse(fs.readFileSync('spec/jsonSchema/samples/inputSchema.json')
       .toString());
 
     const result = JsonSchema.convertJsonSchemaToEioSchema('Product', inputMetadata);
-    expect(result).to.deep.eql(JSON.parse(fs.readFileSync(
-      'test/jsonSchema/samples/outputSchema.json',
+    expect(result).to.deep.equal(JSON.parse(fs.readFileSync(
+      'spec/jsonSchema/samples/outputSchema.json',
     ).toString()));
   });
 
   describe('Remove refs ', () => {
     it('for FULL Json', async () => {
       const inputMetadata = JSON.parse(fs.readFileSync(
-        'test/jsonSchema/samples/refsSchemaExample.json',
+        'spec/jsonSchema/samples/refsSchemaExample.json',
       )
         .toString());
       const listToResolve = JSON.parse(fs.readFileSync(
-        'test/jsonSchema/samples/schemasListToResolveExample.json',
+        'spec/jsonSchema/samples/schemasListToResolveExample.json',
       )
         .toString());
 
       JsonSchema.makeSchemaInline(inputMetadata, listToResolve);
-      expect(inputMetadata).to.deep.eql(JSON.parse(fs.readFileSync(
-        'test/jsonSchema/samples/removingRefsResult.json',
+      expect(inputMetadata).to.deep.equal(JSON.parse(fs.readFileSync(
+        'spec/jsonSchema/samples/removingRefsResult.json',
       ).toString()));
     });
 
@@ -43,7 +43,7 @@ describe('Metadata converting ', () => {
 
       JsonSchema.makeSchemaInline(inputMetadata, listToResolve);
 
-      expect(inputMetadata).to.deep.eql({
+      expect(inputMetadata).to.deep.equal({
         type: 'object',
         properties: {
           nameholder: {
@@ -65,7 +65,7 @@ describe('Metadata converting ', () => {
 
       JsonSchema.makeSchemaInline(inputMetadata, listToResolve);
 
-      expect(inputMetadata).to.deep.eql({
+      expect(inputMetadata).to.deep.equal({
         type: 'array',
         items: {
           type: 'object',
@@ -85,7 +85,7 @@ describe('Metadata converting ', () => {
 
       JsonSchema.makeSchemaInline(inputMetadata, listToResolve);
 
-      expect(inputMetadata).to.deep.eql({
+      expect(inputMetadata).to.deep.equal({
         type: 'object',
         additionalProperties: {
           type: 'object',
@@ -109,7 +109,7 @@ describe('Metadata converting ', () => {
 
       JsonSchema.makeSchemaInline(inputMetadata, listToResolve);
 
-      expect(inputMetadata).to.deep.eql({
+      expect(inputMetadata).to.deep.equal({
         type: 'object',
         properties: {
           resolve1: {

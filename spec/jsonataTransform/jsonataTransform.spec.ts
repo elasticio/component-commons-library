@@ -1,7 +1,7 @@
 import chai from 'chai';
 
 const { expect } = chai;
-import { JsonataTransform } from '../../lib';
+import { JsonataTransform } from '../../src';
 
 const eioUtils = require('elasticio-node').messages;
 
@@ -10,9 +10,9 @@ describe('Transformation test', () => {
     const result = JsonataTransform.jsonataTransform(eioUtils.newMessageWithBody({
       first: 'Renat',
       last: 'Zubairov',
-    }),                                              {
+    }), {
       expression: '{ "fullName": first & " " & last }',
-    },                                               null);
+    }, null);
     expect(result).to.deep.equal({
       fullName: 'Renat Zubairov',
     });
@@ -22,9 +22,9 @@ describe('Transformation test', () => {
     const result = JsonataTransform.jsonataTransform(eioUtils.newMessageWithBody({
       first: 'Renat',
       last: 'Zubairov',
-    }),                                              {
+    }), {
       expression: '$[foo=2].({ "foo": boom })',
-    },                                               null);
+    }, null);
     expect(result).to.be.an('undefined');
   });
 
@@ -38,7 +38,7 @@ describe('Transformation test', () => {
     };
     const result = JsonataTransform.jsonataTransform(msg, {
       expression: '{ "fullName": first & " " & elasticio.ps}',
-    },                                               null);
+    }, null);
     expect(result).to.deep.equal({
       fullName: 'Renat psworks',
     });
@@ -53,7 +53,7 @@ describe('Transformation test', () => {
     };
     const result = JsonataTransform.jsonataTransform(msg, {
       expression: '$getPassthrough()',
-    },                                               null);
+    }, null);
     expect(result).to.deep.equal({
       ps: 'psworks',
     });
@@ -69,7 +69,7 @@ describe('Transformation test', () => {
     };
     const result = JsonataTransform.jsonataTransform(msg, {
       expression: '$getFlowVariables()',
-    },                                               { getFlowVariables: () => flowVariables });
+    }, { getFlowVariables: () => flowVariables });
     expect(result).to.deep.equal(flowVariables);
   });
   it('should handle 2 expressions on same message if dontThrowError=true', () => {
@@ -82,11 +82,11 @@ describe('Transformation test', () => {
     };
     const first = JsonataTransform.jsonataTransform(msg, {
       expression: '$getPassthrough()',
-    },                                              null);
+    }, null);
     msg.passthrough = { test: 'test' };
     const second = JsonataTransform.jsonataTransform(msg, {
       expression: '$getPassthrough()',
-    },                                               null);
+    }, null);
 
     expect(first).to.deep.equal({
       ps: 'psworks',

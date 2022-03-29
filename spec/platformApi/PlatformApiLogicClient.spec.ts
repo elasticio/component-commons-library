@@ -1,7 +1,7 @@
 import chai from 'chai';
 import sinon from 'sinon';
-import { Logger } from '../../lib';
-import { PlatformApiLogicClient } from '../../lib/platformApi/PlatformApiLogicClient';
+import { Logger } from '../../src';
+import { PlatformApiLogicClient } from '../../src/platformApi/PlatformApiLogicClient';
 import * as allFlowsForWorkspace from '../helpers/allFlowsForWorkspace.json';
 import * as allCredentialsForWorkspace from '../helpers/allCredentialsForWorkspace.json';
 import * as allSecretsForWorkspace from '../helpers/allSecretsForWorkspace.json';
@@ -16,8 +16,8 @@ let emitter;
 const DEFAULT_PARALLEL_PLATFORM_API_CALLS = process.env.PARALLEL_PLATFORM_API_CALLS || 20;
 const DEFAULT_OBJECTS_PER_PAGE = process.env.DEFAULT_OBJECTS_PER_PAGE || 20;
 const url = 'https://example.com';
-const email = process.env.ELASTICIO_API_USERNAME || 'userName'
-const apiKey = process.env.ELASTICIO_API_KEY || 'dXNlck5hbWU6YXBpS2V5'
+const email = process.env.ELASTICIO_API_USERNAME || 'userName';
+const apiKey = process.env.ELASTICIO_API_KEY || 'dXNlck5hbWU6YXBpS2V5';
 const resourceServerUrl = 'https://resourceServerUrl.com';
 let successBody: any;
 let cfg;
@@ -54,7 +54,7 @@ describe('PlatformApiLogicClient', () => {
     sinon.restore();
   });
 
-  it('Should succeed fetch all flows for workspace', async () => {    
+  it('Should succeed fetch all flows for workspace', async () => {
     successBody = allFlowsForWorkspace;
     stub = sinon.stub(client, 'fetchAllFlowsForWorkspace');
     stub.withArgs(options).returns(successBody);
@@ -145,15 +145,15 @@ describe('PlatformApiLogicClient', () => {
   });
 
   it('Should succeed fetch workspace id by unique criteria', async () => {
-    const criteria = { value: 'Timer to E-Mail Test' }
+    const criteria = { value: 'Timer to E-Mail Test' };
     successBody = {
-      "data":{
-        "type":"workspace",
-        "id":"573dd76962436c349f000003"
+      data: {
+        type: 'workspace',
+        id: '573dd76962436c349f000003',
       },
-      "links":{
-        "self":"/v2/workspaces/573dd76962436c349f000003"
-      }
+      links: {
+        self: '/v2/workspaces/573dd76962436c349f000003',
+      },
     };
     stub = sinon.stub(client, 'fetchWorkspaceId');
     stub.withArgs(criteria.value).returns(successBody);
@@ -163,29 +163,29 @@ describe('PlatformApiLogicClient', () => {
 
   it('Should succeed remove non writable properties', async () => {
     const flow = {
-      "data":{
-        "type":"flow",
-        "id":"116174084244996637390978",
-        "created_at": "2018-03-30T10:08:43.582Z",
-        "current_status": "inactive",
-        "last_stop_time": "2019-03-27T15:39:02.825",
-        "last_modified": "2020-03-27T15:39:02.825",
-        "last_start_time": "2020-03-27T15:39:02.825",
-        "status": "inactive",
-        "updated_at": "2018-03-30T10:08:43.582Z",
+      data: {
+        type: 'flow',
+        id: '116174084244996637390978',
+        created_at: '2018-03-30T10:08:43.582Z',
+        current_status: 'inactive',
+        last_stop_time: '2019-03-27T15:39:02.825',
+        last_modified: '2020-03-27T15:39:02.825',
+        last_start_time: '2020-03-27T15:39:02.825',
+        status: 'inactive',
+        updated_at: '2018-03-30T10:08:43.582Z',
       },
-      "links":{
-        "self":"/v2/workspaces/116174084244996637390978"
-      }
+      links: {
+        self: '/v2/workspaces/116174084244996637390978',
+      },
     };
     const successBody = {
-      "data":{
-        "type":"flow",
-        "id":"116174084244996637390978"
+      data: {
+        type: 'flow',
+        id: '116174084244996637390978',
       },
-      "links":{
-        "self":"/v2/workspaces/116174084244996637390978"
-      }
+      links: {
+        self: '/v2/workspaces/116174084244996637390978',
+      },
     };
     stub = sinon.stub(client, 'removeNonWritableProperties');
     stub.withArgs(flow).returns(successBody);
@@ -196,13 +196,13 @@ describe('PlatformApiLogicClient', () => {
   it('Should succeed fetch flow id by unique criteria', async () => {
     const criteria = { value: 'Timer to E-Mail Test' };
     const successBody = {
-      "data":{
-        "type":"flow",
-        "id":"116174084244996637390978"
+      data: {
+        type: 'flow',
+        id: '116174084244996637390978',
       },
-      "links":{
-        "self":"/v2/workspaces/116174084244996637390978"
-      }
+      links: {
+        self: '/v2/workspaces/116174084244996637390978',
+      },
     };
     stub = sinon.stub(client, 'fetchFlowId');
     stub.withArgs(criteria).returns(successBody);
@@ -213,9 +213,9 @@ describe('PlatformApiLogicClient', () => {
   it('Should succeed fetch flow by id', async () => {
     const id = '116174084244996637390978';
     const successBody = {
-      "type":"flow",
-      "id":"116174084244996637390978",
-      "status": "inactive"
+      type: 'flow',
+      id: '116174084244996637390978',
+      status: 'inactive',
     };
     stub = sinon.stub(client, 'fetchFlowById');
     stub.withArgs(id).returns(successBody);
@@ -237,12 +237,12 @@ describe('PlatformApiLogicClient', () => {
     const options = {
       action: 'start',
       desiredStatus: 'active',
-      flowId: '116174084244996637390978'
+      flowId: '116174084244996637390978',
     };
     const successBody = {
-      "type":"flow",
-      "id":"116174084244996637390978",
-      "status": "active"
+      type: 'flow',
+      id: '116174084244996637390978',
+      status: 'active',
     };
     stub = sinon.stub(client, 'changeFlowState');
     stub.withArgs(options).returns(successBody);
@@ -254,12 +254,12 @@ describe('PlatformApiLogicClient', () => {
     const options = {
       action: 'stop',
       desiredStatus: 'inactive',
-      flowId: '116174084244996637390978'
+      flowId: '116174084244996637390978',
     };
     const successBody = {
-      "type":"flow",
-      "id":"116174084244996637390978",
-      "status": "inactive"
+      type: 'flow',
+      id: '116174084244996637390978',
+      status: 'inactive',
     };
     stub = sinon.stub(client, 'changeFlowState');
     stub.withArgs(options).returns(successBody);
@@ -271,12 +271,12 @@ describe('PlatformApiLogicClient', () => {
     const options = {
       action: 'start',
       desiredStatus: 'active',
-      flowId: '116174084244996637390978'
+      flowId: '116174084244996637390978',
     };
     const successBody = {
-      "type":"flow",
-      "id":"116174084244996637390978",
-      "status": "active"
+      type: 'flow',
+      id: '116174084244996637390978',
+      status: 'active',
     };
     stub = sinon.stub(client, 'startFlow');
     stub.withArgs(options.flowId, options).returns(successBody);
@@ -288,12 +288,12 @@ describe('PlatformApiLogicClient', () => {
     const options = {
       action: 'stop',
       desiredStatus: 'inactive',
-      flowId: '116174084244996637390978'
+      flowId: '116174084244996637390978',
     };
     const successBody = {
-      "type":"flow",
-      "id":"116174084244996637390978",
-      "status": "inactive"
+      type: 'flow',
+      id: '116174084244996637390978',
+      status: 'inactive',
     };
     stub = sinon.stub(client, 'stopFlow');
     stub.withArgs(options.flowId, options).returns(successBody);
@@ -307,14 +307,14 @@ describe('PlatformApiLogicClient', () => {
       includeDataSamples: true,
     };
     const successBody = {
-      "data":{
-        "type":"flow",
-        "id":"116174084244996637390978",
-        "status": "inactive"
+      data: {
+        type: 'flow',
+        id: '116174084244996637390978',
+        status: 'inactive',
       },
-      "links":{
-        "self":"/v2/workspaces/116174084244996637390978"
-      }
+      links: {
+        self: '/v2/workspaces/116174084244996637390978',
+      },
     };
     stub = sinon.stub(client, 'hydrateFlow');
     stub.withArgs(options).returns(successBody);
