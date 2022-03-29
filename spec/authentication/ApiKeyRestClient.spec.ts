@@ -2,9 +2,9 @@
 import chai from 'chai';
 import nock from 'nock';
 import sinon from 'sinon';
+import { ApiKeyRestClient, Logger } from '../../src';
 
 const { expect } = chai;
-import { ApiKeyRestClient, Logger } from '../../src';
 
 let options;
 let emitter;

@@ -1,3 +1,4 @@
+/* eslint-disable no-buffer-constructor */
 import chai from 'chai';
 import fs from 'fs';
 import nock from 'nock';

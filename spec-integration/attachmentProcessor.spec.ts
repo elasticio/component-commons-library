@@ -2,9 +2,9 @@ import fs from 'fs';
 import path from 'path';
 import { expect } from 'chai';
 import { setEnvs } from './common';
-setEnvs();
 import { AttachmentProcessor } from '../src/attachment/AttachmentProcessor';
 
+setEnvs();
 
 describe('AttachmentProcessor', () => {
   describe('uploadAttachment', () => {
@@ -20,5 +20,3 @@ describe('AttachmentProcessor', () => {
     });
   });
 });
-
-

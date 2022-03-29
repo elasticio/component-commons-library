@@ -20,7 +20,7 @@ module.exports = {
     '@typescript-eslint',
   ],
   rules: {
-    'import/no-extraneous-dependencies': ["error", { "devDependencies": ["spec/**/*", "spec-integration/**/*"] }],
+    'import/no-extraneous-dependencies': ['error', { devDependencies: ['spec/**/*', 'spec-integration/**/*'] }],
     'no-plusplus': 0,
     'no-unused-vars': 0,
     'no-await-in-loop': 0,
@@ -32,8 +32,8 @@ module.exports = {
     'no-return-assign': 1,
     'no-use-before-define': 0,
     'no-unused-vars': 0,
-    "comma-dangle": 0,
-    "object-curly-newline": 0,
+    'comma-dangle': 0,
+    'object-curly-newline': 0,
     camelcase: 0,
     'import/extensions': [
       'error',
