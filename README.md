@@ -1,6 +1,6 @@
 # component-commons-library
 ![](https://github.com/elasticio/splitter-component/blob/master/elastic.io%20Logo%20pure-01.png)
-
+ 
 ## Table of Contents
 - [Description](#description)
 - [Available Functions](#Available-Functions)
