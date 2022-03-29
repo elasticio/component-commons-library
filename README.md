@@ -1,4 +1,5 @@
 # component-commons-library
+![](https://github.com/elasticio/elasticio/blob/master/elastic.io%20Logo%20with%20Restricted.png#)
 
 ## Table of Contents
 - [Description](#description)
