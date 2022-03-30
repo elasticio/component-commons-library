@@ -1,6 +1,6 @@
 {
   "name": "@elastic.io/component-commons-library",
-  "version": "2.0.1-dev.8",
+  "version": "2.0.1-dev.9",
   "description": "Library for most common component development cases",
   "author": {
     "name": "elastic.io GmbH",
@@ -8,7 +8,8 @@
     "url": "http://elastic.io"
   },
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "keywords": [
     "elasticio",
@@ -21,7 +22,7 @@
     "posttest": "tsc",
     "test": "nyc mocha --require ts-node/register \"spec/**/*spec.ts\" --timeout 10000",
     "integration-test": "npm run pretest && nyc mocha --require ts-node/register \"spec-integration/**/*spec.ts\" --timeout 500000",
-    "build": "tsc"
+    "build": "rm -rf dist tsc"
   },
   "engines": {
     "node": ">=12"
