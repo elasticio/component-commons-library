@@ -16,7 +16,7 @@ describe('Utils metadata resolver', () => {
     try {
       await readMetaFilter(3, undefined, undefined, undefined);
       throw new Error('Test should fail');
-    } catch (e) {
+    } catch (e: any) {
       expect(e.message).to.equal('Field names is required');
     }
   });
@@ -25,7 +25,7 @@ describe('Utils metadata resolver', () => {
     try {
       await readMetaFilter(3, 'ID,Name', undefined, undefined);
       throw new Error('Test should fail');
-    } catch (e) {
+    } catch (e: any) {
       expect(e.message).to.equal('Field Names should be array');
     }
   });
@@ -34,7 +34,7 @@ describe('Utils metadata resolver', () => {
     try {
       await readMetaFilter(3, ['ID', 'Name'], 'and,or', undefined);
       throw new Error('Test should fail');
-    } catch (e) {
+    } catch (e: any) {
       expect(e.message).to.equal('Conditions should be array');
     }
   });
@@ -43,7 +43,7 @@ describe('Utils metadata resolver', () => {
     try {
       await readMetaFilter(3, ['ID', 'Name'], undefined, 'and,or');
       throw new Error('Test should fail');
-    } catch (e) {
+    } catch (e: any) {
       expect(e.message).to.equal('Criteria links should be array');
     }
   });

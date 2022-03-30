@@ -1,9 +1,10 @@
-import { BasicAuthRestClient } from '../authentication/BasicAuthRestClient';
 import removeTrailingSlash from 'remove-trailing-slash';
 import util from 'util';
+import { BasicAuthRestClient } from '../authentication/BasicAuthRestClient';
 
 export class PlatformApiRestClient extends BasicAuthRestClient {
   usingTaskUser: boolean;
+
   constructor(emitter, cfg) {
     if (!!cfg.email !== !!cfg.apiKey) {
       throw new Error('Either both Email and API Key need to be provided or neither should be provided.');
@@ -38,6 +39,7 @@ export class PlatformApiRestClient extends BasicAuthRestClient {
     // Check for responses with non-json bodies.
     // It usually means we got a 200 response from something that isn't the platform API
     if (response.body && (!response.headers['content-type'] || !response.headers['content-type'].includes('application/json'))) {
+      // eslint-disable-next-line max-len
       this.emitter.logger.error(`Error in making request to ${response.request.uri.href} Expected a JSON response. Status code: ${response.statusCode}, Body: ${util.inspect(response.body)}`);
       throw new Error(`Expected a JSON response. Instead received Content-Type ${response.headers['content-type']} - Is the API URL correct?`);
     }

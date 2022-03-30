@@ -8,10 +8,10 @@ export const DEFAULT_STORAGE_TYPE = 'steward';
 export const MAESTER_OBJECT_ID_ENDPOINT = '/objects/';
 const { ELASTICIO_OBJECT_STORAGE_TOKEN = '', ELASTICIO_OBJECT_STORAGE_URI = '' } = process.env;
 const maesterCreds = { jwtSecret: ELASTICIO_OBJECT_STORAGE_TOKEN, uri: ELASTICIO_OBJECT_STORAGE_URI };
-const REQUEST_TIMEOUT = 921600000;
-const REQUEST_MAX_RETRY = 3;
-const REQUEST_RETRY_DELAY = 921600000;
-const REQUEST_MAX_BODY_LENGTH = 921600000;
+const REQUEST_TIMEOUT = process.env.REQUEST_TIMEOUT ? parseInt(process.env.REQUEST_TIMEOUT, 10) : 10000; // 10s
+const REQUEST_MAX_RETRY = process.env.REQUEST_MAX_RETRY ? parseInt(process.env.REQUEST_MAX_RETRY, 10) : 7; // 10s
+const REQUEST_RETRY_DELAY = process.env.REQUEST_RETRY_DELAY ? parseInt(process.env.REQUEST_RETRY_DELAY, 10) : 7000; // 7s
+const REQUEST_MAX_BODY_LENGTH = process.env.REQUEST_MAX_BODY_LENGTH ? parseInt(process.env.REQUEST_MAX_BODY_LENGTH, 10) : 104857600; // 100MB
 
 export class AttachmentProcessor {
   async getAttachment(url: string, responseType: string) {
@@ -50,8 +50,6 @@ export class AttachmentProcessor {
       delay: REQUEST_RETRY_DELAY,
       maxBodyLength: REQUEST_MAX_BODY_LENGTH,
     } as AxiosRequestConfig;
-
-    console.log(11, JSON.stringify(axConfig));
 
     return ax(axConfig);
   }
@@ -96,7 +94,7 @@ export class AttachmentProcessor {
         return Promise.reject(err);
       }
       config.currentRetryCount += 1;
-      return new Promise(resolve => setTimeout(() => resolve(ax(config)), config.delay));
+      return new Promise((resolve) => setTimeout(() => resolve(ax(config)), config.delay));
     });
   }
 }

@@ -31,7 +31,6 @@ module.exports = {
     'no-param-reassign': 1,
     'no-return-assign': 1,
     'no-use-before-define': 0,
-    'no-unused-vars': 0,
     'comma-dangle': 0,
     'object-curly-newline': 0,
     camelcase: 0,

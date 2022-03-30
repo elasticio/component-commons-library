@@ -1,6 +1,6 @@
 {
   "name": "@elastic.io/component-commons-library",
-  "version": "2.0.1-dev.3",
+  "version": "2.0.1-dev.4",
   "description": "Library for most common component development cases",
   "author": {
     "name": "elastic.io GmbH",
@@ -19,13 +19,10 @@
   ],
   "scripts": {
     "lint": "eslint --ext .ts --quiet --fix",
-    "pretest": "rm -fr dist && eslint --ext .ts --quiet --fix && find src spec spec-integration -name \"*.js\" -type f -delete && rm -f verifyCredentials.js",
+    "pretest": "eslint --ext .ts --quiet --fix && find src spec spec-integration -name \"*.js\" -type f -delete",
     "test": "nyc mocha --require ts-node/register \"spec/**/*spec.ts\" --timeout 10000",
-    "posttest": "tsc",
     "integration-test": "npm run pretest && nyc mocha --require ts-node/register \"spec-integration/**/*spec.ts\" --timeout 500000",
-    "tsc": "rm -rf dist && tsc",
-    "build": "npm run tsc",
-    "prepublishOnly": "npm run lint && npm run test"
+    "build": "tsc"
   },
   "engines": {
     "node": ">=12"
