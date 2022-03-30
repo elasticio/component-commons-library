@@ -1,4 +1,5 @@
 import { NoAuthRestClient } from './NoAuthRestClient';
+
 const ntlmRequest = require('@elastic.io/ntlm-client').request;
 
 export class NtlmRestClient extends NoAuthRestClient {

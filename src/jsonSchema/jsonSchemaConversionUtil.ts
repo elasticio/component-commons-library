@@ -1,10 +1,10 @@
-export function convertJsonSchemaToEioSchema(keyToReturn, completeSchemaOriginal) {
+export function convertJsonSchemaToEioSchema(keyToReturn: any, completeSchemaOriginal: any) {
   const completeSchema = JSON.parse(JSON.stringify(completeSchemaOriginal));
 
   Object.keys(completeSchema).forEach((key) => {
     const jsonSchema = completeSchema[key];
     const requiredProperties = jsonSchema.required || [];
-    requiredProperties.forEach((requiredProperty) => {
+    requiredProperties.forEach((requiredProperty: any) => {
       jsonSchema.properties[requiredProperty].required = true;
     });
 
@@ -38,7 +38,7 @@ export function convertJsonSchemaToEioSchema(keyToReturn, completeSchemaOriginal
   return completeSchema[keyToReturn];
 }
 
-export function makeSchemaInline(json, availableSchemas) {
+export function makeSchemaInline(json: any, availableSchemas: any) {
   if (Object.keys(json).indexOf('$ref') > -1) {
     const resolvation = availableSchemas[json.$ref];
 
@@ -76,7 +76,7 @@ export function makeSchemaInline(json, availableSchemas) {
   return json;
 }
 
-export function convertDotNetTypeToJsonSchemaType(dotNetType: string) : string {
+export function convertDotNetTypeToJsonSchemaType(dotNetType: string): string {
   switch (dotNetType) {
     case 'System.String':
     case 'System.DateTime':

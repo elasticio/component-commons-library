@@ -1,12 +1,15 @@
 /* eslint-disable no-param-reassign,  no-underscore-dangle, class-methods-use-this */
 import { promisify } from 'util';
-const request = promisify(require('request'));
 import removeTrailingSlash from 'remove-trailing-slash';
 import removeLeadingSlash from 'remove-leading-slash';
 
+const request = promisify(require('request'));
+
 export class NoAuthRestClient {
   emitter;
+
   cfg;
+
   request;
 
   constructor(emitter, cfg) {

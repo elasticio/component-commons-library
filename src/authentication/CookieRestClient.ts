@@ -7,6 +7,7 @@ const requestCall = promisify(request);
 
 export class CookieRestClient extends NoAuthRestClient {
   loggedIn: boolean;
+
   jar: any;
 
   constructor(emitter, cfg) {

@@ -1,7 +1,7 @@
 const CONDITION_ENUM = ['eq', 'ne', 'gt', 'ge', 'lt', 'le'];
 const CRITERIA_LINK_ENUM = ['and', 'or'];
 
-function getValidConditionNumber(cfgConditionNumber) {
+function getValidConditionNumber(cfgConditionNumber: number) {
   let conditionNumber = 0;
   if (cfgConditionNumber) {
     conditionNumber = Number(cfgConditionNumber);
@@ -15,7 +15,7 @@ function getValidConditionNumber(cfgConditionNumber) {
   return conditionNumber;
 }
 
-function verifiedIsArrayOfString(arrayOfString, objectName) {
+function verifiedIsArrayOfString(arrayOfString: any[], objectName: string) {
   if (!Array.isArray(arrayOfString)) {
     throw new Error(`${objectName} should be array`);
   } else {
@@ -27,7 +27,7 @@ function verifiedIsArrayOfString(arrayOfString, objectName) {
   }
 }
 
-function verifiedInputParameters(fieldNames, conditions, criteriaLinks) {
+function verifiedInputParameters(fieldNames: any, conditions: any, criteriaLinks: any) {
   if (fieldNames) {
     verifiedIsArrayOfString(fieldNames, 'Field Names');
     if (conditions) {
@@ -41,12 +41,8 @@ function verifiedInputParameters(fieldNames, conditions, criteriaLinks) {
   }
 }
 
-export async function readMetaFilter(condNumber: number, fieldNames, conditions, criteriaLinks) {
-  try {
-    verifiedInputParameters(fieldNames, conditions, criteriaLinks);
-  } catch (e) {
-    throw e;
-  }
+export async function readMetaFilter(condNumber: number, fieldNames: any, conditions: string[], criteriaLinks: string[]) {
+  verifiedInputParameters(fieldNames, conditions, criteriaLinks);
   const conditionEnum = conditions || CONDITION_ENUM;
   const criteriaLinkEnum = criteriaLinks || CRITERIA_LINK_ENUM;
   const conditionNumber = getValidConditionNumber(condNumber);
@@ -56,7 +52,7 @@ export async function readMetaFilter(condNumber: number, fieldNames, conditions,
   const metaDataTemplate = {
     type: 'object',
     properties:
-          {},
+      {},
   };
   const properties = {};
   for (let i = 1; i <= conditionNumber; i += 1) {

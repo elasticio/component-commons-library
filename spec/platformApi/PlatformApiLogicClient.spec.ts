@@ -162,7 +162,7 @@ describe('PlatformApiLogicClient', () => {
   });
 
   it('Should succeed remove non writable properties', async () => {
-    const flow = {
+    const flow1 = {
       data: {
         type: 'flow',
         id: '116174084244996637390978',
@@ -178,7 +178,7 @@ describe('PlatformApiLogicClient', () => {
         self: '/v2/workspaces/116174084244996637390978',
       },
     };
-    const successBody = {
+    successBody = {
       data: {
         type: 'flow',
         id: '116174084244996637390978',
@@ -188,14 +188,14 @@ describe('PlatformApiLogicClient', () => {
       },
     };
     stub = sinon.stub(client, 'removeNonWritableProperties');
-    stub.withArgs(flow).returns(successBody);
-    const result = await client.removeNonWritableProperties(flow);
+    stub.withArgs(flow1).returns(successBody);
+    const result = await client.removeNonWritableProperties(flow1);
     expect(result).to.not.have.property('created_at');
   });
 
   it('Should succeed fetch flow id by unique criteria', async () => {
     const criteria = { value: 'Timer to E-Mail Test' };
-    const successBody = {
+    successBody = {
       data: {
         type: 'flow',
         id: '116174084244996637390978',
@@ -212,7 +212,7 @@ describe('PlatformApiLogicClient', () => {
 
   it('Should succeed fetch flow by id', async () => {
     const id = '116174084244996637390978';
-    const successBody = {
+    successBody = {
       type: 'flow',
       id: '116174084244996637390978',
       status: 'inactive',
@@ -234,12 +234,12 @@ describe('PlatformApiLogicClient', () => {
   });
 
   it('Should succeed change flow state to active running', async () => {
-    const options = {
+    options = {
       action: 'start',
       desiredStatus: 'active',
       flowId: '116174084244996637390978',
     };
-    const successBody = {
+    successBody = {
       type: 'flow',
       id: '116174084244996637390978',
       status: 'active',
@@ -251,12 +251,12 @@ describe('PlatformApiLogicClient', () => {
   });
 
   it('Should succeed change flow state to inactive stopped', async () => {
-    const options = {
+    options = {
       action: 'stop',
       desiredStatus: 'inactive',
       flowId: '116174084244996637390978',
     };
-    const successBody = {
+    successBody = {
       type: 'flow',
       id: '116174084244996637390978',
       status: 'inactive',
@@ -268,12 +268,12 @@ describe('PlatformApiLogicClient', () => {
   });
 
   it('Should succeed start flow', async () => {
-    const options = {
+    options = {
       action: 'start',
       desiredStatus: 'active',
       flowId: '116174084244996637390978',
     };
-    const successBody = {
+    successBody = {
       type: 'flow',
       id: '116174084244996637390978',
       status: 'active',
@@ -285,12 +285,12 @@ describe('PlatformApiLogicClient', () => {
   });
 
   it('Should succeed stop flow', async () => {
-    const options = {
+    options = {
       action: 'stop',
       desiredStatus: 'inactive',
       flowId: '116174084244996637390978',
     };
-    const successBody = {
+    successBody = {
       type: 'flow',
       id: '116174084244996637390978',
       status: 'inactive',
@@ -302,11 +302,11 @@ describe('PlatformApiLogicClient', () => {
   });
 
   it('Should succeed stop flow', async () => {
-    const options = {
+    options = {
       flow,
       includeDataSamples: true,
     };
-    const successBody = {
+    successBody = {
       data: {
         type: 'flow',
         id: '116174084244996637390978',

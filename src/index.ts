@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import { convertJsonSchemaToEioSchema, makeSchemaInline, convertDotNetTypeToJsonSchemaType } from './jsonSchema/jsonSchemaConversionUtil';
 import { jsonataTransform } from './jsonataTransform/jsonataTransform';
 import { getLogger } from './logger/logger';
@@ -12,7 +13,9 @@ export { CookieRestClient } from './authentication/CookieRestClient';
 
 export class JsonSchema {
   static convertJsonSchemaToEioSchema = convertJsonSchemaToEioSchema;
+
   static makeSchemaInline = makeSchemaInline;
+
   static convertDotNetTypeToJsonSchemaType = convertDotNetTypeToJsonSchemaType;
 }
 

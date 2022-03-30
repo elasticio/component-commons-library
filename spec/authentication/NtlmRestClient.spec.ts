@@ -1,9 +1,9 @@
 import chai from 'chai';
 import nock from 'nock';
 import sinon from 'sinon';
+import { NtlmRestClient, Logger } from '../../src';
 
 const { expect } = chai;
-import { NtlmRestClient, Logger } from '../../src';
 
 let options;
 let emitter;

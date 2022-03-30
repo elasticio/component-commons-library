@@ -1,10 +1,10 @@
 import chai from 'chai';
 import nock from 'nock';
 import sinon from 'sinon';
+import { CookieRestClient, Logger } from '../../src';
 
 const { expect } = chai;
 chai.use(require('chai-as-promised'));
-import { CookieRestClient, Logger } from '../../src';
 
 let options;
 let emitter;

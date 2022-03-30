@@ -1,7 +1,7 @@
 import chai from 'chai';
+import { JsonataTransform } from '../../src';
 
 const { expect } = chai;
-import { JsonataTransform } from '../../src';
 
 const eioUtils = require('elasticio-node').messages;
 
@@ -94,6 +94,7 @@ describe('Transformation test', () => {
     expect(second).to.deep.equal({
       test: 'test',
     });
+    // eslint-disable-next-line no-unused-expressions
     expect(msg.body.elasticio).to.be.undefined;
   });
 });

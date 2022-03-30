@@ -1,9 +1,9 @@
 import chai from 'chai';
 import nock from 'nock';
 import sinon from 'sinon';
+import { Logger, NoAuthRestClient } from '../../src';
 
 const { expect } = chai;
-import { Logger, NoAuthRestClient } from '../../src';
 
 const url = 'https://example.com';
 const resourceServerUrl = 'https://resourceServerUrl.com';
