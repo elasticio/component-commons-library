@@ -17,7 +17,7 @@
   ],
   "scripts": {
     "lint": "eslint --ext .ts --quiet --fix",
-    "pretest": "eslint --ext .ts --quiet --fix && find src spec spec-integration -name \"*.js\" -type f -delete",
+    "pretest": "rm -rf dist && eslint --ext .ts --quiet --fix && find src spec spec-integration -name \"*.js\" -type f -delete",
     "posttest": "tsc",
     "test": "nyc mocha --require ts-node/register \"spec/**/*spec.ts\" --timeout 10000",
     "integration-test": "npm run pretest && nyc mocha --require ts-node/register \"spec-integration/**/*spec.ts\" --timeout 500000",
