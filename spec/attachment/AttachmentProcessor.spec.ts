@@ -1,7 +1,6 @@
 /* eslint-disable no-buffer-constructor */
 import chai from 'chai';
 import fs from 'fs';
-import nock from 'nock';
 import { Readable } from 'stream';
 import sinon from 'sinon';
 import { ObjectStorage } from '@elastic.io/maester-client/dist';
