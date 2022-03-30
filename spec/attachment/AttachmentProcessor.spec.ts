@@ -18,7 +18,7 @@ const formStream = (dataString: string): Readable => {
   return stream;
 };
 
-xdescribe('AttachmentProcessor', () => {
+describe('AttachmentProcessor', () => {
   const attachmentProcessor = new AttachmentProcessor();
 
   describe('Steward', () => {
