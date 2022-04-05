@@ -33,3 +33,4 @@ class Logger {
 }
 exports.Logger = Logger;
 Logger.getLogger = logger_1.getLogger;
+exports.getLogger = logger_1.getLogger;

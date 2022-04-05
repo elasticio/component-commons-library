@@ -26,3 +26,5 @@ export class JsonataTransform {
 export class Logger {
   static getLogger = getLogger;
 }
+
+exports.getLogger = getLogger;
