@@ -11,6 +11,9 @@ export { NtlmRestClient } from './authentication/NtlmRestClient';
 export { OAuth2RestClient } from './authentication/OAuth2AuthorizationCodeRestClient';
 export { CookieRestClient } from './authentication/CookieRestClient';
 
+export { PlatformApiLogicClient } from './platformApi/PlatformApiLogicClient';
+export { PlatformApiRestClient } from './platformApi/PlatformApiRestClient';
+
 export class JsonSchema {
   static convertJsonSchemaToEioSchema = convertJsonSchemaToEioSchema;
 
