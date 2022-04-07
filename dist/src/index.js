@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Logger = exports.JsonataTransform = exports.JsonSchema = exports.CookieRestClient = exports.OAuth2RestClient = exports.NtlmRestClient = exports.NoAuthRestClient = exports.BasicAuthRestClient = exports.ApiKeyRestClient = exports.AttachmentProcessor = void 0;
+exports.Logger = exports.JsonataTransform = exports.JsonSchema = exports.PlatformApiRestClient = exports.PlatformApiLogicClient = exports.CookieRestClient = exports.OAuth2RestClient = exports.NtlmRestClient = exports.NoAuthRestClient = exports.BasicAuthRestClient = exports.ApiKeyRestClient = exports.AttachmentProcessor = void 0;
 /* eslint-disable max-classes-per-file */
 const jsonSchemaConversionUtil_1 = require("./jsonSchema/jsonSchemaConversionUtil");
 const jsonataTransform_1 = require("./jsonataTransform/jsonataTransform");
@@ -19,6 +19,10 @@ var OAuth2AuthorizationCodeRestClient_1 = require("./authentication/OAuth2Author
 Object.defineProperty(exports, "OAuth2RestClient", { enumerable: true, get: function () { return OAuth2AuthorizationCodeRestClient_1.OAuth2RestClient; } });
 var CookieRestClient_1 = require("./authentication/CookieRestClient");
 Object.defineProperty(exports, "CookieRestClient", { enumerable: true, get: function () { return CookieRestClient_1.CookieRestClient; } });
+var PlatformApiLogicClient_1 = require("./platformApi/PlatformApiLogicClient");
+Object.defineProperty(exports, "PlatformApiLogicClient", { enumerable: true, get: function () { return PlatformApiLogicClient_1.PlatformApiLogicClient; } });
+var PlatformApiRestClient_1 = require("./platformApi/PlatformApiRestClient");
+Object.defineProperty(exports, "PlatformApiRestClient", { enumerable: true, get: function () { return PlatformApiRestClient_1.PlatformApiRestClient; } });
 class JsonSchema {
 }
 exports.JsonSchema = JsonSchema;
