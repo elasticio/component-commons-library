@@ -1,3 +1,6 @@
+## 2.0.2 (April 13, 2022)
+* Fix dependencies
+
 ## 2.0.1 (March 29, 2022)
 - Increase `REQUEST_MAX_BODY_LENGTH` to 100MB
 
