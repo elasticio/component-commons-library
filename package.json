@@ -33,7 +33,7 @@
     "@elastic.io/jsonata-moment": "1.1.4",
     "@elastic.io/maester-client": "3.4.3",
     "@elastic.io/ntlm-client": "1.0.0",
-    "async": "^3.2.3",
+    "async": "3.2.3",
     "axios": "0.24.0",
     "bunyan": "1.8.14",
     "bunyan-format": "0.2.1",
