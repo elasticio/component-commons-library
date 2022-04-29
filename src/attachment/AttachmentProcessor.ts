@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosRequestConfig, AxiosError, Axios } from 'axios';
 import { URL } from 'url';
 import { StorageClient, ObjectStorage } from '@elastic.io/maester-client/dist';
 import FormData from 'form-data';
@@ -16,7 +16,7 @@ const REQUEST_TIMEOUT = process.env.REQUEST_TIMEOUT ? parseInt(process.env.REQUE
 const REQUEST_MAX_RETRY = process.env.REQUEST_MAX_RETRY ? parseInt(process.env.REQUEST_MAX_RETRY, 10) : 7; // 10s
 const REQUEST_RETRY_DELAY = process.env.REQUEST_RETRY_DELAY ? parseInt(process.env.REQUEST_RETRY_DELAY, 10) : 7000; // 7s
 const REQUEST_MAX_BODY_LENGTH = process.env.REQUEST_MAX_BODY_LENGTH ? parseInt(process.env.REQUEST_MAX_BODY_LENGTH, 10) : 104857600; // 100MB
-
+const axiosCriticalErrors = ['ERR_FR_MAX_BODY_LENGTH_EXCEEDED']; // errors that couldn't be retried
 export class AttachmentProcessor {
   async getAttachment(url: string, responseType: string) {
     const storageType = AttachmentProcessor.getStorageTypeByUrl(url);
@@ -107,6 +107,10 @@ const axiosUploadAttachment = async (body, currentRetryCount: number = 0) => {
     return resp;
   } catch (error) {
     logger.error(`Error occurred: ${error.response?.data || error.message}`);
+    if (error instanceof AxiosError) {
+      const errorCouldNotBeRetried = axiosCriticalErrors.includes(error.code);
+      if (errorCouldNotBeRetried) throw error;
+    }
     if (currentRetryCount + 1 <= REQUEST_MAX_RETRY) {
       logger.debug(`Start retrying #${currentRetryCount + 1}`);
       await sleep(REQUEST_RETRY_DELAY);
