@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getLogger = exports.Logger = exports.JsonataTransform = exports.JsonSchema = exports.PlatformApiRestClient = exports.PlatformApiLogicClient = exports.CookieRestClient = exports.OAuth2RestClient = exports.NtlmRestClient = exports.NoAuthRestClient = exports.BasicAuthRestClient = exports.ApiKeyRestClient = exports.AttachmentProcessor = void 0;
+exports.Logger = exports.JsonataTransform = exports.JsonSchema = exports.PlatformApiRestClient = exports.PlatformApiLogicClient = exports.CookieRestClient = exports.OAuth2RestClient = exports.NtlmRestClient = exports.NoAuthRestClient = exports.BasicAuthRestClient = exports.ApiKeyRestClient = exports.AttachmentProcessor = void 0;
 /* eslint-disable max-classes-per-file */
 const jsonSchemaConversionUtil_1 = require("./jsonSchema/jsonSchemaConversionUtil");
 const jsonataTransform_1 = require("./jsonataTransform/jsonataTransform");
@@ -37,7 +37,4 @@ class Logger {
 }
 exports.Logger = Logger;
 Logger.getLogger = logger_1.getLogger;
-class getLogger {
-}
-exports.getLogger = getLogger;
-getLogger.getLogger = logger_1.getLogger;
+exports.getLogger = logger_1.getLogger;
