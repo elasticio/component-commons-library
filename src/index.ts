@@ -1,7 +1,7 @@
 /* eslint-disable max-classes-per-file */
 import { convertJsonSchemaToEioSchema, makeSchemaInline, convertDotNetTypeToJsonSchemaType } from './jsonSchema/jsonSchemaConversionUtil';
 import { jsonataTransform } from './jsonataTransform/jsonataTransform';
-import { getLogger as logger } from './logger/logger';
+import { getLogger } from './logger/logger';
 
 export { AttachmentProcessor } from './attachment/AttachmentProcessor';
 export { ApiKeyRestClient } from './authentication/ApiKeyRestClient';
@@ -27,9 +27,7 @@ export class JsonataTransform {
 }
 
 export class Logger {
-  static getLogger = logger;
+  static getLogger = getLogger;
 }
 
-export class getLogger {
-  static getLogger = logger;
-}
+exports.getLogger = getLogger;
