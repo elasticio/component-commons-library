@@ -3,9 +3,9 @@ import axios, { AxiosRequestConfig } from 'axios';
 import { URL } from 'url';
 import { StorageClient, ObjectStorage } from '@elastic.io/maester-client/dist';
 import FormData from 'form-data';
-import { Logger } from '../index';
+import { getLogger } from '../logger/logger';
 
-const logger = Logger.getLogger();
+const logger = getLogger();
 
 export const STORAGE_TYPE_PARAMETER = 'storage_type';
 export const DEFAULT_STORAGE_TYPE = 'steward';
