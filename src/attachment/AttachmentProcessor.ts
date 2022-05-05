@@ -99,6 +99,7 @@ const axiosUploadAttachment = async (body, currentRetryCount: number = 0) => {
       Authorization: `Bearer ${ELASTICIO_OBJECT_STORAGE_TOKEN}`,
       ...data.getHeaders()
     },
+    maxRedirects: 0,
     data
   };
 
