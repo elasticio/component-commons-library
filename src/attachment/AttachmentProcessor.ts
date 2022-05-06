@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-import axios, { AxiosRequestConfig, AxiosError, Axios } from 'axios';
+import axios, { AxiosRequestConfig, AxiosError } from 'axios';
 import { URL } from 'url';
 import { StorageClient, ObjectStorage } from '@elastic.io/maester-client/dist';
 import FormData from 'form-data';
@@ -15,7 +15,7 @@ const maesterCreds = { jwtSecret: ELASTICIO_OBJECT_STORAGE_TOKEN, uri: ELASTICIO
 const REQUEST_TIMEOUT = process.env.REQUEST_TIMEOUT ? parseInt(process.env.REQUEST_TIMEOUT, 10) : 10000; // 10s
 const REQUEST_MAX_RETRY = process.env.REQUEST_MAX_RETRY ? parseInt(process.env.REQUEST_MAX_RETRY, 10) : 7; // 10s
 const REQUEST_RETRY_DELAY = process.env.REQUEST_RETRY_DELAY ? parseInt(process.env.REQUEST_RETRY_DELAY, 10) : 7000; // 7s
-const REQUEST_MAX_BODY_LENGTH = process.env.REQUEST_MAX_BODY_LENGTH ? parseInt(process.env.REQUEST_MAX_BODY_LENGTH, 10) : 104857600; // 100MB
+const MAX_FILE_SIZE = process.env.MAX_FILE_SIZE ? parseInt(process.env.MAX_FILE_SIZE, 10) * 1024 * 1024 : 104857600; // 100MB
 const axiosCriticalErrors = ['ERR_FR_MAX_BODY_LENGTH_EXCEEDED']; // errors that couldn't be retried
 export class AttachmentProcessor {
   async getAttachment(url: string, responseType: string) {
@@ -94,7 +94,7 @@ const axiosUploadAttachment = async (body, currentRetryCount: number = 0) => {
   const config = {
     method: 'post',
     url: `${ELASTICIO_OBJECT_STORAGE_URI}${MAESTER_OBJECT_ID_ENDPOINT}`,
-    maxBodyLength: REQUEST_MAX_BODY_LENGTH,
+    maxBodyLength: MAX_FILE_SIZE,
     headers: {
       Authorization: `Bearer ${ELASTICIO_OBJECT_STORAGE_TOKEN}`,
       ...data.getHeaders()
