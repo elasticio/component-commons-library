@@ -1,7 +1,7 @@
 ## 2.1.0 (May 06, 2022)
 * Now method `uploadAttachment` from `AttachmentProcessor` automatically sets the `contentType`
 * Fixed retrying logic for method `uploadAttachment`
-* Rename environment variable `REQUEST_MAX_BODY_LENGTH` to `MAX_FILE_SIZE`
+* Removed validation of the file size (`REQUEST_MAX_BODY_LENGTH` env) because it not works with streams 
 
 ## 2.0.2 (April 13, 2022)
 * Fix dependencies
