@@ -24,7 +24,7 @@
     "posttest": "tsc",
     "test": "nyc mocha --require ts-node/register \"spec/**/*spec.ts\" --timeout 50000",
     "integration-test": "npm run pretest && nyc mocha --require ts-node/register \"spec-integration/**/*spec.ts\" --timeout 500000",
-    "build": "rm -rf dist tsc"
+    "build": "rm -rf dist && tsc"
   },
   "engines": {
     "node": ">=12"
