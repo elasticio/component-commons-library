@@ -1,7 +1,11 @@
 /* eslint-disable class-methods-use-this */
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosRequestConfig, AxiosError } from 'axios';
 import { URL } from 'url';
 import { StorageClient, ObjectStorage } from '@elastic.io/maester-client/dist';
+import FormData from 'form-data';
+import { getLogger } from '../logger/logger';
+
+const logger = getLogger();
 
 export const STORAGE_TYPE_PARAMETER = 'storage_type';
 export const DEFAULT_STORAGE_TYPE = 'steward';
@@ -11,8 +15,7 @@ const maesterCreds = { jwtSecret: ELASTICIO_OBJECT_STORAGE_TOKEN, uri: ELASTICIO
 const REQUEST_TIMEOUT = process.env.REQUEST_TIMEOUT ? parseInt(process.env.REQUEST_TIMEOUT, 10) : 10000; // 10s
 const REQUEST_MAX_RETRY = process.env.REQUEST_MAX_RETRY ? parseInt(process.env.REQUEST_MAX_RETRY, 10) : 7; // 10s
 const REQUEST_RETRY_DELAY = process.env.REQUEST_RETRY_DELAY ? parseInt(process.env.REQUEST_RETRY_DELAY, 10) : 7000; // 7s
-const REQUEST_MAX_BODY_LENGTH = process.env.REQUEST_MAX_BODY_LENGTH ? parseInt(process.env.REQUEST_MAX_BODY_LENGTH, 10) : 104857600; // 100MB
-
+const axiosCriticalErrors = []; // errors that couldn't be retried
 export class AttachmentProcessor {
   async getAttachment(url: string, responseType: string) {
     const storageType = AttachmentProcessor.getStorageTypeByUrl(url);
@@ -32,26 +35,9 @@ export class AttachmentProcessor {
     }
   }
 
-  async uploadAttachment(body, contentType) {
-    const ax = axios.create();
-    AttachmentProcessor.addRetryCountInterceptorToAxios(ax);
-    const url = `${ELASTICIO_OBJECT_STORAGE_URI}${MAESTER_OBJECT_ID_ENDPOINT}`;
-
-    const axConfig = {
-      url,
-      data: body,
-      method: 'post',
-      headers: {
-        Authorization: `Bearer ${ELASTICIO_OBJECT_STORAGE_TOKEN}`,
-        'Content-Type': contentType,
-      },
-      timeout: REQUEST_TIMEOUT,
-      retry: REQUEST_MAX_RETRY,
-      delay: REQUEST_RETRY_DELAY,
-      maxBodyLength: REQUEST_MAX_BODY_LENGTH,
-    } as AxiosRequestConfig;
-
-    return ax(axConfig);
+  async uploadAttachment(body) {
+    logger.debug('Start uploading attachment');
+    return axiosUploadAttachment(body);
   }
 
   static async getStewardAttachment(axConfig) {
@@ -98,3 +84,41 @@ export class AttachmentProcessor {
     });
   }
 }
+
+// uploads attachment to "Maester" and applies request-retry logic
+const axiosUploadAttachment = async (body, currentRetryCount: number = 0) => {
+  const data = new FormData();
+  data.append('file', body);
+
+  const config = {
+    method: 'post',
+    url: `${ELASTICIO_OBJECT_STORAGE_URI}${MAESTER_OBJECT_ID_ENDPOINT}`,
+    headers: {
+      Authorization: `Bearer ${ELASTICIO_OBJECT_STORAGE_TOKEN}`,
+      ...data.getHeaders()
+    },
+    maxRedirects: 0,
+    data
+  };
+
+  try {
+    const resp = await axios(config);
+    return resp;
+  } catch (error) {
+    logger.error(`Error occurred: ${error.response?.data || error.message}`);
+    if (error instanceof AxiosError) {
+      const errorCouldNotBeRetried = axiosCriticalErrors.includes(error.code);
+      if (errorCouldNotBeRetried) throw error;
+    }
+    if (currentRetryCount + 1 <= REQUEST_MAX_RETRY) {
+      logger.debug(`Start retrying #${currentRetryCount + 1}`);
+      await sleep(REQUEST_RETRY_DELAY);
+      return axiosUploadAttachment(body, currentRetryCount + 1);
+    }
+    throw error;
+  }
+};
+
+const sleep = async (ms) => new Promise((resolve) => {
+  setTimeout(resolve, ms);
+});

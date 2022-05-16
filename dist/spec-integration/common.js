@@ -7,5 +7,8 @@ const setEnvs = () => {
     if ((0, fs_1.existsSync)('.env')) {
         (0, dotenv_1.config)();
     }
+    else {
+        throw new Error('.env doesn\'t exist!');
+    }
 };
 exports.setEnvs = setEnvs;
