@@ -15,7 +15,7 @@ const maesterCreds = { jwtSecret: ELASTICIO_OBJECT_STORAGE_TOKEN, uri: ELASTICIO
 const REQUEST_TIMEOUT = process.env.REQUEST_TIMEOUT ? parseInt(process.env.REQUEST_TIMEOUT, 10) : 10000; // 10s
 const REQUEST_MAX_RETRY = process.env.REQUEST_MAX_RETRY ? parseInt(process.env.REQUEST_MAX_RETRY, 10) : 7; // 10s
 const REQUEST_RETRY_DELAY = process.env.REQUEST_RETRY_DELAY ? parseInt(process.env.REQUEST_RETRY_DELAY, 10) : 7000; // 7s
-const axiosCriticalErrors = []; // errors that couldn't be retried
+
 export class AttachmentProcessor {
   async getAttachment(url: string, responseType: string) {
     const storageType = AttachmentProcessor.getStorageTypeByUrl(url);
@@ -97,6 +97,7 @@ const axiosUploadAttachment = async (body, currentRetryCount: number = 0) => {
       Authorization: `Bearer ${ELASTICIO_OBJECT_STORAGE_TOKEN}`,
       ...data.getHeaders()
     },
+    timeout: REQUEST_TIMEOUT,
     maxRedirects: 0,
     data
   };
@@ -106,9 +107,10 @@ const axiosUploadAttachment = async (body, currentRetryCount: number = 0) => {
     return resp;
   } catch (error) {
     logger.error(`Error occurred: ${error.response?.data || error.message}`);
-    if (error instanceof AxiosError) {
-      const errorCouldNotBeRetried = axiosCriticalErrors.includes(error.code);
-      if (errorCouldNotBeRetried) throw error;
+    if (error.response?.status) {
+      const { status } = error.response;
+      logger.error(`error status: ${status}`);
+      if (status >= 300 && status < 500) throw error;
     }
     if (currentRetryCount + 1 <= REQUEST_MAX_RETRY) {
       logger.debug(`Start retrying #${currentRetryCount + 1}`);

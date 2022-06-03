@@ -1,30 +1,11 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AttachmentProcessor = exports.MAESTER_OBJECT_ID_ENDPOINT = exports.DEFAULT_STORAGE_TYPE = exports.STORAGE_TYPE_PARAMETER = void 0;
 /* eslint-disable class-methods-use-this */
-const axios_1 = __importStar(require("axios"));
+const axios_1 = __importDefault(require("axios"));
 const url_1 = require("url");
 const dist_1 = require("@elastic.io/maester-client/dist");
 const form_data_1 = __importDefault(require("form-data"));
@@ -38,7 +19,6 @@ const maesterCreds = { jwtSecret: ELASTICIO_OBJECT_STORAGE_TOKEN, uri: ELASTICIO
 const REQUEST_TIMEOUT = process.env.REQUEST_TIMEOUT ? parseInt(process.env.REQUEST_TIMEOUT, 10) : 10000; // 10s
 const REQUEST_MAX_RETRY = process.env.REQUEST_MAX_RETRY ? parseInt(process.env.REQUEST_MAX_RETRY, 10) : 7; // 10s
 const REQUEST_RETRY_DELAY = process.env.REQUEST_RETRY_DELAY ? parseInt(process.env.REQUEST_RETRY_DELAY, 10) : 7000; // 7s
-const axiosCriticalErrors = []; // errors that couldn't be retried
 class AttachmentProcessor {
     async getAttachment(url, responseType) {
         const storageType = AttachmentProcessor.getStorageTypeByUrl(url);
@@ -103,7 +83,7 @@ class AttachmentProcessor {
 exports.AttachmentProcessor = AttachmentProcessor;
 // uploads attachment to "Maester" and applies request-retry logic
 const axiosUploadAttachment = async (body, currentRetryCount = 0) => {
-    var _a;
+    var _a, _b;
     const data = new form_data_1.default();
     data.append('file', body);
     const config = {
@@ -113,6 +93,7 @@ const axiosUploadAttachment = async (body, currentRetryCount = 0) => {
             Authorization: `Bearer ${ELASTICIO_OBJECT_STORAGE_TOKEN}`,
             ...data.getHeaders()
         },
+        timeout: REQUEST_TIMEOUT,
         maxRedirects: 0,
         data
     };
@@ -122,9 +103,10 @@ const axiosUploadAttachment = async (body, currentRetryCount = 0) => {
     }
     catch (error) {
         logger.error(`Error occurred: ${((_a = error.response) === null || _a === void 0 ? void 0 : _a.data) || error.message}`);
-        if (error instanceof axios_1.AxiosError) {
-            const errorCouldNotBeRetried = axiosCriticalErrors.includes(error.code);
-            if (errorCouldNotBeRetried)
+        if ((_b = error.response) === null || _b === void 0 ? void 0 : _b.status) {
+            const { status } = error.response;
+            logger.error(`error status: ${status}`);
+            if (status >= 300 && status < 500)
                 throw error;
         }
         if (currentRetryCount + 1 <= REQUEST_MAX_RETRY) {
