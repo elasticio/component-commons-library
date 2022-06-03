@@ -1,3 +1,6 @@
+## 2.1.1 (June 03, 2022)
+* Minor fixes for retry-logic of `uploadAttachment` method from `AttachmentProcessor`
+
 ## 2.1.0 (May 06, 2022)
 * Now method `uploadAttachment` from `AttachmentProcessor` automatically sets the `contentType`
 * Fixed retrying logic for method `uploadAttachment`
