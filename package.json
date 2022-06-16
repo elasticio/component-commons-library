@@ -32,7 +32,6 @@
     "bunyan-format": "0.2.1",
     "bunyan-serializers": "0.0.2",
     "elasticio-node": "0.0.9",
-    "form-data": "4.0.0",
     "remove-leading-slash": "1.0.1",
     "remove-trailing-slash": "0.1.1",
     "request": "2.88.2"
