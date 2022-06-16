@@ -80,6 +80,7 @@ typings/
 
 # Nuxt.js build / generate output
 .nuxt
+dist
 
 # Gatsby files
 .cache/
@@ -103,5 +104,6 @@ typings/
 .tern-port
 .vscode
 .idea
+*.js
 !.eslintrc.js
 *.d.ts
