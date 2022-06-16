@@ -27,7 +27,7 @@
     "build": "rm -rf dist && tsc"
   },
   "engines": {
-    "node": ">=12"
+    "node": "16.x"
   },
   "dependencies": {
     "@elastic.io/jsonata-moment": "1.1.4",
