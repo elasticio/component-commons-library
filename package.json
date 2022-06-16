@@ -7,26 +7,20 @@
     "email": "info@elastic.io",
     "url": "http://elastic.io"
   },
-  "main": "src/index.js",
-  "types": "src/index.d.ts",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
   "keywords": [
     "elasticio",
     "ipaas",
     "elasticio-component"
   ],
   "scripts": {
-    "lint": "eslint '*/**/*[^.d$].ts' --quiet --fix",
-    "test": "NODE_ENV=test mocha -r ts-node/register --recursive spec/**/*.ts --timeout 10000",
-    "integration-test": "npm run pretest && mocha --exit --r ts-node/register spec-integration/**/*.ts --timeout 1000000",
-    "pretest": "eslint --ext .ts --quiet --fix && find src spec spec-integration -name \"*.js\" -type f -delete && find src spec spec-integration -name \"*.d.ts\" -type f -delete",
+    "lint": "eslint --ext .ts --quiet --fix",
+    "pretest": "rm -rf dist && eslint --ext .ts --quiet --fix && find src spec spec-integration -name \"*.js\" -type f -delete",
     "posttest": "tsc",
-    "build": "tsc",
-    "prepare": "npm run build",
-    "prepublishOnly": "npm run lint && npm run test",
-    "license-check": "license-checker --excludePrivatePackages --excludePackages \"$(node ../../../.ignored-licenses.js)\" --onlyAllow \"$(node ../../../.allowed-licenses.js)\""
-  },
-  "engines": {
-    "node": "16.x"
+    "test": "nyc mocha --require ts-node/register \"spec/**/*spec.ts\" --timeout 50000",
+    "integration-test": "npm run pretest && nyc mocha --require ts-node/register \"spec-integration/**/*spec.ts\" --timeout 500000",
+    "build": "rm -rf dist && tsc"
   },
   "dependencies": {
     "@elastic.io/jsonata-moment": "1.1.4",
