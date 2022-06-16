@@ -3,7 +3,7 @@ import chai from 'chai';
 import fs from 'fs';
 import { Readable } from 'stream';
 import sinon from 'sinon';
-import { ObjectStorage } from '@elastic.io/maester-client/dist';
+import { ObjectStorage } from '@elastic.io/maester-client';
 import { AttachmentProcessor, STORAGE_TYPE_PARAMETER, MAESTER_OBJECT_ID_ENDPOINT } from '../../src/attachment/AttachmentProcessor';
 
 const { expect } = chai;
@@ -33,7 +33,6 @@ describe('AttachmentProcessor', () => {
       const expectedResult = fs.readFileSync('spec/attachment/resources/base64csv.txt').toString();
       expect(encodedResult).to.be.equal(expectedResult);
     });
-
     it('Should successfully retrieve png image', async () => {
       const attachmentOptions = {
         'content-type': 'arraybuffer',
@@ -49,7 +48,7 @@ describe('AttachmentProcessor', () => {
   describe('maester', () => {
     let getById;
     beforeEach(() => {
-      getById = sinon.stub(ObjectStorage.prototype, 'getById').callsFake(async () => ({ data: formStream('i`m a stream') }));
+      getById = sinon.stub(ObjectStorage.prototype, 'getOne').callsFake(async () => ({ data: formStream('i`m a stream') }));
     });
     afterEach(() => {
       sinon.restore();
