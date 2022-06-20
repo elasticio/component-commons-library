@@ -61,7 +61,7 @@ describe('AttachmentProcessor', () => {
       const result: any = await attachmentProcessor.getAttachment(attachmentOptions.url, attachmentOptions['content-type']);
       expect(result.toString('base64')).to.be.equal({ data: formStream('i`m a stream') }.toString());
       expect(getById.getCall(0).args[0]).to.be.equal('object_id');
-      expect(getById.getCall(0).args[1]).to.be.equal('stream');
+      expect(getById.getCall(0).args[1]).to.be.deep.equal({ responseType: 'stream' });
     });
   });
 });

@@ -2,7 +2,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { URL } from 'url';
 import { StorageClient, ObjectStorage } from '@elastic.io/maester-client';
-import { RetryOptions } from '@elastic.io/maester-client/src/interfaces';
+import { RetryOptions, ResponseType } from '@elastic.io/maester-client/src/interfaces';
 import { Readable } from 'stream';
 import { getLogger } from '../logger/logger';
 
@@ -13,7 +13,7 @@ export const DEFAULT_STORAGE_TYPE = 'steward';
 export const MAESTER_OBJECT_ID_ENDPOINT = '/objects/';
 const { ELASTICIO_OBJECT_STORAGE_TOKEN = '', ELASTICIO_OBJECT_STORAGE_URI = '' } = process.env;
 const maesterCreds = { jwtSecret: ELASTICIO_OBJECT_STORAGE_TOKEN, uri: ELASTICIO_OBJECT_STORAGE_URI };
-const REQUEST_TIMEOUT = process.env.REQUEST_TIMEOUT ? parseInt(process.env.REQUEST_TIMEOUT, 10) : 15000; // 15s timeout
+const REQUEST_TIMEOUT = process.env.REQUEST_TIMEOUT ? parseInt(process.env.REQUEST_TIMEOUT, 10) : 30000; // 30s timeout
 const REQUEST_MAX_RETRY = process.env.REQUEST_MAX_RETRY ? parseInt(process.env.REQUEST_MAX_RETRY, 10) : 7; // 7 times could be retried
 const REQUEST_RETRY_DELAY = process.env.REQUEST_RETRY_DELAY ? parseInt(process.env.REQUEST_RETRY_DELAY, 10) : 5000; // 5s delay before new try
 
@@ -31,16 +31,15 @@ export class AttachmentProcessor {
 
     switch (storageType) {
       case 'steward': return AttachmentProcessor.getStewardAttachment(axConfig);
-      case 'maester': return AttachmentProcessor.getMaesterAttachment(axConfig);
+      case 'maester': return AttachmentProcessor.getMaesterAttachment(axConfig as any);
       default: throw new Error(`Storage type "${storageType}" is not supported`);
     }
   }
 
-  async uploadAttachment(getAttachment: () => Promise<Readable>, contentType: string, retryOptions: RetryOptions = {}) {
+  async uploadAttachment(getAttachment: () => Promise<Readable>, retryOptions: RetryOptions = {}) {
     logger.debug('uploading attachment..');
     const objectStorage = new ObjectStorage(maesterCreds);
     return objectStorage.add(getAttachment, {
-      contentType,
       retryOptions: {
         retryDelay: retryOptions.retryDelay || REQUEST_RETRY_DELAY,
         retriesCount: retryOptions.retriesCount || REQUEST_MAX_RETRY,
@@ -55,11 +54,11 @@ export class AttachmentProcessor {
     return ax(axConfig);
   }
 
-  static async getMaesterAttachment(axConfig) {
+  static async getMaesterAttachment({ url, responseType }: { url: string, responseType: ResponseType }) {
     const client = new StorageClient(maesterCreds);
     const objectStorage = new ObjectStorage(maesterCreds, client);
-    const maesterAttachmentId = AttachmentProcessor.getMaesterAttachmentIdByUrl(axConfig.url);
-    const response = await objectStorage.getOne(maesterAttachmentId, axConfig.responseType);
+    const maesterAttachmentId = AttachmentProcessor.getMaesterAttachmentIdByUrl(url);
+    const response = await objectStorage.getOne(maesterAttachmentId, { responseType });
     return { data: response };
   }
 
