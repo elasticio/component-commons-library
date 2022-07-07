@@ -2,7 +2,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { URL } from 'url';
 import { StorageClient, ObjectStorage } from '@elastic.io/maester-client';
-import { RetryOptions, ResponseType } from '@elastic.io/maester-client/src/interfaces';
+import { RetryOptions, ResponseType } from '@elastic.io/maester-client/dist/src/interfaces';
 import { Readable } from 'stream';
 import { getLogger } from '../logger/logger';
 
