@@ -1,4 +1,4 @@
-## 3.0.0 (June 17, 2022)
+## 3.0.0 (July 15, 2022)
 * Updated method `uploadAttachment` from `AttachmentProcessor`
 
 ## 2.1.0 (May 06, 2022)
