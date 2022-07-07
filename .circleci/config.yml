@@ -35,6 +35,6 @@ workflows:
           filters:
             branches:
               only:
-                - v4
+                - up-maester-client
     jobs:
       - build
