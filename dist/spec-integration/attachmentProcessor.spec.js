@@ -66,4 +66,13 @@ describe('AttachmentProcessor', () => {
             (0, chai_1.expect)(objectHeaders['content-type']).to.be.equal('application/json');
         });
     });
+    describe('getMaesterAttachmentUrlById', () => {
+        it('uploadAttachment and getMaesterAttachmentUrlById', async () => {
+            const getFileAsStream = async () => fs_1.default.createReadStream(path_1.default.join(__dirname, './samples/sample.json'));
+            const objectId = await attachmentProcessor.uploadAttachment(getFileAsStream);
+            const attachmentUrl = attachmentProcessor.getMaesterAttachmentUrlById(objectId);
+            await attachmentProcessor.getAttachment(attachmentUrl, 'stream');
+            (0, chai_1.expect)(attachmentUrl).to.be.equal(`${common_1.creds.uri}/objects/${objectId}?storage_type=maester`);
+        });
+    });
 });

@@ -48,4 +48,13 @@ describe('AttachmentProcessor', () => {
       expect(objectHeaders['content-type']).to.be.equal('application/json');
     });
   });
+  describe('getMaesterAttachmentUrlById', () => {
+    it('uploadAttachment and getMaesterAttachmentUrlById', async () => {
+      const getFileAsStream = async () => fs.createReadStream(path.join(__dirname, './samples/sample.json'));
+      const objectId = await attachmentProcessor.uploadAttachment(getFileAsStream);
+      const attachmentUrl = attachmentProcessor.getMaesterAttachmentUrlById(objectId);
+      await attachmentProcessor.getAttachment(attachmentUrl, 'stream');
+      expect(attachmentUrl).to.be.equal(`${creds.uri}/objects/${objectId}?storage_type=maester`);
+    });
+  });
 });

@@ -15,23 +15,21 @@ const { ELASTICIO_OBJECT_STORAGE_TOKEN = '', ELASTICIO_OBJECT_STORAGE_URI = '' }
 const maesterCreds = { jwtSecret: ELASTICIO_OBJECT_STORAGE_TOKEN, uri: ELASTICIO_OBJECT_STORAGE_URI };
 const REQUEST_TIMEOUT = process.env.REQUEST_TIMEOUT ? parseInt(process.env.REQUEST_TIMEOUT, 10) : 30000; // 30s timeout
 const REQUEST_MAX_RETRY = process.env.REQUEST_MAX_RETRY ? parseInt(process.env.REQUEST_MAX_RETRY, 10) : 7; // 7 times could be retried
-const REQUEST_RETRY_DELAY = process.env.REQUEST_RETRY_DELAY ? parseInt(process.env.REQUEST_RETRY_DELAY, 10) : 5000; // 5s delay before new try
 
 export class AttachmentProcessor {
   async getAttachment(url: string, responseType: string) {
-    const storageType = AttachmentProcessor.getStorageTypeByUrl(url);
+    const storageType = this.getStorageTypeByUrl(url);
     const axConfig = {
       url,
       responseType,
       method: 'get',
       timeout: REQUEST_TIMEOUT,
       retry: REQUEST_MAX_RETRY,
-      delay: REQUEST_RETRY_DELAY,
     } as AxiosRequestConfig;
 
     switch (storageType) {
-      case 'steward': return AttachmentProcessor.getStewardAttachment(axConfig);
-      case 'maester': return AttachmentProcessor.getMaesterAttachment(axConfig as any);
+      case 'steward': return this.getStewardAttachment(axConfig);
+      case 'maester': return this.getMaesterAttachment(axConfig as any);
       default: throw new Error(`Storage type "${storageType}" is not supported`);
     }
   }
@@ -50,27 +48,31 @@ export class AttachmentProcessor {
     });
   }
 
-  static async getStewardAttachment(axConfig) {
+  getMaesterAttachmentUrlById(attachmentId): string {
+    return `${maesterCreds.uri}${MAESTER_OBJECT_ID_ENDPOINT}${attachmentId}?${STORAGE_TYPE_PARAMETER}=maester`;
+  }
+
+  private async getStewardAttachment(axConfig) {
     const ax = axios.create();
-    AttachmentProcessor.addRetryCountInterceptorToAxios(ax);
+    this.addRetryCountInterceptorToAxios(ax);
     return ax(axConfig);
   }
 
-  static async getMaesterAttachment({ url, responseType }: { url: string, responseType: ResponseType }) {
+  private async getMaesterAttachment({ url, responseType }: { url: string, responseType: ResponseType }) {
     const client = new StorageClient(maesterCreds);
     const objectStorage = new ObjectStorage(maesterCreds, client);
-    const maesterAttachmentId = AttachmentProcessor.getMaesterAttachmentIdByUrl(url);
+    const maesterAttachmentId = this.getMaesterAttachmentIdByUrl(url);
     const response = await objectStorage.getOne(maesterAttachmentId, { responseType });
     return { data: response };
   }
 
-  static getStorageTypeByUrl(urlString) {
+  private getStorageTypeByUrl(urlString) {
     const url = new URL(urlString);
     const storageType = url.searchParams.get(STORAGE_TYPE_PARAMETER);
     return storageType || DEFAULT_STORAGE_TYPE;
   }
 
-  static getMaesterAttachmentIdByUrl(urlString): string {
+  private getMaesterAttachmentIdByUrl(urlString): string {
     const { pathname } = new URL(urlString);
     const maesterAttachmentId = pathname.split(MAESTER_OBJECT_ID_ENDPOINT)[1];
     if (!maesterAttachmentId) {
@@ -79,7 +81,7 @@ export class AttachmentProcessor {
     return maesterAttachmentId;
   }
 
-  static addRetryCountInterceptorToAxios(ax) {
+  private addRetryCountInterceptorToAxios(ax) {
     ax.interceptors.response.use(undefined, (err) => { //  Retry count interceptor for axios
       const { config } = err;
       if (!config || !config.retry || !config.delay) {
