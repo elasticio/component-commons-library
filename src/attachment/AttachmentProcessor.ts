@@ -2,7 +2,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { URL } from 'url';
 import { StorageClient, ObjectStorage } from '@elastic.io/maester-client';
-import { RetryOptions, ResponseType } from '@elastic.io/maester-client/dist/src/interfaces';
+import { RetryOptions, ResponseType, CONTENT_TYPE_HEADER } from '@elastic.io/maester-client/dist/src/interfaces';
 import { Readable } from 'stream';
 import { getLogger } from '../logger/logger';
 
@@ -36,15 +36,17 @@ export class AttachmentProcessor {
     }
   }
 
-  async uploadAttachment(getAttachment: () => Promise<Readable>, retryOptions: RetryOptions = {}) {
+  async uploadAttachment(getAttachment: () => Promise<Readable>, retryOptions: RetryOptions = {}, contentType?: string) {
     logger.debug('uploading attachment..');
+    const headers = {};
+    if (contentType) headers[CONTENT_TYPE_HEADER] = contentType;
     const objectStorage = new ObjectStorage(maesterCreds);
     return objectStorage.add(getAttachment, {
+      headers,
       retryOptions: {
-        retryDelay: retryOptions.retryDelay || REQUEST_RETRY_DELAY,
         retriesCount: retryOptions.retriesCount || REQUEST_MAX_RETRY,
         requestTimeout: retryOptions.requestTimeout || REQUEST_TIMEOUT
-      }
+      },
     });
   }
 
