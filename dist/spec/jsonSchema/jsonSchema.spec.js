@@ -1,0 +1,120 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const fs_1 = __importDefault(require("fs"));
+const chai_1 = __importDefault(require("chai"));
+const src_1 = require("../../src");
+const { expect } = chai_1.default;
+describe('Metadata converting ', () => {
+    it('JSON schema to EIO metadata', async () => {
+        const inputMetadata = JSON.parse(fs_1.default.readFileSync('spec/jsonSchema/samples/inputSchema.json')
+            .toString());
+        const result = src_1.JsonSchema.convertJsonSchemaToEioSchema('Product', inputMetadata);
+        expect(result).to.deep.equal(JSON.parse(fs_1.default.readFileSync('spec/jsonSchema/samples/outputSchema.json').toString()));
+    });
+    describe('Remove refs ', () => {
+        it('for FULL Json', async () => {
+            const inputMetadata = JSON.parse(fs_1.default.readFileSync('spec/jsonSchema/samples/refsSchemaExample.json')
+                .toString());
+            const listToResolve = JSON.parse(fs_1.default.readFileSync('spec/jsonSchema/samples/schemasListToResolveExample.json')
+                .toString());
+            src_1.JsonSchema.makeSchemaInline(inputMetadata, listToResolve);
+            expect(inputMetadata).to.deep.equal(JSON.parse(fs_1.default.readFileSync('spec/jsonSchema/samples/removingRefsResult.json').toString()));
+        });
+        it('for level one object', async () => {
+            const inputMetadata = { type: 'object', properties: { nameholder: { $ref: 'Resolve' } } };
+            const listToResolve = {
+                Resolve: {
+                    type: 'object',
+                    properties: { name: { type: 'string' } },
+                },
+            };
+            src_1.JsonSchema.makeSchemaInline(inputMetadata, listToResolve);
+            expect(inputMetadata).to.deep.equal({
+                type: 'object',
+                properties: {
+                    nameholder: {
+                        type: 'object',
+                        properties: { name: { type: 'string' } },
+                    },
+                },
+            });
+        });
+        it('for level one array', async () => {
+            const inputMetadata = { type: 'array', items: { $ref: 'Resolve' } };
+            const listToResolve = {
+                Resolve: {
+                    type: 'object',
+                    properties: { name: { type: 'string' } },
+                },
+            };
+            src_1.JsonSchema.makeSchemaInline(inputMetadata, listToResolve);
+            expect(inputMetadata).to.deep.equal({
+                type: 'array',
+                items: {
+                    type: 'object',
+                    properties: { name: { type: 'string' } },
+                },
+            });
+        });
+        it('for level one additional properties', async () => {
+            const inputMetadata = { type: 'object', additionalProperties: { $ref: 'Resolve' } };
+            const listToResolve = {
+                Resolve: {
+                    type: 'object',
+                    properties: { name: { type: 'string' } },
+                },
+            };
+            src_1.JsonSchema.makeSchemaInline(inputMetadata, listToResolve);
+            expect(inputMetadata).to.deep.equal({
+                type: 'object',
+                additionalProperties: {
+                    type: 'object',
+                    properties: { name: { type: 'string' } },
+                },
+            });
+        });
+        it('for level two object', async () => {
+            const inputMetadata = { type: 'object', properties: { resolve1: { $ref: 'Resolve1' } } };
+            const listToResolve = {
+                Resolve1: {
+                    type: 'object',
+                    properties: { resolve2: { $ref: 'Resolve2' } },
+                },
+                Resolve2: {
+                    type: 'object',
+                    properties: { name: { type: 'string' } },
+                },
+            };
+            src_1.JsonSchema.makeSchemaInline(inputMetadata, listToResolve);
+            expect(inputMetadata).to.deep.equal({
+                type: 'object',
+                properties: {
+                    resolve1: {
+                        type: 'object',
+                        properties: {
+                            resolve2: {
+                                type: 'object',
+                                properties: { name: { type: 'string' } },
+                            },
+                        },
+                    },
+                },
+            });
+        });
+    });
+    it('dotNetTypeToJsonSchema', () => {
+        expect(src_1.JsonSchema.convertDotNetTypeToJsonSchemaType('System.String')).to.equal('string');
+        expect(src_1.JsonSchema.convertDotNetTypeToJsonSchemaType('System.DateTime')).to.equal('string');
+        expect(src_1.JsonSchema.convertDotNetTypeToJsonSchemaType('System.Guid')).to.equal('string');
+        expect(src_1.JsonSchema.convertDotNetTypeToJsonSchemaType('System.Int64')).to.equal('number');
+        expect(src_1.JsonSchema.convertDotNetTypeToJsonSchemaType('System.Int32')).to.equal('number');
+        expect(src_1.JsonSchema.convertDotNetTypeToJsonSchemaType('System.Int16')).to.equal('number');
+        expect(src_1.JsonSchema.convertDotNetTypeToJsonSchemaType('System.Decimal')).to.equal('number');
+        expect(src_1.JsonSchema.convertDotNetTypeToJsonSchemaType('System.Double')).to.equal('number');
+        expect(src_1.JsonSchema.convertDotNetTypeToJsonSchemaType('System.Boolean')).to.equal('boolean');
+        expect(() => { src_1.JsonSchema.convertDotNetTypeToJsonSchemaType('Integer'); }).to.throw('Unrecognized Type: Integer');
+    });
+});
