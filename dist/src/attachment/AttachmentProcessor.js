@@ -16,8 +16,7 @@ exports.DEFAULT_STORAGE_TYPE = 'steward';
 exports.MAESTER_OBJECT_ID_ENDPOINT = '/objects/';
 const { ELASTICIO_OBJECT_STORAGE_TOKEN = '', ELASTICIO_OBJECT_STORAGE_URI = '' } = process.env;
 const maesterCreds = { jwtSecret: ELASTICIO_OBJECT_STORAGE_TOKEN, uri: ELASTICIO_OBJECT_STORAGE_URI };
-const REQUEST_TIMEOUT = process.env.REQUEST_TIMEOUT ? parseInt(process.env.REQUEST_TIMEOUT, 10) : 30000; // 30s timeout
-const REQUEST_MAX_RETRY = process.env.REQUEST_MAX_RETRY ? parseInt(process.env.REQUEST_MAX_RETRY, 10) : 7; // 7 times could be retried
+const DEFAULT_ATTACHMENT_REQUEST_TIMEOUT = process.env.REQUEST_TIMEOUT ? parseInt(process.env.REQUEST_TIMEOUT, 10) : interfaces_1.REQUEST_TIMEOUT.maxValue; // 20s
 class AttachmentProcessor {
     async getAttachment(url, responseType) {
         const storageType = this.getStorageTypeByUrl(url);
@@ -25,8 +24,8 @@ class AttachmentProcessor {
             url,
             responseType,
             method: 'get',
-            timeout: REQUEST_TIMEOUT,
-            retry: REQUEST_MAX_RETRY,
+            timeout: DEFAULT_ATTACHMENT_REQUEST_TIMEOUT,
+            retry: interfaces_1.RETRIES_COUNT.defaultValue,
         };
         switch (storageType) {
             case 'steward': return this.getStewardAttachment(axConfig);
@@ -43,8 +42,7 @@ class AttachmentProcessor {
         return objectStorage.add(getAttachment, {
             headers,
             retryOptions: {
-                retriesCount: retryOptions.retriesCount || REQUEST_MAX_RETRY,
-                requestTimeout: retryOptions.requestTimeout || REQUEST_TIMEOUT
+                requestTimeout: retryOptions.requestTimeout || DEFAULT_ATTACHMENT_REQUEST_TIMEOUT
             },
         });
     }

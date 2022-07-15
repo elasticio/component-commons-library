@@ -2,7 +2,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { URL } from 'url';
 import { StorageClient, ObjectStorage } from '@elastic.io/maester-client';
-import { RetryOptions, ResponseType, CONTENT_TYPE_HEADER } from '@elastic.io/maester-client/dist/src/interfaces';
+import { RetryOptions, ResponseType, CONTENT_TYPE_HEADER, REQUEST_TIMEOUT, RETRIES_COUNT } from '@elastic.io/maester-client/dist/src/interfaces';
 import { Readable } from 'stream';
 import { getLogger } from '../logger/logger';
 
@@ -13,8 +13,7 @@ export const DEFAULT_STORAGE_TYPE = 'steward';
 export const MAESTER_OBJECT_ID_ENDPOINT = '/objects/';
 const { ELASTICIO_OBJECT_STORAGE_TOKEN = '', ELASTICIO_OBJECT_STORAGE_URI = '' } = process.env;
 const maesterCreds = { jwtSecret: ELASTICIO_OBJECT_STORAGE_TOKEN, uri: ELASTICIO_OBJECT_STORAGE_URI };
-const REQUEST_TIMEOUT = process.env.REQUEST_TIMEOUT ? parseInt(process.env.REQUEST_TIMEOUT, 10) : 20000; // 20s timeout
-const REQUEST_MAX_RETRY = process.env.REQUEST_MAX_RETRY ? parseInt(process.env.REQUEST_MAX_RETRY, 10) : 6; // 6 times could be retried
+const DEFAULT_ATTACHMENT_REQUEST_TIMEOUT = process.env.REQUEST_TIMEOUT ? parseInt(process.env.REQUEST_TIMEOUT, 10) : REQUEST_TIMEOUT.maxValue; // 20s
 
 export class AttachmentProcessor {
   async getAttachment(url: string, responseType: string) {
@@ -23,8 +22,8 @@ export class AttachmentProcessor {
       url,
       responseType,
       method: 'get',
-      timeout: REQUEST_TIMEOUT,
-      retry: REQUEST_MAX_RETRY,
+      timeout: DEFAULT_ATTACHMENT_REQUEST_TIMEOUT,
+      retry: RETRIES_COUNT.defaultValue,
     } as AxiosRequestConfig;
 
     switch (storageType) {
@@ -42,8 +41,7 @@ export class AttachmentProcessor {
     return objectStorage.add(getAttachment, {
       headers,
       retryOptions: {
-        retriesCount: retryOptions.retriesCount || REQUEST_MAX_RETRY,
-        requestTimeout: retryOptions.requestTimeout || REQUEST_TIMEOUT
+        requestTimeout: retryOptions.requestTimeout || DEFAULT_ATTACHMENT_REQUEST_TIMEOUT
       },
     });
   }
