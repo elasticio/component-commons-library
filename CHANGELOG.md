@@ -1,4 +1,4 @@
-## 3.0.0 (July 15, 2022)
+## 3.0.0 (July 25, 2022)
 * Updated method `uploadAttachment` from `AttachmentProcessor`
 * Added method `getMaesterAttachmentUrlById` which return url to Maester attachment
 
