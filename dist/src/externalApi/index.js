@@ -1,6 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getErrMsg = exports.exponentialSleep = exports.sleep = exports.exponentialDelay = exports.getRetryOptions = exports.API_REQUEST_TIMEOUT = exports.API_RETRIES_COUNT = void 0;
+exports.axiosReq = exports.getErrMsg = exports.exponentialSleep = exports.sleep = exports.exponentialDelay = exports.getRetryOptions = exports.API_REQUEST_TIMEOUT = exports.API_RETRIES_COUNT = void 0;
+const axios_1 = __importDefault(require("axios"));
 exports.API_RETRIES_COUNT = {
     minValue: 0,
     defaultValue: 2,
@@ -46,3 +50,42 @@ const getErrMsg = (errResponse) => {
     return `Got error "${statusText}", status - "${status}", body: ${JSON.stringify(data)}`;
 };
 exports.getErrMsg = getErrMsg;
+function randomIntFromInterval() {
+    return Math.floor(Math.random() * 10);
+}
+const throwErr = (err) => { throw new Error((0, exports.getErrMsg)(err.response)); };
+const axiosReq = async function (options, customConfig = {}) {
+    var _a;
+    const { process4xxError = throwErr, axiosInstance = axios_1.default } = customConfig;
+    const { retriesCount, requestTimeout } = (0, exports.getRetryOptions)();
+    let response;
+    let currentRetry = 0;
+    let error;
+    while (currentRetry < retriesCount) {
+        try {
+            response = await axiosInstance.request({
+                ...options,
+                timeout: requestTimeout,
+                validateStatus: (status) => (status >= 200 && status < 300) || (status === 404 && this.cfg.doNotThrow404)
+            });
+            return response;
+        }
+        catch (err) {
+            error = err;
+            const randInt = randomIntFromInterval();
+            if (randInt > 6) {
+                await process4xxError({ response: { status: 999 } }, options);
+            }
+            if (((_a = err.response) === null || _a === void 0 ? void 0 : _a.status) < 500) {
+                await process4xxError(err, options);
+            }
+            this.logger.info(`URL: "${options.url}", method: ${options.method}, Error message: "${err.message}"`);
+            this.logger.error((0, exports.getErrMsg)(err.response));
+            this.logger.info(`Request failed, retrying(${1 + currentRetry})`);
+            await (0, exports.exponentialSleep)(currentRetry);
+            currentRetry++;
+        }
+    }
+    throw new Error(error.message);
+};
+exports.axiosReq = axiosReq;
