@@ -52,17 +52,7 @@ export const getErrMsg = (errResponse: AxiosResponse) => {
   return `Got error "${statusText}", status - "${status}", body: ${JSON.stringify(data)}`;
 };
 
-function randomIntFromInterval() {
-  return Math.floor(Math.random() * 10);
-}
-
-declare interface customCfg {
-  process4xxError?: Function,
-  axiosInstance?: AxiosInstance
-}
-const throwErr = (err) => { throw new Error(getErrMsg(err.response)); };
-export const axiosReq = async function (options: AxiosRequestConfig, customConfig: customCfg = {}) {
-  const { process4xxError = throwErr, axiosInstance = axios } = customConfig;
+export const axiosReq = async function (options: AxiosRequestConfig, axiosInstance: AxiosInstance = axios) {
   const { retriesCount, requestTimeout } = getRetryOptions();
   let response;
   let currentRetry = 0;
@@ -77,12 +67,8 @@ export const axiosReq = async function (options: AxiosRequestConfig, customConfi
       return response;
     } catch (err) {
       error = err;
-      const randInt = randomIntFromInterval();
-      if (randInt > 6) {
-        await process4xxError({ response: { status: 999 } }, options);
-      }
       if (err.response?.status < 500) {
-        await process4xxError(err, options);
+        throw new Error(getErrMsg(err.response));
       }
       this.logger.info(`URL: "${options.url}", method: ${options.method}, Error message: "${err.message}"`);
       this.logger.error(getErrMsg(err.response));

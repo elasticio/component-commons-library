@@ -50,13 +50,8 @@ const getErrMsg = (errResponse) => {
     return `Got error "${statusText}", status - "${status}", body: ${JSON.stringify(data)}`;
 };
 exports.getErrMsg = getErrMsg;
-function randomIntFromInterval() {
-    return Math.floor(Math.random() * 10);
-}
-const throwErr = (err) => { throw new Error((0, exports.getErrMsg)(err.response)); };
-const axiosReq = async function (options, customConfig = {}) {
+const axiosReq = async function (options, axiosInstance = axios_1.default) {
     var _a;
-    const { process4xxError = throwErr, axiosInstance = axios_1.default } = customConfig;
     const { retriesCount, requestTimeout } = (0, exports.getRetryOptions)();
     let response;
     let currentRetry = 0;
@@ -72,12 +67,8 @@ const axiosReq = async function (options, customConfig = {}) {
         }
         catch (err) {
             error = err;
-            const randInt = randomIntFromInterval();
-            if (randInt > 6) {
-                await process4xxError({ response: { status: 999 } }, options);
-            }
             if (((_a = err.response) === null || _a === void 0 ? void 0 : _a.status) < 500) {
-                await process4xxError(err, options);
+                throw new Error((0, exports.getErrMsg)(err.response));
             }
             this.logger.info(`URL: "${options.url}", method: ${options.method}, Error message: "${err.message}"`);
             this.logger.error((0, exports.getErrMsg)(err.response));
