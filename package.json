@@ -1,6 +1,6 @@
 {
   "name": "@elastic.io/component-commons-library",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "description": "Library for most common component development cases",
   "author": {
     "name": "elastic.io GmbH",
@@ -9,10 +9,6 @@
   },
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
-  "files": [
-    "dist",
-    "src"
-  ],
   "keywords": [
     "elasticio",
     "ipaas",
@@ -26,12 +22,9 @@
     "integration-test": "npm run pretest && nyc mocha --require ts-node/register \"spec-integration/**/*spec.ts\" --timeout 500000",
     "build": "rm -rf dist && tsc"
   },
-  "engines": {
-    "node": ">=12"
-  },
   "dependencies": {
     "@elastic.io/jsonata-moment": "1.1.4",
-    "@elastic.io/maester-client": "3.4.3",
+    "@elastic.io/maester-client": "4.0.0",
     "@elastic.io/ntlm-client": "1.0.0",
     "async": "3.2.3",
     "axios": "0.27.2",
@@ -39,7 +32,6 @@
     "bunyan-format": "0.2.1",
     "bunyan-serializers": "0.0.2",
     "elasticio-node": "0.0.9",
-    "form-data": "4.0.0",
     "remove-leading-slash": "1.0.1",
     "remove-trailing-slash": "0.1.1",
     "request": "2.88.2"

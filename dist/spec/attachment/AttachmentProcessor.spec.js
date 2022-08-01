@@ -8,7 +8,7 @@ const chai_1 = __importDefault(require("chai"));
 const fs_1 = __importDefault(require("fs"));
 const stream_1 = require("stream");
 const sinon_1 = __importDefault(require("sinon"));
-const dist_1 = require("@elastic.io/maester-client/dist");
+const maester_client_1 = require("@elastic.io/maester-client");
 const AttachmentProcessor_1 = require("../../src/attachment/AttachmentProcessor");
 const { expect } = chai_1.default;
 const maesterUri = 'https://ma.estr';
@@ -47,7 +47,7 @@ describe('AttachmentProcessor', () => {
     describe('maester', () => {
         let getById;
         beforeEach(() => {
-            getById = sinon_1.default.stub(dist_1.ObjectStorage.prototype, 'getById').callsFake(async () => ({ data: formStream('i`m a stream') }));
+            getById = sinon_1.default.stub(maester_client_1.ObjectStorage.prototype, 'getOne').callsFake(async () => ({ data: formStream('i`m a stream') }));
         });
         afterEach(() => {
             sinon_1.default.restore();
@@ -60,7 +60,7 @@ describe('AttachmentProcessor', () => {
             const result = await attachmentProcessor.getAttachment(attachmentOptions.url, attachmentOptions['content-type']);
             expect(result.toString('base64')).to.be.equal({ data: formStream('i`m a stream') }.toString());
             expect(getById.getCall(0).args[0]).to.be.equal('object_id');
-            expect(getById.getCall(0).args[1]).to.be.equal('stream');
+            expect(getById.getCall(0).args[1]).to.be.deep.equal({ responseType: 'stream' });
         });
     });
 });

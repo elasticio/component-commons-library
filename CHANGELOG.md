@@ -1,3 +1,9 @@
+## 3.0.0 (July 25, 2022)
+* Updated method `uploadAttachment` from `AttachmentProcessor`
+* Added method `getMaesterAttachmentUrlById` which return url to Maester attachment
+* Updated @elasticio/maester-client to v4.0.0
+* Updated Circle.ci config
+
 ## 2.1.0 (May 06, 2022)
 * Now method `uploadAttachment` from `AttachmentProcessor` automatically sets the `contentType`
 * Fixed retrying logic for method `uploadAttachment`

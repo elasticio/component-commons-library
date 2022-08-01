@@ -200,8 +200,11 @@ Contains functions to transform platform data that contains JSONata expressions
 ## Attachment Processor
 The attachment processor function can be used to store attachments on the platform. It exposes the following functions
 
-- `uploadAttachment(body, contentType)`, which will upload an attachment to the platform `Maester` storage and return the result object.
-Where `body` - attachment content, `contentType` - it's corresponding `Content-Type` value.
+- `uploadAttachment(getAttachment, retryOptions, contentType)`, which will upload an attachment to the platform `Maester` storage and return the result object.
+Where: <br>
+ `getAttachment` - async function which returns stream <br>
+ `retryOptions` - (optional): parameters for retrying of upload attachment, if request failed. Parameters are `retriesCount` and `requestTimeout`(ms)
+ `contentType` - (optional): `Content-Type` of attachment. By default `Content-Type` will be calculated automatically. <br>
 - `getAttachment(url, contentType)`, which will retrieve an attachment from `steward` or `maester` storage. To specify the storage - query parameter
 `storage_type` must be provided. To get items from `maester` storage - `?storage_type=maester` should added to the `url` argument. By default attachments are retrieved from `steward` storage, so `?storage_type=steward` is not obligated to be added to the `url` argument. `contentType` -
 one of [`stream`, `arraybuffer` ]
@@ -211,8 +214,10 @@ Example:
 ```javascript
 const { AttachmentProcessor } = require('@elastic.io/component-commons-library');
 
-const stream = new Stream();
-const result = await new AttachmentProcessor().uploadAttachment(body, 'application/octet-stream');
+const getAttachAsStream = async () => (
+  await axios.get('http://sample.pdf', { responseType: 'stream' })
+).data;
+const result = await new AttachmentProcessor().uploadAttachment(getAttachAsStream, 'application/pdf');
 
 const { objectId } = result.data;
 ```
