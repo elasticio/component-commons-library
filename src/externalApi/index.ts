@@ -1,4 +1,4 @@
-import { AxiosResponse } from 'axios';
+import axios, { AxiosResponse, AxiosInstance, AxiosRequestConfig } from 'axios';
 
 export interface RetryOptions {
   retriesCount?: number; // values are validated with API_RETRIES_COUNT const below
@@ -50,4 +50,46 @@ export const getErrMsg = (errResponse: AxiosResponse) => {
   const status = errResponse?.status || 'unknown';
   const data = errResponse?.data || 'no body found';
   return `Got error "${statusText}", status - "${status}", body: ${JSON.stringify(data)}`;
+};
+
+function randomIntFromInterval() {
+  return Math.floor(Math.random() * 10);
+}
+
+declare interface customCfg {
+  process4xxError?: Function,
+  axiosInstance?: AxiosInstance
+}
+const throwErr = (err) => { throw new Error(getErrMsg(err.response)); };
+export const axiosReq = async function (options: AxiosRequestConfig, customConfig: customCfg = {}) {
+  const { process4xxError = throwErr, axiosInstance = axios } = customConfig;
+  const { retriesCount, requestTimeout } = getRetryOptions();
+  let response;
+  let currentRetry = 0;
+  let error;
+  while (currentRetry < retriesCount) {
+    try {
+      response = await axiosInstance.request({
+        ...options,
+        timeout: requestTimeout,
+        validateStatus: (status) => (status >= 200 && status < 300) || (status === 404 && this.cfg.doNotThrow404)
+      });
+      return response;
+    } catch (err) {
+      error = err;
+      const randInt = randomIntFromInterval();
+      if (randInt > 6) {
+        await process4xxError({ response: { status: 999 } }, options);
+      }
+      if (err.response?.status < 500) {
+        await process4xxError(err, options);
+      }
+      this.logger.info(`URL: "${options.url}", method: ${options.method}, Error message: "${err.message}"`);
+      this.logger.error(getErrMsg(err.response));
+      this.logger.info(`Request failed, retrying(${1 + currentRetry})`);
+      await exponentialSleep(currentRetry);
+      currentRetry++;
+    }
+  }
+  throw new Error(error.message);
 };
