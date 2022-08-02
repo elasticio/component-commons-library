@@ -7,15 +7,15 @@ export interface RetryOptions {
 
 export const API_RETRIES_COUNT = {
   minValue: 0,
-  defaultValue: 2,
-  maxValue: 4
+  defaultValue: 3,
+  maxValue: 5
 } as const;
 const ENV_API_RETRIES_COUNT = process.env.API_RETRIES_COUNT ? parseInt(process.env.API_RETRIES_COUNT, 10) : API_RETRIES_COUNT.defaultValue;
 
 export const API_REQUEST_TIMEOUT = {
   minValue: 500,
-  defaultValue: 10000,
-  maxValue: 15000
+  defaultValue: 15000,
+  maxValue: 20000
 } as const;
 const ENV_API_REQUEST_TIMEOUT = process.env.API_REQUEST_TIMEOUT ? parseInt(process.env.API_REQUEST_TIMEOUT, 10) : API_REQUEST_TIMEOUT.defaultValue;
 
@@ -33,7 +33,7 @@ export const getRetryOptions = (): RetryOptions => ({
 });
 
 export const exponentialDelay = (currentRetries: number) => {
-  const maxBackoff = 10000;
+  const maxBackoff = 20000;
   const delay = (2 ** currentRetries) * 100;
   const randomSum = delay * 0.2 * Math.random(); // 0-20% of the delay
   return Math.min(delay + randomSum, maxBackoff);
@@ -68,7 +68,7 @@ export const axiosReq = async function (options: AxiosRequestConfig, axiosInstan
     } catch (err) {
       error = err;
       if (err.response?.status < 500) {
-        throw new Error(getErrMsg(err.response));
+        throw error;
       }
       this.logger.info(`URL: "${options.url}", method: ${options.method}, Error message: "${err.message}"`);
       this.logger.error(getErrMsg(err.response));
@@ -77,5 +77,5 @@ export const axiosReq = async function (options: AxiosRequestConfig, axiosInstan
       currentRetry++;
     }
   }
-  throw new Error(error.message);
+  throw error;
 };
