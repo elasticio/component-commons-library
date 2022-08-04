@@ -16,6 +16,7 @@
   - [JSON Schema Converter](#JSON-Schema-Converter)
   - [JSON Transformation](#JSON-Transformation)
   - [Attachment Processor](#Attachment-Processor)
+  - [External API](#external-api)
   - [Logger](#Logger)
 - [License](#license)
 
@@ -228,6 +229,19 @@ const result = await new AttachmentProcessor().getAttachment('http://example.com
 const result = await new AttachmentProcessor().getAttachment('http://example.com?storage_type=steward', 'arraybuffer'); // steward storage
 const result = await new AttachmentProcessor().getAttachment('http://example.com?storage_type=maester', 'stream'); // maester storage
 ```
+
+## External API
+
+### Environment variables
+* **API_RETRIES_COUNT** (defaults to 3): maximum amount of retries for 5xx errors. If server still responding 5xx, error will be thrown.
+* **API_REQUEST_TIMEOUT** (defaults to 15000): specifies the number of milliseconds before the request times out. If the request takes longer than timeout, the request will be aborted.
+
+- `axiosReq` - function to proceed with most commons use cases of making query to external API.
+- `getErrMsg` - forms error message from axios-response
+- `getRetryOptions` - return valid values for envs `API_RETRIES_COUNT` and `API_REQUEST_TIMEOUT`. If values are higher or lower the limit - they'll be overwritten by default values.
+- `sleep` - return promise which resolves after N time.
+- `exponentialDelay` - returns number of milliseconds depending to current retry. See [exponential backoff](https://en.wikipedia.org/wiki/Exponential_backoff) to explanation.
+- `exponentialSleep` - return promise which resolves after N time. Where N is number of milliseconds from `exponentialDelay` execution.
 
 ## Logger
 The built in logger uses Bunyan Logger as its base implementation. The available logger methods can be found [here](https://github.com/elasticio/component-commons-library/blob/master/src/logger/logger.ts#L19).

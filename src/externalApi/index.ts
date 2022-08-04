@@ -33,7 +33,7 @@ export const getRetryOptions = (): RetryOptions => ({
 });
 
 export const exponentialDelay = (currentRetries: number) => {
-  const maxBackoff = 20000;
+  const maxBackoff = 15000;
   const delay = (2 ** currentRetries) * 100;
   const randomSum = delay * 0.2 * Math.random(); // 0-20% of the delay
   return Math.min(delay + randomSum, maxBackoff);
