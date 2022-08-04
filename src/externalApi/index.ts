@@ -52,7 +52,7 @@ export const getErrMsg = (errResponse: AxiosResponse) => {
   return `Got error "${statusText}", status - "${status}", body: ${JSON.stringify(data)}`;
 };
 
-export const axiosReq = async function (options: AxiosRequestConfig, axiosInstance: AxiosInstance = axios) {
+export const axiosReqWithRetryOnServerError = async function (options: AxiosRequestConfig, axiosInstance: AxiosInstance = axios) {
   const { retriesCount, requestTimeout } = getRetryOptions();
   let response;
   let currentRetry = 0;
