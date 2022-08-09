@@ -30,6 +30,7 @@ export class AttachmentProcessor {
       method: 'get',
       timeout: DEFAULT_ATTACHMENT_REQUEST_TIMEOUT,
       retry: RETRIES_COUNT.defaultValue,
+      headers: { 'User-Agent': this.userAgent }
     } as AxiosRequestConfig;
 
     switch (storageType) {
@@ -43,7 +44,7 @@ export class AttachmentProcessor {
     logger.debug('uploading attachment..');
     const headers = {};
     if (contentType) headers[CONTENT_TYPE_HEADER] = contentType;
-    const objectStorage = new ObjectStorage(maesterCreds);
+    const objectStorage = new ObjectStorage({ ...maesterCreds, userAgent: this.userAgent });
     return objectStorage.add(getAttachment, {
       headers,
       retryOptions: {
