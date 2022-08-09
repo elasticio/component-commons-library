@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@elastic.io/jsonata-moment": "1.1.4",
-    "@elastic.io/maester-client": "4.0.0",
+    "@elastic.io/maester-client": "4.0.2-dev.1",
     "@elastic.io/ntlm-client": "1.0.0",
     "async": "3.2.3",
     "axios": "0.27.2",
