@@ -5,8 +5,10 @@ import { ObjectStorage } from '@elastic.io/maester-client';
 import { RetryOptions, ResponseType, CONTENT_TYPE_HEADER, REQUEST_TIMEOUT, RETRIES_COUNT } from '@elastic.io/maester-client/dist/src/interfaces';
 import { Readable } from 'stream';
 import { getLogger } from '../logger/logger';
+import packageJson from '../../package.json';
 
 const logger = getLogger();
+const maesterClientVersion = packageJson.dependencies['@elastic.io/maester-client'];
 
 export const STORAGE_TYPE_PARAMETER = 'storage_type';
 export const DEFAULT_STORAGE_TYPE = 'steward';
@@ -19,7 +21,7 @@ export class AttachmentProcessor {
   private userAgent: string;
 
   public constructor(userAgent: string) {
-    this.userAgent = userAgent;
+    this.userAgent = `${userAgent} maester-client/${maesterClientVersion}`;
   }
 
   async getAttachment(url: string, responseType: string) {
