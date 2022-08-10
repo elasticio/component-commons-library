@@ -19,7 +19,7 @@ const formStream = (dataString: string): Readable => {
 };
 
 describe('AttachmentProcessor', () => {
-  const attachmentProcessor = new AttachmentProcessor();
+  const attachmentProcessor = new AttachmentProcessor('userAgent');
   describe('Steward', () => {
     it('Should successfully retrieve csv', async () => {
       const attachmentOptions = {

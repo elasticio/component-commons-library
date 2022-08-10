@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.axiosReq = exports.getErrMsg = exports.exponentialSleep = exports.sleep = exports.exponentialDelay = exports.getRetryOptions = exports.API_REQUEST_TIMEOUT = exports.API_RETRIES_COUNT = void 0;
+exports.axiosReqWithRetryOnServerError = exports.getErrMsg = exports.exponentialSleep = exports.sleep = exports.exponentialDelay = exports.getRetryOptions = exports.API_REQUEST_TIMEOUT = exports.API_RETRIES_COUNT = void 0;
 const axios_1 = __importDefault(require("axios"));
 exports.API_RETRIES_COUNT = {
     minValue: 0,
@@ -31,7 +31,7 @@ const getRetryOptions = () => ({
 });
 exports.getRetryOptions = getRetryOptions;
 const exponentialDelay = (currentRetries) => {
-    const maxBackoff = 20000;
+    const maxBackoff = 15000;
     const delay = (2 ** currentRetries) * 100;
     const randomSum = delay * 0.2 * Math.random(); // 0-20% of the delay
     return Math.min(delay + randomSum, maxBackoff);
@@ -50,7 +50,7 @@ const getErrMsg = (errResponse) => {
     return `Got error "${statusText}", status - "${status}", body: ${JSON.stringify(data)}`;
 };
 exports.getErrMsg = getErrMsg;
-const axiosReq = async function (options, axiosInstance = axios_1.default) {
+const axiosReqWithRetryOnServerError = async function (options, axiosInstance = axios_1.default) {
     var _a;
     const { retriesCount, requestTimeout } = (0, exports.getRetryOptions)();
     let response;
@@ -79,4 +79,4 @@ const axiosReq = async function (options, axiosInstance = axios_1.default) {
     }
     throw error;
 };
-exports.axiosReq = axiosReq;
+exports.axiosReqWithRetryOnServerError = axiosReqWithRetryOnServerError;
