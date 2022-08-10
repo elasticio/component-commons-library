@@ -10,7 +10,9 @@ const url_1 = require("url");
 const maester_client_1 = require("@elastic.io/maester-client");
 const interfaces_1 = require("@elastic.io/maester-client/dist/src/interfaces");
 const logger_1 = require("../logger/logger");
+const package_json_1 = __importDefault(require("../../package.json"));
 const logger = (0, logger_1.getLogger)();
+const maesterClientVersion = package_json_1.default.dependencies['@elastic.io/maester-client'];
 exports.STORAGE_TYPE_PARAMETER = 'storage_type';
 exports.DEFAULT_STORAGE_TYPE = 'steward';
 exports.MAESTER_OBJECT_ID_ENDPOINT = '/objects/';
@@ -18,6 +20,9 @@ const { ELASTICIO_OBJECT_STORAGE_TOKEN = '', ELASTICIO_OBJECT_STORAGE_URI = '' }
 const maesterCreds = { jwtSecret: ELASTICIO_OBJECT_STORAGE_TOKEN, uri: ELASTICIO_OBJECT_STORAGE_URI };
 const DEFAULT_ATTACHMENT_REQUEST_TIMEOUT = process.env.REQUEST_TIMEOUT ? parseInt(process.env.REQUEST_TIMEOUT, 10) : interfaces_1.REQUEST_TIMEOUT.maxValue; // 20s
 class AttachmentProcessor {
+    constructor(userAgent) {
+        this.userAgent = `${userAgent} maester-client/${maesterClientVersion}`;
+    }
     async getAttachment(url, responseType) {
         const storageType = this.getStorageTypeByUrl(url);
         const axConfig = {
@@ -26,6 +31,7 @@ class AttachmentProcessor {
             method: 'get',
             timeout: DEFAULT_ATTACHMENT_REQUEST_TIMEOUT,
             retry: interfaces_1.RETRIES_COUNT.defaultValue,
+            headers: { 'User-Agent': this.userAgent }
         };
         switch (storageType) {
             case 'steward': return this.getStewardAttachment(axConfig);
@@ -38,7 +44,7 @@ class AttachmentProcessor {
         const headers = {};
         if (contentType)
             headers[interfaces_1.CONTENT_TYPE_HEADER] = contentType;
-        const objectStorage = new maester_client_1.ObjectStorage(maesterCreds);
+        const objectStorage = new maester_client_1.ObjectStorage({ ...maesterCreds, userAgent: this.userAgent });
         return objectStorage.add(getAttachment, {
             headers,
             retryOptions: {
@@ -55,8 +61,7 @@ class AttachmentProcessor {
         return ax(axConfig);
     }
     async getMaesterAttachment({ url, responseType }) {
-        const client = new maester_client_1.StorageClient(maesterCreds);
-        const objectStorage = new maester_client_1.ObjectStorage(maesterCreds, client);
+        const objectStorage = new maester_client_1.ObjectStorage({ ...maesterCreds, userAgent: this.userAgent });
         const maesterAttachmentId = this.getMaesterAttachmentIdByUrl(url);
         const response = await objectStorage.getOne(maesterAttachmentId, { responseType });
         return { data: response };

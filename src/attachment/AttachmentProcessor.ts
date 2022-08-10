@@ -1,12 +1,14 @@
 /* eslint-disable class-methods-use-this */
 import axios, { AxiosRequestConfig } from 'axios';
 import { URL } from 'url';
-import { StorageClient, ObjectStorage } from '@elastic.io/maester-client';
+import { ObjectStorage } from '@elastic.io/maester-client';
 import { RetryOptions, ResponseType, CONTENT_TYPE_HEADER, REQUEST_TIMEOUT, RETRIES_COUNT } from '@elastic.io/maester-client/dist/src/interfaces';
 import { Readable } from 'stream';
 import { getLogger } from '../logger/logger';
+import packageJson from '../../package.json';
 
 const logger = getLogger();
+const maesterClientVersion = packageJson.dependencies['@elastic.io/maester-client'];
 
 export const STORAGE_TYPE_PARAMETER = 'storage_type';
 export const DEFAULT_STORAGE_TYPE = 'steward';
@@ -16,6 +18,12 @@ const maesterCreds = { jwtSecret: ELASTICIO_OBJECT_STORAGE_TOKEN, uri: ELASTICIO
 const DEFAULT_ATTACHMENT_REQUEST_TIMEOUT = process.env.REQUEST_TIMEOUT ? parseInt(process.env.REQUEST_TIMEOUT, 10) : REQUEST_TIMEOUT.maxValue; // 20s
 
 export class AttachmentProcessor {
+  private userAgent: string;
+
+  public constructor(userAgent: string) {
+    this.userAgent = `${userAgent} maester-client/${maesterClientVersion}`;
+  }
+
   async getAttachment(url: string, responseType: string) {
     const storageType = this.getStorageTypeByUrl(url);
     const axConfig = {
@@ -24,6 +32,7 @@ export class AttachmentProcessor {
       method: 'get',
       timeout: DEFAULT_ATTACHMENT_REQUEST_TIMEOUT,
       retry: RETRIES_COUNT.defaultValue,
+      headers: { 'User-Agent': this.userAgent }
     } as AxiosRequestConfig;
 
     switch (storageType) {
@@ -37,7 +46,7 @@ export class AttachmentProcessor {
     logger.debug('uploading attachment..');
     const headers = {};
     if (contentType) headers[CONTENT_TYPE_HEADER] = contentType;
-    const objectStorage = new ObjectStorage(maesterCreds);
+    const objectStorage = new ObjectStorage({ ...maesterCreds, userAgent: this.userAgent });
     return objectStorage.add(getAttachment, {
       headers,
       retryOptions: {
@@ -57,8 +66,7 @@ export class AttachmentProcessor {
   }
 
   private async getMaesterAttachment({ url, responseType }: { url: string, responseType: ResponseType }) {
-    const client = new StorageClient(maesterCreds);
-    const objectStorage = new ObjectStorage(maesterCreds, client);
+    const objectStorage = new ObjectStorage({ ...maesterCreds, userAgent: this.userAgent });
     const maesterAttachmentId = this.getMaesterAttachmentIdByUrl(url);
     const response = await objectStorage.getOne(maesterAttachmentId, { responseType });
     return { data: response };

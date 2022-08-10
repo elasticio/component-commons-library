@@ -32,8 +32,8 @@ const common_1 = require("./common");
 const AttachmentProcessor_1 = require("../src/attachment/AttachmentProcessor");
 chai_1.default.use(require('chai-as-promised'));
 describe('AttachmentProcessor', () => {
-    const objectStorage = new maester_client_1.ObjectStorage({ uri: common_1.creds.uri, jwtSecret: common_1.creds.token });
-    const attachmentProcessor = new AttachmentProcessor_1.AttachmentProcessor();
+    const objectStorage = new maester_client_1.ObjectStorage({ uri: common_1.creds.uri, jwtSecret: common_1.creds.token, userAgent: 'userAgent' });
+    const attachmentProcessor = new AttachmentProcessor_1.AttachmentProcessor('userAgent');
     describe('uploadAttachment', () => {
         it('uploadAttachment (/samples/sample.json)', async () => {
             const getFileAsStream = async () => fs_1.default.createReadStream(path_1.default.join(__dirname, './samples/sample.json'));
