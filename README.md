@@ -16,6 +16,7 @@
   - [JSON Schema Converter](#JSON-Schema-Converter)
   - [JSON Transformation](#JSON-Transformation)
   - [Attachment Processor](#Attachment-Processor)
+  - [External API](#external-api)
   - [Logger](#Logger)
 - [License](#license)
 
@@ -227,6 +228,56 @@ const { AttachmentProcessor } = require('@elastic.io/component-commons-library')
 const result = await new AttachmentProcessor().getAttachment('http://example.com', 'stream'); // steward storage
 const result = await new AttachmentProcessor().getAttachment('http://example.com?storage_type=steward', 'arraybuffer'); // steward storage
 const result = await new AttachmentProcessor().getAttachment('http://example.com?storage_type=maester', 'stream'); // maester storage
+```
+
+## External API
+
+### Environment variables
+* **API_RETRIES_COUNT** (defaults to 3): maximum amount of retries for 5xx errors. If server still responding 5xx, error will be thrown.
+* **API_REQUEST_TIMEOUT** (defaults to 15000): specifies the number of milliseconds before the request times out. If the request takes longer than timeout, the request will be aborted.
+
+- `axiosReqWithRetryOnServerError` (use with `.call()` to pass context, implement it as a method of class with `logger` and `cfg` (value of configuration object for current action) values in a constructor) - function which makes axios request by specified request-config, making logging and error handling:
+  1. If 5xx error occurred, it will be retried maximum `API_RETRIES_COUNT` times, each retry will be delayed with `exponentialSleep` function. 
+  2. If 4xx error occurred - error will be throw.
+  3. If action `cfg` has `doNotThrow404` set to true: 404 error won't be treated as error. <br>
+  Look on examples below.
+- `getErrMsg` - forms error message from axios-response.
+- `getRetryOptions` - return valid values for envs `API_RETRIES_COUNT` and `API_REQUEST_TIMEOUT`. If values are higher or lower the limit - they'll be overwritten by default values.
+- `sleep` - return promise which resolves after N time.
+- `exponentialDelay` - returns number of milliseconds depending to current retry. See [exponential backoff](https://en.wikipedia.org/wiki/Exponential_backoff) to explanation.
+- `exponentialSleep` - return promise which resolves after N time. Where N is number of milliseconds from `exponentialDelay` execution.
+
+Example for `axiosReqWithRetryOnServerError` function:
+```javascript
+class Client {
+  private logger: any;
+
+  private cfg: any;
+
+  constructor(emitter, cfg) {
+    this.logger = emitter.logger;
+    this.cfg = cfg;
+  }
+
+   public async apiRequest(options: AxiosRequestConfig): Promise<any> {
+    try {
+      const response = await axiosReq.axiosReqWithRetryOnServerError(this, requestOptions);
+      return response.data;
+    } catch (error) {
+      if (error.response?.status === 401) {
+       // update token
+      }
+      throw error;
+    }
+  }
+
+  public async getUserById(id) {
+    return this.apiRequest({
+      url: `/users/${id}`,
+      method: 'GET',
+    });
+  }
+}
 ```
 
 ## Logger

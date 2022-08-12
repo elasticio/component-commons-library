@@ -1,16 +1,20 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getErrMsg = exports.exponentialSleep = exports.sleep = exports.exponentialDelay = exports.getRetryOptions = exports.API_REQUEST_TIMEOUT = exports.API_RETRIES_COUNT = void 0;
+exports.axiosReqWithRetryOnServerError = exports.getErrMsg = exports.exponentialSleep = exports.sleep = exports.exponentialDelay = exports.getRetryOptions = exports.API_REQUEST_TIMEOUT = exports.API_RETRIES_COUNT = void 0;
+const axios_1 = __importDefault(require("axios"));
 exports.API_RETRIES_COUNT = {
     minValue: 0,
-    defaultValue: 2,
-    maxValue: 4
+    defaultValue: 3,
+    maxValue: 5
 };
 const ENV_API_RETRIES_COUNT = process.env.API_RETRIES_COUNT ? parseInt(process.env.API_RETRIES_COUNT, 10) : exports.API_RETRIES_COUNT.defaultValue;
 exports.API_REQUEST_TIMEOUT = {
     minValue: 500,
-    defaultValue: 10000,
-    maxValue: 15000
+    defaultValue: 15000,
+    maxValue: 20000
 };
 const ENV_API_REQUEST_TIMEOUT = process.env.API_REQUEST_TIMEOUT ? parseInt(process.env.API_REQUEST_TIMEOUT, 10) : exports.API_REQUEST_TIMEOUT.defaultValue;
 /**
@@ -27,7 +31,7 @@ const getRetryOptions = () => ({
 });
 exports.getRetryOptions = getRetryOptions;
 const exponentialDelay = (currentRetries) => {
-    const maxBackoff = 10000;
+    const maxBackoff = 15000;
     const delay = (2 ** currentRetries) * 100;
     const randomSum = delay * 0.2 * Math.random(); // 0-20% of the delay
     return Math.min(delay + randomSum, maxBackoff);
@@ -46,3 +50,33 @@ const getErrMsg = (errResponse) => {
     return `Got error "${statusText}", status - "${status}", body: ${JSON.stringify(data)}`;
 };
 exports.getErrMsg = getErrMsg;
+const axiosReqWithRetryOnServerError = async function (options, axiosInstance = axios_1.default) {
+    var _a;
+    const { retriesCount, requestTimeout } = (0, exports.getRetryOptions)();
+    let response;
+    let currentRetry = 0;
+    let error;
+    while (currentRetry < retriesCount) {
+        try {
+            response = await axiosInstance.request({
+                ...options,
+                timeout: requestTimeout,
+                validateStatus: (status) => (status >= 200 && status < 300) || (status === 404 && this.cfg.doNotThrow404)
+            });
+            return response;
+        }
+        catch (err) {
+            error = err;
+            if (((_a = err.response) === null || _a === void 0 ? void 0 : _a.status) < 500) {
+                throw error;
+            }
+            this.logger.info(`URL: "${options.url}", method: ${options.method}, Error message: "${err.message}"`);
+            this.logger.error((0, exports.getErrMsg)(err.response));
+            this.logger.info(`Request failed, retrying(${1 + currentRetry})`);
+            await (0, exports.exponentialSleep)(currentRetry);
+            currentRetry++;
+        }
+    }
+    throw error;
+};
+exports.axiosReqWithRetryOnServerError = axiosReqWithRetryOnServerError;

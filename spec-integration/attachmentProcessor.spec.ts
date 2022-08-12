@@ -10,8 +10,8 @@ import { AttachmentProcessor } from '../src/attachment/AttachmentProcessor';
 chai.use(require('chai-as-promised'));
 
 describe('AttachmentProcessor', () => {
-  const objectStorage = new ObjectStorage({ uri: creds.uri, jwtSecret: creds.token });
-  const attachmentProcessor = new AttachmentProcessor();
+  const objectStorage = new ObjectStorage({ uri: creds.uri, jwtSecret: creds.token, userAgent: 'userAgent' });
+  const attachmentProcessor = new AttachmentProcessor('userAgent');
   describe('uploadAttachment', () => {
     it('uploadAttachment (/samples/sample.json)', async () => {
       const getFileAsStream = async () => fs.createReadStream(path.join(__dirname, './samples/sample.json'));
