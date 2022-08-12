@@ -1,3 +1,7 @@
+## 3.0.2 (August 12, 2022)
+* Added method `fetchSecretById` for `PlatformApiLogicClient`
+* Added method `refreshTokenBySecretId` for `refreshTokenBySecretId`
+
 ## 3.0.1 (August 12, 2022)
 * Increase default values and limits for envs `API_RETRIES_COUNT` and `API_REQUEST_TIMEOUT`
 * Add `axiosReqWithRetryOnServerError` function to proceed with most commons use cases of making query to external API

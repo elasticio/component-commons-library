@@ -119,6 +119,42 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
   }
 
   /**
+ * Fetch secret by id for a given workspace
+ * @param {string} options.secretId
+ * @returns {Promise<{
+   *     id: string,
+   *     type: string,
+   *     links: object,
+   *     attributes: object,
+   *     relationships: object,
+   * }>}
+   */
+  async fetchSecretById(options: any = {}) {
+    const { workspaceId = process.env.ELASTICIO_WORKSPACE_ID, secretId } = options;
+    if (!secretId) throw new Error('secretId not provided, can\'t fetch secret');
+    const secret = await this.makeRequest({ method: 'GET', url: `/workspaces/${workspaceId}/secrets/${secretId}` });
+    return secret.data;
+  }
+
+  /**
+ * Refresh token by secret id for a given workspace
+ * @param {string} options.secretId
+ * @returns {Promise<{
+   *     id: string,
+   *     type: string,
+   *     links: object,
+   *     attributes: object,
+   *     relationships: object,
+   * }>}
+   */
+  async refreshTokenBySecretId(options: any = {}) {
+    const { workspaceId = process.env.ELASTICIO_WORKSPACE_ID, secretId } = options;
+    if (!secretId) throw new Error('secretId not provided, can\'t fetch secret');
+    const secret = await this.makeRequest({ method: 'POST', url: `/workspaces/${workspaceId}/secrets/${secretId}/refresh` });
+    return secret.data;
+  }
+
+  /**
    * Fetch All Components Accessible From a Given Workspace
    * @param {string} options.contractId Contract ID
    * @returns {Promise<[{{

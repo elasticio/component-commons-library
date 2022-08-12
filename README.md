@@ -10,7 +10,7 @@
     - [ApiKeyRestClient](#ApiKeyRestClient)
     - [CookieRestClient](#CookieRestClient)
     - [OAuth2AuthorizationCodeRestClient](#OAuth2AuthorizationCodeRestClient)
-  - [Platform API Clients](#PlatformAPI-Clients)
+  - [Platform API Clients](#Platform-API-Clients)
     - [PlatformApiRestClient](#PlatformApiRestClient)
     - [PlatformApiLogicClient](#PlatformApiLogicClient)
   - [JSON Schema Converter](#JSON-Schema-Converter)
@@ -173,6 +173,8 @@ const Client = new PlatformApiLogicClient(emitter, cfg);
 - fetchAllFlowsForWorkspace(options) - Fetch all flows for a given workspace
 - fetchAllCredentialsForWorkspace(options) - Fetch all credentials for a given workspace
 - fetchAllSecretsForWorkspace - Fetch all secrets for a given workspace
+- fetchSecretById - Fetch secret by id for a given workspace
+- refreshTokenBySecretId - Refresh token by secret id for a given workspace
 - fetchComponentsAccessibleFromContract(options) - Fetch All Components Accessible From a Given Workspace
 - splitParallelization(maxParallelization, splitFactor) - Helping method to calculate right number of parallel calls
 - fetchFlowList(options) - Fetches a list of flows
