@@ -105,3 +105,5 @@ typings/
 .idea
 !.eslintrc.js
 *.d.ts
+
+/dist/package.json
