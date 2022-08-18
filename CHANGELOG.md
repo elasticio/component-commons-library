@@ -1,3 +1,6 @@
+## 3.0.2 (August 26, 2022)
+* Updated @elasticio/maester-client to v4.0.3
+
 ## 3.0.1 (August 12, 2022)
 * Increase default values and limits for envs `API_RETRIES_COUNT` and `API_REQUEST_TIMEOUT`
 * Add `axiosReqWithRetryOnServerError` function to proceed with most commons use cases of making query to external API

@@ -9,6 +9,7 @@ import packageJson from '../../package.json';
 
 const logger = getLogger();
 const maesterClientVersion = packageJson.dependencies['@elastic.io/maester-client'];
+const axiosVersion = packageJson.dependencies.axios;
 
 export const STORAGE_TYPE_PARAMETER = 'storage_type';
 export const DEFAULT_STORAGE_TYPE = 'steward';
@@ -20,8 +21,11 @@ const DEFAULT_ATTACHMENT_REQUEST_TIMEOUT = process.env.REQUEST_TIMEOUT ? parseIn
 export class AttachmentProcessor {
   private userAgent: string;
 
-  public constructor(userAgent: string) {
-    this.userAgent = `${userAgent} maester-client/${maesterClientVersion}`;
+  private msgId: string;
+
+  public constructor(userAgent?: string, msgId?: string) {
+    this.userAgent = userAgent;
+    this.msgId = msgId;
   }
 
   async getAttachment(url: string, responseType: string) {
@@ -32,7 +36,6 @@ export class AttachmentProcessor {
       method: 'get',
       timeout: DEFAULT_ATTACHMENT_REQUEST_TIMEOUT,
       retry: RETRIES_COUNT.defaultValue,
-      headers: { 'User-Agent': this.userAgent }
     } as AxiosRequestConfig;
 
     switch (storageType) {
@@ -62,11 +65,19 @@ export class AttachmentProcessor {
   private async getStewardAttachment(axConfig) {
     const ax = axios.create();
     this.addRetryCountInterceptorToAxios(ax);
-    return ax(axConfig);
+    const userAgent = `${this.userAgent} axios/${axiosVersion}`;
+    return ax({
+      ...axConfig,
+      headers: {
+        'User-Agent': userAgent,
+        'x-request-id': `f:${process.env.ELASTICIO_FLOW_ID};s:${process.env.ELASTICIO_STEP_ID};m:${this.msgId}`,
+      }
+    });
   }
 
   private async getMaesterAttachment({ url, responseType }: { url: string, responseType: ResponseType }) {
-    const objectStorage = new ObjectStorage({ ...maesterCreds, userAgent: this.userAgent });
+    const userAgent = `${this.userAgent} maester-client/${maesterClientVersion}`;
+    const objectStorage = new ObjectStorage({ ...maesterCreds, userAgent, msgId: this.msgId });
     const maesterAttachmentId = this.getMaesterAttachmentIdByUrl(url);
     const response = await objectStorage.getOne(maesterAttachmentId, { responseType });
     return { data: response };
