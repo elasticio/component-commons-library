@@ -1,11 +1,20 @@
 import removeTrailingSlash from 'remove-trailing-slash';
 import util from 'util';
 import { BasicAuthRestClient } from '../authentication/BasicAuthRestClient';
+import packageJson from '../../package.json';
+
+const requestVersion = packageJson.dependencies.request;
 
 export class PlatformApiRestClient extends BasicAuthRestClient {
   usingTaskUser: boolean;
 
-  constructor(emitter, cfg) {
+  private readonly userAgentHeaders: { 'User-Agent': string, ['x-request-id']: string };
+
+  private readonly userAgent: string;
+
+  private readonly msgId: string;
+
+  constructor(emitter, cfg, userAgent?: string, msgId?: string) {
     if (!!cfg.email !== !!cfg.apiKey) {
       throw new Error('Either both Email and API Key need to be provided or neither should be provided.');
     }
@@ -25,6 +34,12 @@ export class PlatformApiRestClient extends BasicAuthRestClient {
     } else {
       this.emitter.logger.info(`Will connect to ${baseUrl} as specified user`);
     }
+    this.userAgent = userAgent;
+    this.msgId = msgId;
+    this.userAgentHeaders = {
+      'User-Agent': `${this.userAgent} request/${requestVersion}`,
+      'x-request-id': `f:${process.env.ELASTICIO_FLOW_ID};s:${process.env.ELASTICIO_STEP_ID};m:${this.msgId}`,
+    };
   }
 
   handleRestResponse(response) {
@@ -46,5 +61,12 @@ export class PlatformApiRestClient extends BasicAuthRestClient {
 
     this.emitter.logger.trace(`Response statusCode: ${response.statusCode}, body: %j`, response.body);
     return response.body;
+  }
+
+  async makeRequest(options) {
+    options.headers = {
+      ...options.headers, ...this.userAgentHeaders
+    };
+    return super.makeRequest(options);
   }
 }
