@@ -17,20 +17,22 @@ export const API_REQUEST_TIMEOUT = {
   defaultValue: 15000,
   maxValue: 20000
 } as const;
-const ENV_API_REQUEST_TIMEOUT = process.env.API_REQUEST_TIMEOUT ? parseInt(process.env.API_REQUEST_TIMEOUT, 10) : API_REQUEST_TIMEOUT.defaultValue;
 
 /**
  * if values are higher or lower the limit - they'll be overwritten.
  * returns valid values for RetryOptions
  */
-export const getRetryOptions = (): RetryOptions => ({
-  retriesCount: (ENV_API_RETRIES_COUNT > API_RETRIES_COUNT.maxValue || ENV_API_RETRIES_COUNT < API_RETRIES_COUNT.minValue)
-    ? API_RETRIES_COUNT.defaultValue
-    : ENV_API_RETRIES_COUNT,
-  requestTimeout: (ENV_API_REQUEST_TIMEOUT > API_REQUEST_TIMEOUT.maxValue || ENV_API_REQUEST_TIMEOUT < API_REQUEST_TIMEOUT.minValue)
-    ? API_REQUEST_TIMEOUT.defaultValue
-    : ENV_API_REQUEST_TIMEOUT
-});
+export const getRetryOptions = (): RetryOptions => {
+  const ENV_API_REQUEST_TIMEOUT = process.env.API_REQUEST_TIMEOUT ? parseInt(process.env.API_REQUEST_TIMEOUT, 10) : API_REQUEST_TIMEOUT.defaultValue;
+  return {
+    retriesCount: (ENV_API_RETRIES_COUNT > API_RETRIES_COUNT.maxValue || ENV_API_RETRIES_COUNT < API_RETRIES_COUNT.minValue)
+      ? API_RETRIES_COUNT.defaultValue
+      : ENV_API_RETRIES_COUNT,
+    requestTimeout: (ENV_API_REQUEST_TIMEOUT > API_REQUEST_TIMEOUT.maxValue || ENV_API_REQUEST_TIMEOUT < API_REQUEST_TIMEOUT.minValue)
+      ? API_REQUEST_TIMEOUT.defaultValue
+      : ENV_API_REQUEST_TIMEOUT
+  };
+};
 
 export const exponentialDelay = (currentRetries: number) => {
   const maxBackoff = 15000;
