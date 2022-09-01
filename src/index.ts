@@ -10,6 +10,7 @@ export { NoAuthRestClient } from './authentication/NoAuthRestClient';
 export { NtlmRestClient } from './authentication/NtlmRestClient';
 export { OAuth2RestClient } from './authentication/OAuth2AuthorizationCodeRestClient';
 export { CookieRestClient } from './authentication/CookieRestClient';
+export { FacelessRestClient } from './authentication/FacelessRestClient';
 
 export { PlatformApiLogicClient } from './platformApi/PlatformApiLogicClient';
 export { PlatformApiRestClient } from './platformApi/PlatformApiRestClient';

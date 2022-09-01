@@ -79,3 +79,15 @@ export const axiosReqWithRetryOnServerError = async function (options: AxiosRequ
   }
   throw error;
 };
+
+export const getFacelessRetriesCount = () => {
+  const FACELESS_RETRIES_COUNT = {
+    minValue: 0,
+    defaultValue: 3,
+    maxValue: 5,
+  };
+  const ENV_FACELESS_RETRIES_COUNT = process.env.FACELESS_RETRIES_COUNT ? parseInt(process.env.FACELESS_RETRIES_COUNT, 10) : FACELESS_RETRIES_COUNT.defaultValue;
+  return (ENV_FACELESS_RETRIES_COUNT > FACELESS_RETRIES_COUNT.maxValue || ENV_FACELESS_RETRIES_COUNT < FACELESS_RETRIES_COUNT.minValue)
+    ? FACELESS_RETRIES_COUNT.defaultValue
+    : ENV_FACELESS_RETRIES_COUNT;
+};
