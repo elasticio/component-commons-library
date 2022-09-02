@@ -55,7 +55,7 @@ export class FacelessRestClient {
       throw new Error(getErrMsg(response));
     }
     this.logger.debug(`Response status: ${response.status}`);
-    return response.data;
+    return response;
   }
 
   // options expects the following sub-variables:
