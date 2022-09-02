@@ -17,9 +17,9 @@ export class FacelessRestClient {
 
   private accessToken: null;
 
-  private logger: any;
+  logger: any;
 
-  private platformClient: PlatformApiLogicClient;
+  platformClient: PlatformApiLogicClient;
 
   constructor(emitter, cfg, userAgent?: string, msgId?: string) {
     this.emitter = emitter;
