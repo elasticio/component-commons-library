@@ -106,4 +106,4 @@ typings/
 !.eslintrc.js
 *.d.ts
 
-/dist/package.json
+/dist
