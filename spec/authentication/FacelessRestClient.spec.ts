@@ -63,7 +63,7 @@ describe('FacelessRestClient', () => {
       .get(`/${url}`)
       .reply(successStatusCode, successBody);
     const result = await client.makeRequest(options);
-    expect(result).to.be.deep.equal(successBody);
+    expect(result.data).to.be.deep.equal(successBody);
   });
 
   it('Should succeed, urlIsSegment: false', async () => {
@@ -73,7 +73,7 @@ describe('FacelessRestClient', () => {
       .get('/')
       .reply(successStatusCode, successBody);
     const result = await client.makeRequest(options);
-    expect(result).to.be.deep.equal(successBody);
+    expect(result.data).to.be.deep.equal(successBody);
   });
 
   it('Should fail, 404', async () => {
@@ -103,7 +103,7 @@ describe('FacelessRestClient', () => {
     const clientExpiredToken = new FacelessRestClient(emitter, cfg);
     options.urlIsSegment = false;
     const result = await clientExpiredToken.makeRequest(options);
-    expect(result).to.be.deep.equal(successBody);
+    expect(result.data).to.be.deep.equal(successBody);
     expect(expiredTokenNock.isDone()).to.be.equal(true);
   });
 });
