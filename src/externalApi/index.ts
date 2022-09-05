@@ -68,12 +68,12 @@ export const axiosReqWithRetryOnServerError = async function (options: AxiosRequ
       });
       return response;
     } catch (err) {
+      this.logger.error(getErrMsg(err.response));
       error = err;
       if (err.response?.status < 500) {
         throw error;
       }
       this.logger.info(`URL: "${options.url}", method: ${options.method}, Error message: "${err.message}"`);
-      this.logger.error(getErrMsg(err.response));
       this.logger.info(`Request failed, retrying(${1 + currentRetry})`);
       await exponentialSleep(currentRetry);
       currentRetry++;
