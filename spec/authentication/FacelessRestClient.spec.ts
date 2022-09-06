@@ -13,7 +13,6 @@ const successStatusCode = 200;
 const notFoundStatusCode = 404;
 const successBody = 'Ok';
 const notFoundBody = 'Not found';
-const errNotFound = `Got error "unknown", status - "${notFoundStatusCode}", body: "${notFoundBody}"`;
 const secretId = 'secretId';
 const cfg = {
   resourceServerUrl,
@@ -87,7 +86,7 @@ describe('FacelessRestClient', () => {
         throw new Error('Test case does not expect success response');
       })
       .catch((e) => {
-        expect(e.message).to.be.equal(errNotFound);
+        expect(e.message).to.be.equal('Request failed with status code 404');
       });
   });
 
