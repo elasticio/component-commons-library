@@ -50,14 +50,6 @@ export class FacelessRestClient {
     requestOptions.headers.Authorization = `Bearer ${this.accessToken}`;
   }
 
-  protected handleRestResponse(response) {
-    if (response.status >= 400) {
-      throw new Error();
-    }
-    this.logger.debug(`Response status: ${response.status}`);
-    return response;
-  }
-
   // options expects the following sub-variables:
   //    url: Url to call
   //    method: HTTP verb to use
