@@ -50,14 +50,6 @@ export class FacelessRestClient {
     requestOptions.headers.Authorization = `Bearer ${this.accessToken}`;
   }
 
-  protected handleRestResponse(response) {
-    if (response.status >= 400) {
-      throw new Error(getErrMsg(response));
-    }
-    this.logger.debug(`Response status: ${response.status}`);
-    return response;
-  }
-
   // options expects the following sub-variables:
   //    url: Url to call
   //    method: HTTP verb to use
@@ -89,14 +81,14 @@ export class FacelessRestClient {
       await this.addAuthenticationToRequestOptions(requestOptions);
       try {
         const response = await axiosReqWithRetryOnServerError.call(this, requestOptions, this.axiosInst);
-        return this.handleRestResponse(response);
+        return response;
       } catch (err) {
+        this.logger.error(getErrMsg(err.response));
         error = err;
-        if (err.response?.status !== 401) {
-          return this.handleRestResponse(err.response);
+        if (err.response?.status < 500 && err.response?.status !== 401) {
+          throw err;
         }
-        this.logger.error(`URL: "${requestOptions.url}", method: ${requestOptions.method}, Error message: "${err.message}"`);
-        this.logger.info(`Request failed, retrying(${1 + currentRetry})`);
+        this.logger.info(`Request failed, faceless retrying(${1 + currentRetry})`);
         this.accessToken = null;
         currentRetry++;
       }
