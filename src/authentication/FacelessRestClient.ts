@@ -53,13 +53,13 @@ export class FacelessRestClient {
   // options expects the following sub-variables:
   //    url: Url to call
   //    method: HTTP verb to use
-  //    body: Body of the request, if applicable. Defaults to undefined.
+  //    data: Body of the request, if applicable. Defaults to undefined.
   //    headers: Any HTTP headers to add to the request. Defaults to {}
   //    urlIsSegment: Whether to append to the base server url or
   //    if the provided URL is an absolute path. Defaults to true
   async makeRequest(options) {
     const {
-      url, method, body, headers = {}, urlIsSegment = true,
+      url, method, data, headers = {}, urlIsSegment = true,
     } = options;
     const urlToCall = urlIsSegment
       ? `${removeTrailingSlash(this.cfg.resourceServerUrl.trim())}/${removeLeadingSlash(url.trim())}` // Trim trailing or leading '/'
@@ -70,7 +70,7 @@ export class FacelessRestClient {
     const requestOptions = {
       method,
       url: urlToCall,
-      data: body,
+      data,
       headers,
     };
 

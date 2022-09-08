@@ -40,7 +40,7 @@ describe('FacelessRestClient', () => {
     options = {
       url,
       method: 'GET',
-      body: {},
+      data: {},
       headers: {},
     };
     emitter = {
