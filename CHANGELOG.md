@@ -1,4 +1,4 @@
-## 3.0.3 (September 9, 2022)
+## 3.1.0 (September 9, 2022)
 * Added method `fetchSecretById` for `PlatformApiLogicClient`
 * Added method `refreshTokenBySecretId` for `PlatformApiLogicClient`
 * Added User-Agent headers to `PlatformApiRestClient`
