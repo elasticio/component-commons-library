@@ -10,6 +10,7 @@
     - [ApiKeyRestClient](#ApiKeyRestClient)
     - [CookieRestClient](#CookieRestClient)
     - [OAuth2AuthorizationCodeRestClient](#OAuth2AuthorizationCodeRestClient)
+    - [FacelessRestClient](#FacelessRestClient)
   - [Platform API Clients](#Platform-API-Clients)
     - [PlatformApiRestClient](#PlatformApiRestClient)
     - [PlatformApiLogicClient](#PlatformApiLogicClient)
@@ -124,6 +125,19 @@ Makes requests to resource with oauth2 access token auth.
 const Client = new OAuth2AuthorizationCodeRestClient(emitter, cfg);
 ```
 This class can handle, refresh and emit oauth2 EIO configuration.
+
+### FacelessRestClient
+[FacelessRestClient](https://github.com/elasticio/component-commons-library/blob/master/src/authentication/FacelessRestClient.ts)
+Makes requests to resource with oauth2 access token auth using ElasticIO [Faceless Service](https://docs.elastic.io/guides/secrets.html).
+
+#### constructor(emitter, cfg, userAgent, msgId)
+
+- cfg - should contain `secretId` parameter or `oauth` object with oauth2 config and tokens.
+- userAgent - optional parameter, used for `User-Agent` header when client retrieve secret from platform
+- msgId - optional parameter, used for `x-request-id` header when client retrieve secret from platform
+```
+const Client = new FacelessRestClient(emitter, cfg, userAgent, msgId);
+```
 
 ### NtlmRestClient
 [NtlmRestClient](https://github.com/elasticio/component-commons-library/blob/master/src/authentication/NtlmRestClient.ts)

@@ -17,20 +17,22 @@ export const API_REQUEST_TIMEOUT = {
   defaultValue: 15000,
   maxValue: 20000
 } as const;
-const ENV_API_REQUEST_TIMEOUT = process.env.API_REQUEST_TIMEOUT ? parseInt(process.env.API_REQUEST_TIMEOUT, 10) : API_REQUEST_TIMEOUT.defaultValue;
 
 /**
  * if values are higher or lower the limit - they'll be overwritten.
  * returns valid values for RetryOptions
  */
-export const getRetryOptions = (): RetryOptions => ({
-  retriesCount: (ENV_API_RETRIES_COUNT > API_RETRIES_COUNT.maxValue || ENV_API_RETRIES_COUNT < API_RETRIES_COUNT.minValue)
-    ? API_RETRIES_COUNT.defaultValue
-    : ENV_API_RETRIES_COUNT,
-  requestTimeout: (ENV_API_REQUEST_TIMEOUT > API_REQUEST_TIMEOUT.maxValue || ENV_API_REQUEST_TIMEOUT < API_REQUEST_TIMEOUT.minValue)
-    ? API_REQUEST_TIMEOUT.defaultValue
-    : ENV_API_REQUEST_TIMEOUT
-});
+export const getRetryOptions = (): RetryOptions => {
+  const ENV_API_REQUEST_TIMEOUT = process.env.API_REQUEST_TIMEOUT ? parseInt(process.env.API_REQUEST_TIMEOUT, 10) : API_REQUEST_TIMEOUT.defaultValue;
+  return {
+    retriesCount: (ENV_API_RETRIES_COUNT > API_RETRIES_COUNT.maxValue || ENV_API_RETRIES_COUNT < API_RETRIES_COUNT.minValue)
+      ? API_RETRIES_COUNT.defaultValue
+      : ENV_API_RETRIES_COUNT,
+    requestTimeout: (ENV_API_REQUEST_TIMEOUT > API_REQUEST_TIMEOUT.maxValue || ENV_API_REQUEST_TIMEOUT < API_REQUEST_TIMEOUT.minValue)
+      ? API_REQUEST_TIMEOUT.defaultValue
+      : ENV_API_REQUEST_TIMEOUT
+  };
+};
 
 export const exponentialDelay = (currentRetries: number) => {
   const maxBackoff = 15000;
@@ -66,16 +68,28 @@ export const axiosReqWithRetryOnServerError = async function (options: AxiosRequ
       });
       return response;
     } catch (err) {
+      this.logger.error(getErrMsg(err.response));
       error = err;
       if (err.response?.status < 500) {
         throw error;
       }
       this.logger.info(`URL: "${options.url}", method: ${options.method}, Error message: "${err.message}"`);
-      this.logger.error(getErrMsg(err.response));
       this.logger.info(`Request failed, retrying(${1 + currentRetry})`);
       await exponentialSleep(currentRetry);
       currentRetry++;
     }
   }
   throw error;
+};
+
+export const getFacelessRetriesCount = () => {
+  const FACELESS_RETRIES_COUNT = {
+    minValue: 0,
+    defaultValue: 3,
+    maxValue: 5,
+  };
+  const ENV_FACELESS_RETRIES_COUNT = process.env.FACELESS_RETRIES_COUNT ? parseInt(process.env.FACELESS_RETRIES_COUNT, 10) : FACELESS_RETRIES_COUNT.defaultValue;
+  return (ENV_FACELESS_RETRIES_COUNT > FACELESS_RETRIES_COUNT.maxValue || ENV_FACELESS_RETRIES_COUNT < FACELESS_RETRIES_COUNT.minValue)
+    ? FACELESS_RETRIES_COUNT.defaultValue
+    : ENV_FACELESS_RETRIES_COUNT;
 };
