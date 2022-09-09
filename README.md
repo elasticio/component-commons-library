@@ -10,7 +10,8 @@
     - [ApiKeyRestClient](#ApiKeyRestClient)
     - [CookieRestClient](#CookieRestClient)
     - [OAuth2AuthorizationCodeRestClient](#OAuth2AuthorizationCodeRestClient)
-  - [Platform API Clients](#PlatformAPI-Clients)
+    - [FacelessRestClient](#FacelessRestClient)
+  - [Platform API Clients](#Platform-API-Clients)
     - [PlatformApiRestClient](#PlatformApiRestClient)
     - [PlatformApiLogicClient](#PlatformApiLogicClient)
   - [JSON Schema Converter](#JSON-Schema-Converter)
@@ -125,6 +126,19 @@ const Client = new OAuth2AuthorizationCodeRestClient(emitter, cfg);
 ```
 This class can handle, refresh and emit oauth2 EIO configuration.
 
+### FacelessRestClient
+[FacelessRestClient](https://github.com/elasticio/component-commons-library/blob/master/src/authentication/FacelessRestClient.ts)
+Makes requests to resource with oauth2 access token auth using ElasticIO [Faceless Service](https://docs.elastic.io/guides/secrets.html).
+
+#### constructor(emitter, cfg, userAgent, msgId)
+
+- cfg - should contain `secretId` parameter or `oauth` object with oauth2 config and tokens.
+- userAgent - optional parameter, used for `User-Agent` header when client retrieve secret from platform
+- msgId - optional parameter, used for `x-request-id` header when client retrieve secret from platform
+```
+const Client = new FacelessRestClient(emitter, cfg, userAgent, msgId);
+```
+
 ### NtlmRestClient
 [NtlmRestClient](https://github.com/elasticio/component-commons-library/blob/master/src/authentication/NtlmRestClient.ts)
 class extends [NoAuthRestClient](#NoAuthRestClient) class.
@@ -173,6 +187,8 @@ const Client = new PlatformApiLogicClient(emitter, cfg);
 - fetchAllFlowsForWorkspace(options) - Fetch all flows for a given workspace
 - fetchAllCredentialsForWorkspace(options) - Fetch all credentials for a given workspace
 - fetchAllSecretsForWorkspace - Fetch all secrets for a given workspace
+- fetchSecretById - Fetch secret by id for a given workspace
+- refreshTokenBySecretId - Refresh token by secret id for a given workspace
 - fetchComponentsAccessibleFromContract(options) - Fetch All Components Accessible From a Given Workspace
 - splitParallelization(maxParallelization, splitFactor) - Helping method to calculate right number of parallel calls
 - fetchFlowList(options) - Fetches a list of flows

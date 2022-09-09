@@ -1,7 +1,6 @@
 import chai from 'chai';
 import sinon from 'sinon';
-import { Logger } from '../../src';
-import { PlatformApiLogicClient } from '../../src/platformApi/PlatformApiLogicClient';
+import { Logger, PlatformApiLogicClient } from '../../src';
 import * as allFlowsForWorkspace from '../helpers/allFlowsForWorkspace.json';
 import * as allCredentialsForWorkspace from '../helpers/allCredentialsForWorkspace.json';
 import * as allSecretsForWorkspace from '../helpers/allSecretsForWorkspace.json';
@@ -75,6 +74,22 @@ describe('PlatformApiLogicClient', () => {
     stub = sinon.stub(client, 'fetchAllSecretsForWorkspace');
     stub.withArgs(options).returns(successBody);
     const result = await client.fetchAllSecretsForWorkspace(options);
+    expect(result).to.be.deep.equal(successBody);
+  });
+
+  it('Should succeed fetch secret by id for workspace', async () => {
+    successBody = allSecretsForWorkspace;
+    stub = sinon.stub(client, 'fetchSecretById');
+    stub.withArgs(options).returns(successBody);
+    const result = await client.fetchSecretById(options);
+    expect(result).to.be.deep.equal(successBody);
+  });
+
+  it('Should succeed refresh token by secret id for workspace', async () => {
+    successBody = allSecretsForWorkspace;
+    stub = sinon.stub(client, 'refreshTokenBySecretId');
+    stub.withArgs(options).returns(successBody);
+    const result = await client.refreshTokenBySecretId(options);
     expect(result).to.be.deep.equal(successBody);
   });
 

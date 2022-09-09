@@ -1,6 +1,6 @@
 {
   "name": "@elastic.io/component-commons-library",
-  "version": "3.0.2",
+  "version": "3.1.0",
   "description": "Library for most common component development cases",
   "author": {
     "name": "elastic.io GmbH",
@@ -9,6 +9,10 @@
   },
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
   "keywords": [
     "elasticio",
     "ipaas",

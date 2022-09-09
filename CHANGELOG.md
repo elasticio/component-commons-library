@@ -1,3 +1,9 @@
+## 3.1.0 (September 9, 2022)
+* Added method `fetchSecretById` for `PlatformApiLogicClient`
+* Added method `refreshTokenBySecretId` for `PlatformApiLogicClient`
+* Added User-Agent headers to `PlatformApiRestClient`
+* Added new REST client `FacelessRestClient`
+
 ## 3.0.2 (August 26, 2022)
 * Updated @elasticio/maester-client to v4.0.3
 
