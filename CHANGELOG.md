@@ -1,3 +1,6 @@
+## 3.1.1 (October 21, 2022)
+* Update jsonata-moment to 1.1.5
+
 ## 3.1.0 (September 9, 2022)
 * Added method `fetchSecretById` for `PlatformApiLogicClient`
 * Added method `refreshTokenBySecretId` for `PlatformApiLogicClient`
