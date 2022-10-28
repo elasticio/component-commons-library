@@ -1,3 +1,6 @@
+## 3.1.2 (October 28, 2022)
+* To fix an incorrect deployment of 3.1.1 on npmjs.com
+
 ## 3.1.1 (October 21, 2022)
 * Update jsonata-moment to 1.1.5
 
