@@ -59,8 +59,7 @@
     "sinon": "11.1.2",
     "ts-node": "10.2.1",
     "tslint": "5.11.0",
-    "tslint-config-airbnb": "5.11.2",
-    "typescript": "^4.8.4"
+    "tslint-config-airbnb": "5.11.2"
   },
   "repository": "elasticio/component-commons-library",
   "license": "Apache-2.0"
