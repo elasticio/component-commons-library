@@ -1,3 +1,6 @@
+## 3.1.2 (October 28, 2022)
+* To fix the incorrect deploy of 3.1.1
+
 ## 3.1.1 (October 21, 2022)
 * Update jsonata-moment to 1.1.5
 
