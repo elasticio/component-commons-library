@@ -1,3 +1,6 @@
+## 3.1.3 (October 28, 2022)
+* Introduced publish scripts
+
 ## 3.1.2 (October 28, 2022)
 * To fix the incorrect deploy of 3.1.1
 
