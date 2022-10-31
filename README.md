@@ -3,6 +3,7 @@
  
 ## Table of Contents
 - [Description](#description)
+- [Publish](#publish)
 - [Available Functions](#Available-Functions)
   - [REST Clients](#REST-Clients)
     - [NoAuthRestClient](#NoAuthRestClient)
@@ -29,6 +30,10 @@ To install, type
 ```
 npm install @elastic.io/component-commons-library
 ```
+
+# Publish
+To publish the library one first needs to run `tsc` and then publish via either `npm publish` or `npm publish --tag dev`. 
+Alternatively, and this is a recommended way, you can simply run a predefined npm script - one of `npm run publish-dev` or `npm run publish-prod`.
 
 # Available Functions
 
