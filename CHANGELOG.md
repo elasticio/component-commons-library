@@ -1,3 +1,6 @@
+## 3.1.3 (December 02, 2022)
+* Add possibility to set RetryOptions for methods `getAttachment` and `uploadAttachment` oa AttachmentProcessor class.
+
 ## 3.1.2 (October 28, 2022)
 * To fix the incorrect deploy of 3.1.1
 
