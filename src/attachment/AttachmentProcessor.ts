@@ -28,14 +28,14 @@ export class AttachmentProcessor {
     this.msgId = msgId;
   }
 
-  async getAttachment(url: string, responseType: string) {
+  async getAttachment(url: string, responseType: string, retryOptions: RetryOptions = {}) {
     const storageType = this.getStorageTypeByUrl(url);
     const axConfig = {
       url,
       responseType,
       method: 'get',
-      timeout: DEFAULT_ATTACHMENT_REQUEST_TIMEOUT,
-      retry: RETRIES_COUNT.defaultValue,
+      timeout: retryOptions.requestTimeout || DEFAULT_ATTACHMENT_REQUEST_TIMEOUT,
+      retry: retryOptions.retriesCount || RETRIES_COUNT.defaultValue,
     } as AxiosRequestConfig;
 
     switch (storageType) {
@@ -53,7 +53,8 @@ export class AttachmentProcessor {
     return objectStorage.add(getAttachment, {
       headers,
       retryOptions: {
-        requestTimeout: retryOptions.requestTimeout || DEFAULT_ATTACHMENT_REQUEST_TIMEOUT
+        requestTimeout: retryOptions.requestTimeout || DEFAULT_ATTACHMENT_REQUEST_TIMEOUT,
+        retriesCount: retryOptions.retriesCount || RETRIES_COUNT.defaultValue,
       },
     });
   }
