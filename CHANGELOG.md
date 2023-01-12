@@ -1,3 +1,6 @@
+## 3.1.5 (December 29, 2022)
+* Updated @elasticio/maester-client to v5.0.1
+
 ## 3.1.4 (November 29, 2022)
 * To fix the incorrect deploy of 3.1.3
 

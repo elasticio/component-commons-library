@@ -15,8 +15,8 @@ jobs:
           paths:
             - ./node_modules
       - run:
-          name: "Running audit"
-          command: npm audit --production
+          name: Audit Dependencies
+          command: npm run audit
       - run:
           name: Running Mocha Tests
           command: npm test

@@ -80,8 +80,7 @@ export class AttachmentProcessor {
     const userAgent = `${this.userAgent} maester-client/${maesterClientVersion}`;
     const objectStorage = new ObjectStorage({ ...maesterCreds, userAgent, msgId: this.msgId });
     const maesterAttachmentId = this.getMaesterAttachmentIdByUrl(url);
-    const response = await objectStorage.getOne(maesterAttachmentId, { responseType });
-    return { data: response };
+    return objectStorage.getOne(maesterAttachmentId, { responseType });
   }
 
   private getStorageTypeByUrl(urlString) {
