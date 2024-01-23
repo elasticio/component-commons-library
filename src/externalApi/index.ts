@@ -15,7 +15,7 @@ const ENV_API_RETRIES_COUNT = process.env.API_RETRIES_COUNT ? parseInt(process.e
 export const API_REQUEST_TIMEOUT = {
   minValue: 500,
   defaultValue: 15000,
-  maxValue: 20000
+  maxValue: 120000
 } as const;
 
 /**

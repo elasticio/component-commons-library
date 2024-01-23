@@ -1,3 +1,6 @@
+## 3.1.6 (January 24, 2024)
+* Changed environment variable `API_REQUEST_TIMEOUT` maxValue to 120 sec (used to be 20 sec)
+
 ## 3.1.5 (December 29, 2022)
 * Updated @elasticio/maester-client to v5.0.1
 
