@@ -250,11 +250,11 @@ const result = await new AttachmentProcessor().getAttachment('http://example.com
 
 ### Environment variables
 * **API_RETRIES_COUNT** (defaults to 3): maximum amount of retries for 5xx errors. If server still responding 5xx, error will be thrown.
-* **API_REQUEST_TIMEOUT** (defaults to 15000): specifies the number of milliseconds before the request times out. If the request takes longer than timeout, the request will be aborted.
+* **API_REQUEST_TIMEOUT** (defaults to 15000, min: 500, max: 120000): specifies the number of milliseconds before the request times out. If the request takes longer than timeout, the request will be aborted.
 
 - `axiosReqWithRetryOnServerError` (use with `.call()` to pass context, implement it as a method of class with `logger` and `cfg` (value of configuration object for current action) values in a constructor) - function which makes axios request by specified request-config, making logging and error handling:
   1. If 5xx error occurred, it will be retried maximum `API_RETRIES_COUNT` times, each retry will be delayed with `exponentialSleep` function. 
-  2. If 4xx error occurred - error will be throw.
+  2. If 4xx error occurred - error will be thrown.
   3. If action `cfg` has `doNotThrow404` set to true: 404 error won't be treated as error. <br>
   Look on examples below.
 - `getErrMsg` - forms error message from axios-response.
