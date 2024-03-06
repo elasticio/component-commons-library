@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@elastic.io/jsonata-moment": "1.1.6-dev.1",
-    "@elastic.io/maester-client": "5.0.2-dev.1",
+    "@elastic.io/maester-client": "5.0.2-dev.2",
     "@elastic.io/ntlm-client": "1.0.0",
     "better-npm-audit": "3.7.3",
     "async": "3.2.3",
