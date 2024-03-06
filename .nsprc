@@ -2,5 +2,9 @@
     "GHSA-27h2-hvpr-p74q": {
             "active": true,
             "notes": "We don't use verify function from jsonwebtoken, so not affected"
-    }
+    },
+    "GHSA-fqg8-vfv7-8fj": {
+            "active": true,
+            "notes": "Maester-client of v5.x doesn't use jsonata functions. So not affected"
+        }
 }
