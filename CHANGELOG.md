@@ -5,7 +5,6 @@
   * isDateValid(date)
   * timeToString(date)
 * Updated @elastic.io/jsonata-moment to 1.1.6 to fix a vulnerability found in jsonata 1.8.6
-* Updated @elastic.io/maester-client to 5.0.2
 
 ## 3.1.6 (January 24, 2024)
 * Changed environment variable `API_REQUEST_TIMEOUT` maxValue to 120 sec (used to be 20 sec)
