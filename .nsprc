@@ -3,7 +3,7 @@
             "active": true,
             "notes": "We don't use verify function from jsonwebtoken, so not affected"
     },
-    "GHSA-fqg8-vfv7-8fj": {
+    "GHSA-fqg8-vfv7-8fj8": {
             "active": true,
             "notes": "We don't use jsonata functions from Maester-client v5.x. It doesn't use jsonata functions too. So not affected"
         }
