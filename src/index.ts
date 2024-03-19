@@ -15,6 +15,7 @@ export { FacelessRestClient } from './authentication/FacelessRestClient';
 export { PlatformApiLogicClient } from './platformApi/PlatformApiLogicClient';
 export { PlatformApiRestClient } from './platformApi/PlatformApiRestClient';
 export * from './externalApi';
+export * from './utils/utils';
 
 export class JsonSchema {
   static convertJsonSchemaToEioSchema = convertJsonSchemaToEioSchema;
