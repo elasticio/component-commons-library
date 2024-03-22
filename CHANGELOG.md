@@ -1,4 +1,4 @@
-## 3.2.0 (March 07, 2024)
+## 3.2.0 (March 22, 2024)
 * Added new functions:
   * isNumberNaN(number)
   * timestamp(date)
