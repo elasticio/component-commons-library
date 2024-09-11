@@ -1,3 +1,6 @@
+## 3.2.1 (September 11, 2024)
+* Updated maester-client
+
 ## 3.2.0 (March 22, 2024)
 * Added new functions:
   * isNumberNaN(number)

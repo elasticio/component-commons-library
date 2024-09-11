@@ -85,7 +85,7 @@ describe('PlatformApiRestClient', () => {
     expect(stub.called).to.be.equal(true);
     expect(stub.firstCall.args[0].headers).to.be.deep.equal({
       'Content-Type': 'application/json',
-      'User-Agent': 'UnitTest/1.0 request/2.88.2',
+      'User-Agent': 'UnitTest/1.0 request/^2.88.2',
       'x-request-id': 'f:undefined;s:undefined;m:messageId'
     });
   });
