@@ -1,3 +1,6 @@
+## 3.2.2 (March 21, 2025)
+* Updated maester-client to 6.0.0
+
 ## 3.2.1 (September 11, 2024)
 * Updated maester-client
 

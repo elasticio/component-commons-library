@@ -30,9 +30,9 @@ export class PlatformApiRestClient extends BasicAuthRestClient {
     super(emitter, myCfg);
     this.usingTaskUser = !cfg.email;
     if (this.usingTaskUser) {
-      this.emitter.logger.info(`Will connect to ${baseUrl} as task user`);
+      this.emitter.logger.debug(`Will connect to ${baseUrl} as task user`);
     } else {
-      this.emitter.logger.info(`Will connect to ${baseUrl} as specified user`);
+      this.emitter.logger.debug(`Will connect to ${baseUrl} as specified user`);
     }
     this.userAgent = userAgent;
     this.msgId = msgId;
