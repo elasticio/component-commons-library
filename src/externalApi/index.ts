@@ -1,4 +1,5 @@
 import axios, { AxiosResponse, AxiosInstance, AxiosRequestConfig } from 'axios';
+import { getLogger } from '../logger/logger';
 
 export interface RetryOptions {
   retriesCount?: number; // values are validated with API_RETRIES_COUNT const below
@@ -54,27 +55,28 @@ export const getErrMsg = (errResponse: AxiosResponse) => {
   return `Got error "${statusText}", status - "${status}", body: ${JSON.stringify(data)}`;
 };
 
-export const axiosReqWithRetryOnServerError = async function (options: AxiosRequestConfig, axiosInstance: AxiosInstance = axios) {
+export const axiosReqWithRetryOnServerError = async function (options: AxiosRequestConfig, axiosInstance: AxiosInstance = axios, logger = getLogger()) {
   const { retriesCount, requestTimeout } = getRetryOptions();
-  let response;
+  let response: AxiosResponse;
   let currentRetry = 0;
   let error;
+  const loggerInstance = this?.logger || logger;
   while (currentRetry < retriesCount) {
     try {
       response = await axiosInstance.request({
         ...options,
         timeout: requestTimeout,
-        validateStatus: (status) => (status >= 200 && status < 300) || (status === 404 && this.cfg.doNotThrow404)
+        validateStatus: (status) => (status >= 200 && status < 300) || (status === 404 && this?.cfg?.doNotThrow404)
       });
       return response;
     } catch (err) {
-      this.logger.error(getErrMsg(err.response));
+      loggerInstance.error(err.response ? getErrMsg(err.response) : err.message);
       error = err;
       if (err.response?.status < 500) {
         throw error;
       }
-      this.logger.info(`URL: "${options.url}", method: ${options.method}, Error message: "${err.message}"`);
-      this.logger.info(`Request failed, retrying(${1 + currentRetry})`);
+      loggerInstance.info(`URL: "${options.url}", method: ${options.method}, Error message: "${err.message}"`);
+      loggerInstance.info(`Request failed, retrying(${1 + currentRetry})`);
       await exponentialSleep(currentRetry);
       currentRetry++;
     }

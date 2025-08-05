@@ -3,11 +3,11 @@ import { JsonataTransform } from '../../src';
 
 const { expect } = chai;
 
-const eioUtils = require('elasticio-node').messages;
+const newMessageWithBody = (body) => ({ body } as any);
 
 describe('Transformation test', () => {
   it('should handle simple transforms', () => {
-    const result = JsonataTransform.jsonataTransform(eioUtils.newMessageWithBody({
+    const result = JsonataTransform.jsonataTransform(newMessageWithBody({
       first: 'Renat',
       last: 'Zubairov',
     }), {
@@ -19,7 +19,7 @@ describe('Transformation test', () => {
   });
 
   it('should not produce an empty message if transformation returns undefined', () => {
-    const result = JsonataTransform.jsonataTransform(eioUtils.newMessageWithBody({
+    const result = JsonataTransform.jsonataTransform(newMessageWithBody({
       first: 'Renat',
       last: 'Zubairov',
     }), {
@@ -29,7 +29,7 @@ describe('Transformation test', () => {
   });
 
   it('should handle passthrough properly', () => {
-    const msg = eioUtils.newMessageWithBody({
+    const msg = newMessageWithBody({
       first: 'Renat',
       last: 'Zubairov',
     });
@@ -44,7 +44,7 @@ describe('Transformation test', () => {
     });
   });
   it('should return  passthrough variables for getPassthrough expression', () => {
-    const msg = eioUtils.newMessageWithBody({
+    const msg = newMessageWithBody({
       first: 'Renat',
       last: 'Zubairov',
     });
@@ -59,7 +59,7 @@ describe('Transformation test', () => {
     });
   });
   it('should return  flow variables variables for getFlowVariables expression', () => {
-    const msg = eioUtils.newMessageWithBody({
+    const msg = newMessageWithBody({
       first: 'Renat',
       last: 'Zubairov',
     });
@@ -73,7 +73,7 @@ describe('Transformation test', () => {
     expect(result).to.deep.equal(flowVariables);
   });
   it('should handle 2 expressions on same message if dontThrowError=true', () => {
-    const msg = eioUtils.newMessageWithBody({
+    const msg = newMessageWithBody({
       first: 'Renat',
       last: 'Zubairov',
     });

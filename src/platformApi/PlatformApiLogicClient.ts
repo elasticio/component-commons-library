@@ -1,4 +1,4 @@
-import mapLimit from 'async/mapLimit';
+/* eslint-disable no-restricted-syntax */
 import { PlatformApiRestClient } from './PlatformApiRestClient';
 
 async function sleep(amount: any) { await new Promise((r) => setTimeout(r, amount)); }
@@ -46,14 +46,14 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
     const objectCount = objectCountResponse.meta.total;
     const numPages = Math.ceil(objectCount / Number(objectsPerPage));
     const pageRange = Array.from({ length: numPages }, (_X, i) => i + 1);
-    await mapLimit(pageRange, parallelCalls, async (pageNumber: any) => {
+    for (const pageNumber of pageRange) {
       const pageResult = await this.makeRequest({
         url: `/flows?workspace_id=${workspaceId}&page[size]=${objectsPerPage}&page[number]=${pageNumber}`,
         method: 'GET',
       });
       const objectArray = pageResult.data;
       results.push(...objectArray);
-    });
+    }
 
     return results;
   }
@@ -220,8 +220,15 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
     let flows;
     const workspaces = await this.fetchWorkspaceList({});
     if (!workspaceId) {
-      const nonFlatFlows = await mapLimit(workspaces, realSplitFactor,
-        async (workspace: any) => this.fetchAllFlowsForWorkspace({ parallelCalls: parallelizationPerTask, workspaceId: workspace.workspaceId }));
+      const nonFlatFlows = [];
+
+      for (const workspace of workspaces) {
+        const flowsForWorkspace = await this.fetchAllFlowsForWorkspace({
+          parallelCalls: parallelizationPerTask,
+          workspaceId: workspace.workspaceId,
+        });
+        nonFlatFlows.push(flowsForWorkspace);
+      }
       flows = nonFlatFlows.flat();
     } else {
       flows = await this.fetchAllFlowsForWorkspace({
@@ -298,17 +305,16 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
       });
       const contractsCount = contractsRequest.meta.total;
       const contractsPageRange = Array.from({ length: contractsCount }, (_X, i) => i + 1);
-      const nonFlatContracts = await mapLimit(
-        contractsPageRange,
-        parallelCalls,
-        async (pageNumber: any) => {
-          const multipleContractsRequest = await this.makeRequest({
-            method: 'GET',
-            url: `/contracts?page[size]=${objectsPerPage}&page[number]=${pageNumber}`,
-          });
-          return multipleContractsRequest.data;
-        },
-      );
+      const nonFlatContracts = [];
+
+      for (const pageNumber of contractsPageRange) {
+        const multipleContractsRequest = await this.makeRequest({
+          method: 'GET',
+          url: `/contracts?page[size]=${objectsPerPage}&page[number]=${pageNumber}`,
+        });
+        nonFlatContracts.push(multipleContractsRequest.data);
+      }
+
       const contracts = nonFlatContracts.flat();
 
       const contractsDictionary = contracts.reduce((soFar: any, contract: any) => {
@@ -317,39 +323,36 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
         return soFar;
       }, {});
 
-      const nonFlatWorkspaces = await mapLimit(
-        contracts,
-        parallelCalls,
-        async (contract: any) => {
-          const currentContractId = contract.id;
-          const workspacesCountResponse = await this.makeRequest({
-            url: `workspaces?contract_id=${currentContractId}&page[size]=1`,
+      const nonFlatWorkspaces = [];
+
+      for (const contract of contracts) {
+        const currentContractId = contract.id;
+
+        const workspacesCountResponse = await this.makeRequest({
+          url: `workspaces?contract_id=${currentContractId}&page[size]=1`,
+          method: 'GET',
+        });
+        const objectCount = workspacesCountResponse.meta.total;
+        const numPages = Math.ceil(objectCount / Number(objectsPerPage));
+        const pageRange = Array.from({ length: numPages }, (_X, i) => i + 1);
+
+        for (const pageNumber of pageRange) {
+          const queries = [
+            `contract_id=${contract.id}`,
+            `page[size]=${objectsPerPage}`,
+            `page[number]=${pageNumber}`,
+          ];
+
+          const workspaceRequest = await this.makeRequest({
             method: 'GET',
+            url: `/workspaces?${queries.join('&')}`,
           });
-          const objectCount = workspacesCountResponse.meta.total;
-          const numPages = Math.ceil(objectCount / Number(objectsPerPage));
-          const pageRange = Array.from({ length: numPages }, (_X, i) => i + 1);
 
-          return mapLimit(
-            pageRange,
-            parallelCalls,
-            async (pageNumber: any) => {
-              const queries = [
-                `contract_id=${contract.id}`,
-                `page[size]=${objectsPerPage}`,
-                `page[number]=${pageNumber}`,
-              ];
-              const workspaceRequest = await this.makeRequest({
-                method: 'GET',
-                url: `/workspaces?${queries.join('&')}`,
-              });
-              return workspaceRequest.data;
-            },
-          );
-        },
-      );
+          nonFlatWorkspaces.push(workspaceRequest.data);
+        }
+      }
 
-      const workspaces = nonFlatWorkspaces.flat().flat();
+      const workspaces = nonFlatWorkspaces.flat();
 
       this.workspaceList = workspaces.map((workspace: any) => {
         const contractId = workspace.relationships.contract.data.id;
@@ -572,7 +575,9 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
         .filter((node: any) => node.selected_data_samples)
         .map((node: any) => node.selected_data_samples)
         .flat();
-      const samples = await mapLimit(sampleIds, parallelCalls, async (sampleId: any) => {
+      const samples = [];
+
+      for (const sampleId of sampleIds) {
         let sampleRequest;
         try {
           sampleRequest = await this.makeRequest({
@@ -582,12 +587,14 @@ export class PlatformApiLogicClient extends PlatformApiRestClient {
         } catch (e: any) {
           throw new Error(`Can't extract data sample with id: ${sampleId}. Error: ${e.message}`);
         }
+
         const sample = sampleRequest.data.attributes;
-        return {
+        samples.push({
           sample,
           sampleId,
-        };
-      });
+        });
+      }
+
       const sampleDictionary = samples.reduce((soFar: any, sample: any) => {
         /* eslint-disable-next-line no-param-reassign */
         soFar[sample.sampleId] = sample.sample;
