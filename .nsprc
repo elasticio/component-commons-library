@@ -1,6 +1,0 @@
-{
-    "GHSA-27h2-hvpr-p74q": {
-            "active": true,
-            "notes": "We don't use verify function from jsonwebtoken, so not affected"
-    }
-}

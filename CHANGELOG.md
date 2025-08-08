@@ -1,3 +1,17 @@
+## 4.0.0 (August 05, 2025)
+* BREAKING CHANGE – All clients named `*RestClient` have been removed except for `PlatformApiRestClient`. Any removed client logic should now be implemented within components.
+* `PlatformApiRestClient` has been migrated from the `request` library to `axios`.
+* The following libraries have been removed from the main dependencies:
+  * @elastic.io/ntlm-client
+  * async
+  * bunyan-serializers
+  * elasticio-node
+  * better-npm-audit
+  * remove-leading-slash
+  * remove-trailing-slash
+  * request
+* The `axiosReqWithRetryOnServerError` function can now operate without requiring a context.
+
 ## 3.2.2 (March 21, 2025)
 * Updated maester-client to 6.0.0
 

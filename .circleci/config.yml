@@ -16,7 +16,7 @@ jobs:
             - ./node_modules
       - run:
           name: Audit Dependencies
-          command: npm run audit
+          command: npm audit --production
       - run:
           name: Running Mocha Tests
           command: npm test
