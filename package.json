@@ -31,7 +31,9 @@
     "@elastic.io/maester-client": "^6.0.2",
     "axios": "^1.19.0",
     "bunyan": "^1.8.15",
-    "bunyan-format": "^0.2.1"
+    "bunyan-format": "^0.2.1",
+    "remove-leading-slash": "^1.0.1",
+    "remove-trailing-slash": "^0.1.1"
   },
   "overrides": {
     "jsonata": "1.8.9"
