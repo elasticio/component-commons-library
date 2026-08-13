@@ -4,6 +4,7 @@ import fs from 'fs';
 import { Readable } from 'stream';
 import sinon from 'sinon';
 import { ObjectStorage } from '@elastic.io/maester-client';
+import nock from 'nock';
 import { AttachmentProcessor, STORAGE_TYPE_PARAMETER, MAESTER_OBJECT_ID_ENDPOINT } from '../../src/attachment/AttachmentProcessor';
 
 const { expect } = chai;
@@ -28,16 +29,20 @@ describe('AttachmentProcessor', () => {
   describe('Steward', () => {
     afterEach(() => {
       sinon.restore();
+      nock.cleanAll();
     });
     it('Should successfully retrieve csv', async () => {
       const attachmentOptions = {
         'content-type': 'arraybuffer',
         url: 'http://insight.dev.schoolwires.com/HelpAssets/C2Assets/C2Files/C2ImportCalEventSample.csv',
       };
+      const expectedResult = fs.readFileSync('spec/attachment/resources/base64csv.txt').toString();
+      nock('http://insight.dev.schoolwires.com')
+        .get('/HelpAssets/C2Assets/C2Files/C2ImportCalEventSample.csv')
+        .reply(200, Buffer.from(expectedResult, 'base64'));
 
       const result: any = await attachmentProcessor.getAttachment(attachmentOptions.url, attachmentOptions['content-type']);
       const encodedResult = Buffer.from(result.data, 'binary').toString('base64');
-      const expectedResult = fs.readFileSync('spec/attachment/resources/base64csv.txt').toString();
       expect(encodedResult).to.be.equal(expectedResult);
     });
     it('Should successfully retrieve png image', async () => {
@@ -45,15 +50,18 @@ describe('AttachmentProcessor', () => {
         'content-type': 'arraybuffer',
         url: `https://httpbin.org/image/png?${STORAGE_TYPE_PARAMETER}=steward`,
       };
+      const expectedResult = fs.readFileSync('spec/attachment/resources/base64Png.txt').toString();
+      nock('https://httpbin.org')
+        .get(`/image/png?${STORAGE_TYPE_PARAMETER}=steward`)
+        .reply(200, Buffer.from(expectedResult, 'base64'));
 
       const result: any = await attachmentProcessor.getAttachment(attachmentOptions.url, 'arraybuffer');
       const encodedResult = Buffer.from(result.data, 'binary').toString('base64');
-      const expectedResult = fs.readFileSync('spec/attachment/resources/base64Png.txt').toString();
       expect(encodedResult).to.be.equal(expectedResult);
     });
 
     it('Should successfully getAttachment with custom RetryOptions', async () => {
-      const getStewardAttachment = sinon.stub(AttachmentProcessor.prototype, <any>'getStewardAttachment').callsFake(async () => ({ data: formStream('i`m a stream') }));
+      const getStewardAttachment = sinon.stub(AttachmentProcessor.prototype, 'getStewardAttachment' as any).callsFake(async () => ({ data: formStream('i`m a stream') }));
       const attachmentOptions = {
         'content-type': 'stream',
         url: 'https://example.com',
@@ -97,8 +105,8 @@ describe('AttachmentProcessor', () => {
       const result: string = await attachmentProcessor.uploadAttachment(getAttachment);
       expect(result).to.be.deep.equal('attachmentId');
       expect(addAttachment.getCall(0).args[1].retryOptions).to.deep.equal({
-        requestTimeout: 20000,
-        retriesCount: 2
+        requestTimeout: 1200000,
+        retriesCount: 3
       });
     });
 

@@ -1,3 +1,10 @@
+## 4.0.1 (August 13, 2026)
+* Update dependencies to their latest major-compatible versions:
+  * `@elastic.io/maester-client` from `^6.0.0` to `^6.0.2`
+  * `axios` from `^1.11.0` to `^1.19.0`
+* Bump required Node.js version to 24.
+* Add package override for `jsonata` to `1.8.9` to resolve a high-severity vulnerability.
+
 ## 4.0.0 (August 05, 2025)
 * BREAKING CHANGE – All clients named `*RestClient` have been removed except for `PlatformApiRestClient`. Any removed client logic should now be implemented within components.
 * `PlatformApiRestClient` has been migrated from the `request` library to `axios`.

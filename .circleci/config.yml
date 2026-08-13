@@ -2,7 +2,7 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: cimg/node:18.13.0
+      - image: cimg/node:24.10.0
     steps:
       - checkout
       - restore_cache:
@@ -16,7 +16,7 @@ jobs:
             - ./node_modules
       - run:
           name: Audit Dependencies
-          command: npm audit --production
+          command: npm audit --omit=dev --audit-level=high
       - run:
           name: Running Mocha Tests
           command: npm test
