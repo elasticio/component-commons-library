@@ -1,4 +1,4 @@
-## 4.0.1 (August 05, 2026)
+## 4.0.1 (August 13, 2026)
 * Update dependencies to their latest major-compatible versions:
   * `@elastic.io/maester-client` from `^6.0.0` to `^6.0.2`
   * `axios` from `^1.11.0` to `^1.19.0`
