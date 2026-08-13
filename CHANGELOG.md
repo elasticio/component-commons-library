@@ -1,3 +1,6 @@
+## 4.0.2 (August 13, 2026)
+* Restore missing dependencies
+
 ## 4.0.1 (August 13, 2026)
 * Update dependencies to their latest major-compatible versions:
   * `@elastic.io/maester-client` from `^6.0.0` to `^6.0.2`
