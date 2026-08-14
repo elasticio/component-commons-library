@@ -1,3 +1,7 @@
+## 4.0.3 (August 14, 2026)
+* Clean build: Added `prepublishOnly` script to clean (`rm -rf dist`) and compile (`tsc`) before publishing.
+* Removed unused `remove-leading-slash` and `remove-trailing-slash` dependencies.
+
 ## 4.0.2 (August 13, 2026)
 * Restore missing dependencies
 
